@@ -244,8 +244,8 @@ function CheckoutPage() {
                   </div>
                 )}
                 {method === "card" && (
-                  <div className="mt-5 p-4 rounded-xl bg-amber-50 border border-amber-200 text-sm text-amber-900">
-                    Estamos integrando <strong>PlaceToPay</strong> para aceptar tarjetas. Mientras tanto, elige transferencia o efectivo.
+                  <div className="mt-5 p-4 rounded-xl bg-muted border border-border text-sm text-muted-foreground">
+                    Estamos integrando <strong className="text-navy-deep">PlaceToPay</strong> para aceptar tarjetas. Mientras tanto, elige transferencia o efectivo.
                   </div>
                 )}
               </div>
