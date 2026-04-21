@@ -1,7 +1,7 @@
 import { Link } from "@tanstack/react-router";
 import { useState, useEffect } from "react";
 import { Menu, X } from "lucide-react";
-import logoGrupoVega from "@/assets/logo-grupo-vega.jpg";
+import logoGrupoVega from "@/assets/logo-grupo-vega.png";
 
 const links = [
   { to: "/", label: "Inicio" },
@@ -28,17 +28,13 @@ export function Header() {
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex h-16 md:h-20 items-center justify-between">
           <Link to="/" className="flex items-center group">
-            <div
-              className={`relative rounded-xl px-3 py-1.5 transition-all duration-300 ${
-                scrolled ? "bg-transparent" : "bg-white/90 backdrop-blur-sm shadow-card"
+            <img
+              src={logoGrupoVega}
+              alt="Grupo Vega"
+              className={`h-10 md:h-12 w-auto object-contain group-hover:scale-105 transition-transform ${
+                scrolled ? "" : "drop-shadow-[0_2px_8px_rgba(0,0,0,0.4)]"
               }`}
-            >
-              <img
-                src={logoGrupoVega}
-                alt="Grupo Vega"
-                className="h-9 md:h-11 w-auto object-contain group-hover:scale-105 transition-transform"
-              />
-            </div>
+            />
           </Link>
 
           <nav className="hidden lg:flex items-center gap-1">
