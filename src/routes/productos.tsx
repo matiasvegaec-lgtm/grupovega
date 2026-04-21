@@ -1,9 +1,11 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { Search, Download } from "lucide-react";
+import { Search, Download, ShoppingCart, Check } from "lucide-react";
 import { Layout } from "@/components/Layout";
 import { PageHero } from "@/components/PageHero";
+import { useCart } from "@/contexts/CartContext";
+import { toast } from "sonner";
 import feedImg from "@/assets/product-feed.jpg";
 import labImg from "@/assets/service-lab.jpg";
 import equipImg from "@/assets/service-equipment.jpg";
@@ -23,20 +25,21 @@ export const Route = createFileRoute("/productos")({
 const categories = ["Todos", "Alimento", "Probióticos", "Fertilizantes", "Equipos", "Laboratorio"];
 
 const products = [
-  { name: "AquaFeed Larva 45%", category: "Alimento", desc: "Alimento de inicio para post-larva PL10-PL15.", img: feedImg },
-  { name: "AquaFeed Juvenil 38%", category: "Alimento", desc: "Crecimiento óptimo en fase juvenil.", img: feedImg },
-  { name: "AquaFeed Engorde 32%", category: "Alimento", desc: "Maximiza FCR en fase de engorde.", img: feedImg },
-  { name: "ProBio Plus", category: "Probióticos", desc: "Mezcla de Bacillus para sanidad intestinal.", img: labImg },
-  { name: "VibrioStop", category: "Probióticos", desc: "Control biológico de vibriosis.", img: labImg },
-  { name: "FertiPond", category: "Fertilizantes", desc: "Fertilizante orgánico para floración natural.", img: labImg },
-  { name: "AeroMax 5HP", category: "Equipos", desc: "Aireador paddle wheel de alta eficiencia.", img: equipImg },
-  { name: "OxyMonitor IoT", category: "Equipos", desc: "Sensor de oxígeno disuelto con conexión 4G.", img: equipImg },
-  { name: "PCR WSSV Kit", category: "Laboratorio", desc: "Detección rápida de mancha blanca.", img: labImg },
+  { id: "feed-larva-45", name: "AquaFeed Larva 45%", price: 48.5, category: "Alimento", desc: "Alimento de inicio para post-larva PL10-PL15.", img: feedImg },
+  { id: "feed-juvenil-38", name: "AquaFeed Juvenil 38%", price: 42.0, category: "Alimento", desc: "Crecimiento óptimo en fase juvenil.", img: feedImg },
+  { id: "feed-engorde-32", name: "AquaFeed Engorde 32%", price: 38.0, category: "Alimento", desc: "Maximiza FCR en fase de engorde.", img: feedImg },
+  { id: "probio-plus", name: "ProBio Plus", price: 65.0, category: "Probióticos", desc: "Mezcla de Bacillus para sanidad intestinal.", img: labImg },
+  { id: "vibriostop", name: "VibrioStop", price: 72.0, category: "Probióticos", desc: "Control biológico de vibriosis.", img: labImg },
+  { id: "fertipond", name: "FertiPond", price: 28.0, category: "Fertilizantes", desc: "Fertilizante orgánico para floración natural.", img: labImg },
+  { id: "aeromax-5hp", name: "AeroMax 5HP", price: 1450.0, category: "Equipos", desc: "Aireador paddle wheel de alta eficiencia.", img: equipImg },
+  { id: "oxymonitor-iot", name: "OxyMonitor IoT", price: 890.0, category: "Equipos", desc: "Sensor de oxígeno disuelto con conexión 4G.", img: equipImg },
+  { id: "pcr-wssv-kit", name: "PCR WSSV Kit", price: 320.0, category: "Laboratorio", desc: "Detección rápida de mancha blanca.", img: labImg },
 ];
 
 function ProductosPage() {
   const [active, setActive] = useState("Todos");
   const [query, setQuery] = useState("");
+  const { addItem } = useCart();
 
   const filtered = products.filter(
     (p) =>
@@ -98,8 +101,20 @@ function ProductosPage() {
                 <div className="p-5">
                   <h3 className="font-bold text-navy-deep mb-1">{p.name}</h3>
                   <p className="text-muted-foreground text-sm mb-4">{p.desc}</p>
-                  <button className="inline-flex items-center gap-1 text-ocean text-sm font-semibold hover:gap-2 transition-all">
-                    <Download className="w-4 h-4" /> Ficha técnica
+                  <div className="flex items-center justify-between mb-3">
+                    <span className="text-xl font-bold text-navy-deep">${p.price.toFixed(2)}</span>
+                    <button className="inline-flex items-center gap-1 text-ocean text-xs font-semibold hover:gap-2 transition-all">
+                      <Download className="w-3.5 h-3.5" /> Ficha
+                    </button>
+                  </div>
+                  <button
+                    onClick={() => {
+                      addItem({ id: p.id, name: p.name, price: p.price, category: p.category, img: p.img });
+                      toast.success(`${p.name} agregado al carrito`);
+                    }}
+                    className="w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-full gradient-wave text-white text-sm font-semibold shadow-glow hover:scale-[1.02] transition-transform"
+                  >
+                    <ShoppingCart className="w-4 h-4" /> Agregar al carrito
                   </button>
                 </div>
               </motion.div>
