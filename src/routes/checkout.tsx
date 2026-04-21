@@ -100,6 +100,8 @@ function CheckoutPage() {
       toast.info("El pago con tarjeta estará disponible muy pronto. Elige otro método.");
       return;
     }
+    // Abrir ventana de WhatsApp ANTES del await para evitar bloqueo de popups
+    const waWindow = window.open("about:blank", "_blank");
     setSubmitting(true);
     try {
       const shippingAddress = `${form.farm_name} — Ref: ${form.reference}`;
@@ -130,18 +132,31 @@ function CheckoutPage() {
       const summary = buildOrderSummaryText(orderNumber);
       const waUrl = `https://wa.me/${WHATSAPP_EMPRESA}?text=${encodeURIComponent(summary)}`;
 
+      // Guardar datos del cliente para futuras compras
+      if (saveData && typeof window !== "undefined") {
+        try {
+          const { shipping_notes, ...toSave } = form;
+          localStorage.setItem(CUSTOMER_STORAGE_KEY, JSON.stringify(toSave));
+        } catch {}
+      } else if (!saveData && typeof window !== "undefined") {
+        try { localStorage.removeItem(CUSTOMER_STORAGE_KEY); } catch {}
+      }
+
       clear();
 
       if (method === "transfer") {
         toast.success("Pedido registrado. Envía el comprobante por WhatsApp.");
-        window.open(waUrl, "_blank");
+        if (waWindow) waWindow.location.href = waUrl;
+        else window.open(waUrl, "_blank");
       } else if (method === "cash") {
         toast.success("Pedido registrado. Pasa por la sucursal a pagar y retirar.");
-        window.open(waUrl, "_blank");
+        if (waWindow) waWindow.location.href = waUrl;
+        else window.open(waUrl, "_blank");
       }
 
       navigate({ to: "/pedido/$orderNumber", params: { orderNumber } });
     } catch (err: any) {
+      if (waWindow) waWindow.close();
       toast.error(err.message || "Error al procesar el pedido");
       setSubmitting(false);
     }
