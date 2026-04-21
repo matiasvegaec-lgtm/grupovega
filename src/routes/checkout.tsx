@@ -34,12 +34,15 @@ const BANCO_DEMO = {
 
 type PayMethod = "card" | "transfer" | "cash";
 
+const CUSTOMER_STORAGE_KEY = "gv_customer_data_v1";
+
 function CheckoutPage() {
   const { items, subtotal, clear } = useCart();
   const { user, loading: authLoading } = useAuth();
   const navigate = useNavigate();
   const [submitting, setSubmitting] = useState(false);
   const [method, setMethod] = useState<PayMethod>("transfer");
+  const [saveData, setSaveData] = useState(true);
   const [form, setForm] = useState({
     customer_name: "",        // nombres y apellidos
     receiver_name: "",        // quien recibe
@@ -58,12 +61,20 @@ function CheckoutPage() {
     }
   }, [user, authLoading, navigate]);
 
-  // Prellenar email
+  // Cargar datos guardados + prellenar email
   useEffect(() => {
-    if (user?.email && !form.customer_email) {
-      setForm((f) => ({ ...f, customer_email: user.email! }));
+    if (typeof window === "undefined") return;
+    try {
+      const saved = localStorage.getItem(CUSTOMER_STORAGE_KEY);
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        setForm((f) => ({ ...f, ...parsed }));
+      }
+    } catch {}
+    if (user?.email) {
+      setForm((f) => (f.customer_email ? f : { ...f, customer_email: user.email! }));
     }
-  }, [user, form.customer_email]);
+  }, [user]);
 
   const update = (k: keyof typeof form) => (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
     setForm((f) => ({ ...f, [k]: e.target.value }));
@@ -89,6 +100,8 @@ function CheckoutPage() {
       toast.info("El pago con tarjeta estará disponible muy pronto. Elige otro método.");
       return;
     }
+    // Abrir ventana de WhatsApp ANTES del await para evitar bloqueo de popups
+    const waWindow = window.open("about:blank", "_blank");
     setSubmitting(true);
     try {
       const shippingAddress = `${form.farm_name} — Ref: ${form.reference}`;
@@ -119,18 +132,31 @@ function CheckoutPage() {
       const summary = buildOrderSummaryText(orderNumber);
       const waUrl = `https://wa.me/${WHATSAPP_EMPRESA}?text=${encodeURIComponent(summary)}`;
 
+      // Guardar datos del cliente para futuras compras
+      if (saveData && typeof window !== "undefined") {
+        try {
+          const { shipping_notes, ...toSave } = form;
+          localStorage.setItem(CUSTOMER_STORAGE_KEY, JSON.stringify(toSave));
+        } catch {}
+      } else if (!saveData && typeof window !== "undefined") {
+        try { localStorage.removeItem(CUSTOMER_STORAGE_KEY); } catch {}
+      }
+
       clear();
 
       if (method === "transfer") {
         toast.success("Pedido registrado. Envía el comprobante por WhatsApp.");
-        window.open(waUrl, "_blank");
+        if (waWindow) waWindow.location.href = waUrl;
+        else window.open(waUrl, "_blank");
       } else if (method === "cash") {
         toast.success("Pedido registrado. Pasa por la sucursal a pagar y retirar.");
-        window.open(waUrl, "_blank");
+        if (waWindow) waWindow.location.href = waUrl;
+        else window.open(waUrl, "_blank");
       }
 
       navigate({ to: "/pedido/$orderNumber", params: { orderNumber } });
     } catch (err: any) {
+      if (waWindow) waWindow.close();
       toast.error(err.message || "Error al procesar el pedido");
       setSubmitting(false);
     }
@@ -273,6 +299,15 @@ function CheckoutPage() {
                   <span>Total</span><span>${subtotal.toFixed(2)}</span>
                 </div>
               </div>
+              <label className="flex items-start gap-2 mt-4 cursor-pointer text-xs text-muted-foreground select-none">
+                <input
+                  type="checkbox"
+                  checked={saveData}
+                  onChange={(e) => setSaveData(e.target.checked)}
+                  className="mt-0.5 w-4 h-4 accent-ocean cursor-pointer"
+                />
+                <span>Guardar mis datos en este dispositivo para futuras compras (más rápido la próxima vez).</span>
+              </label>
               <button
                 type="submit"
                 disabled={submitting || method === "card"}
