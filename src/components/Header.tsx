@@ -1,6 +1,7 @@
 import { Link } from "@tanstack/react-router";
 import { useState, useEffect } from "react";
-import { Menu, X, Waves } from "lucide-react";
+import { Menu, X } from "lucide-react";
+import logoGrupoVega from "@/assets/logo-grupo-vega.jpg";
 
 const links = [
   { to: "/", label: "Inicio" },
@@ -26,20 +27,17 @@ export function Header() {
     >
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex h-16 md:h-20 items-center justify-between">
-          <Link to="/" className="flex items-center gap-2 group">
-            <div className="relative">
-              <div className="absolute inset-0 gradient-wave rounded-xl blur-md opacity-60 group-hover:opacity-100 transition" />
-              <div className="relative w-10 h-10 gradient-wave rounded-xl flex items-center justify-center">
-                <Waves className="w-5 h-5 text-white" />
-              </div>
-            </div>
-            <div className="flex flex-col leading-tight">
-              <span className={`font-display font-bold text-lg ${scrolled ? "text-navy-deep" : "text-white"}`}>
-                AquaMar
-              </span>
-              <span className={`text-[10px] uppercase tracking-widest ${scrolled ? "text-muted-foreground" : "text-white/70"}`}>
-                Shrimp Industry
-              </span>
+          <Link to="/" className="flex items-center group">
+            <div
+              className={`relative rounded-xl px-3 py-1.5 transition-all duration-300 ${
+                scrolled ? "bg-transparent" : "bg-white/90 backdrop-blur-sm shadow-card"
+              }`}
+            >
+              <img
+                src={logoGrupoVega}
+                alt="Grupo Vega"
+                className="h-9 md:h-11 w-auto object-contain group-hover:scale-105 transition-transform"
+              />
             </div>
           </Link>
 
