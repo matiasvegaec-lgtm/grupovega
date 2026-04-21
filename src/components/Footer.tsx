@@ -1,6 +1,6 @@
 import { Link } from "@tanstack/react-router";
 import { Mail, Phone, MapPin, Facebook, Instagram, Linkedin } from "lucide-react";
-import logoGrupoVega from "@/assets/logo-grupo-vega.jpg";
+import logoGrupoVega from "@/assets/logo-grupo-vega.png";
 
 export function Footer() {
   return (
@@ -9,13 +9,11 @@ export function Footer() {
       <div className="relative container mx-auto px-4 sm:px-6 lg:px-8 py-16">
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-10">
           <div>
-            <div className="bg-white rounded-xl p-3 inline-block mb-4 shadow-card">
-              <img
-                src={logoGrupoVega}
-                alt="Grupo Vega"
-                className="h-12 w-auto object-contain"
-              />
-            </div>
+            <img
+              src={logoGrupoVega}
+              alt="Grupo Vega"
+              className="h-14 w-auto object-contain mb-4"
+            />
             <p className="text-white/70 text-sm leading-relaxed">
               Soluciones integrales para la industria camaronera del Ecuador. Innovación, calidad y sostenibilidad desde 1998.
             </p>
