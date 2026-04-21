@@ -4,11 +4,7 @@ import { Menu, X, Waves } from "lucide-react";
 
 const links = [
   { to: "/", label: "Inicio" },
-  { to: "/nosotros", label: "Nosotros" },
   { to: "/productos", label: "Productos" },
-  { to: "/servicios", label: "Servicios" },
-  { to: "/sostenibilidad", label: "Sostenibilidad" },
-  { to: "/blog", label: "Blog" },
   { to: "/contacto", label: "Contacto" },
 ] as const;
 
@@ -69,10 +65,10 @@ export function Header() {
 
           <div className="hidden lg:block">
             <Link
-              to="/cotizar"
+              to="/contacto"
               className="inline-flex items-center px-5 py-2.5 rounded-full gradient-wave text-white text-sm font-semibold shadow-glow hover:scale-105 transition-transform"
             >
-              Cotizar ahora
+              Contáctanos
             </Link>
           </div>
 
@@ -100,11 +96,11 @@ export function Header() {
               </Link>
             ))}
             <Link
-              to="/cotizar"
+              to="/contacto"
               onClick={() => setOpen(false)}
               className="mt-2 px-4 py-3 rounded-lg gradient-wave text-white font-semibold text-center"
             >
-              Cotizar ahora
+              Contáctanos
             </Link>
           </div>
         </div>

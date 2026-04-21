@@ -22,9 +22,8 @@ export function Footer() {
           <div>
             <h4 className="font-semibold mb-4 text-turquoise">Compañía</h4>
             <ul className="space-y-2 text-sm text-white/70">
-              <li><Link to="/nosotros" className="hover:text-turquoise transition">Nosotros</Link></li>
-              <li><Link to="/sostenibilidad" className="hover:text-turquoise transition">Sostenibilidad</Link></li>
-              <li><Link to="/blog" className="hover:text-turquoise transition">Blog</Link></li>
+              <li><Link to="/" className="hover:text-turquoise transition">Inicio</Link></li>
+              <li><Link to="/productos" className="hover:text-turquoise transition">Productos</Link></li>
               <li><Link to="/contacto" className="hover:text-turquoise transition">Contacto</Link></li>
             </ul>
           </div>
@@ -34,8 +33,8 @@ export function Footer() {
             <ul className="space-y-2 text-sm text-white/70">
               <li><Link to="/productos" className="hover:text-turquoise transition">Alimento balanceado</Link></li>
               <li><Link to="/productos" className="hover:text-turquoise transition">Probióticos</Link></li>
-              <li><Link to="/servicios" className="hover:text-turquoise transition">Análisis de laboratorio</Link></li>
-              <li><Link to="/servicios" className="hover:text-turquoise transition">Asesoría técnica</Link></li>
+              <li><Link to="/productos" className="hover:text-turquoise transition">Fertilizantes</Link></li>
+              <li><Link to="/productos" className="hover:text-turquoise transition">Equipos</Link></li>
             </ul>
           </div>
 
