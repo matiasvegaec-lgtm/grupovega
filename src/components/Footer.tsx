@@ -1,5 +1,6 @@
 import { Link } from "@tanstack/react-router";
-import { Waves, Mail, Phone, MapPin, Facebook, Instagram, Linkedin } from "lucide-react";
+import { Mail, Phone, MapPin, Facebook, Instagram, Linkedin } from "lucide-react";
+import logoGrupoVega from "@/assets/logo-grupo-vega.jpg";
 
 export function Footer() {
   return (
@@ -8,11 +9,12 @@ export function Footer() {
       <div className="relative container mx-auto px-4 sm:px-6 lg:px-8 py-16">
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-10">
           <div>
-            <div className="flex items-center gap-2 mb-4">
-              <div className="w-10 h-10 gradient-wave rounded-xl flex items-center justify-center">
-                <Waves className="w-5 h-5" />
-              </div>
-              <span className="font-display font-bold text-xl">AquaMar</span>
+            <div className="bg-white rounded-xl p-3 inline-block mb-4 shadow-card">
+              <img
+                src={logoGrupoVega}
+                alt="Grupo Vega"
+                className="h-12 w-auto object-contain"
+              />
             </div>
             <p className="text-white/70 text-sm leading-relaxed">
               Soluciones integrales para la industria camaronera del Ecuador. Innovación, calidad y sostenibilidad desde 1998.
@@ -54,7 +56,7 @@ export function Footer() {
         </div>
 
         <div className="mt-12 pt-8 border-t border-white/10 flex flex-col md:flex-row justify-between gap-4 text-sm text-white/50">
-          <p>© {new Date().getFullYear()} AquaMar. Todos los derechos reservados.</p>
+          <p>© {new Date().getFullYear()} Grupo Vega. Todos los derechos reservados.</p>
           <p>Hecho con <span className="text-turquoise">●</span> para camaroneras del Ecuador</p>
         </div>
       </div>
