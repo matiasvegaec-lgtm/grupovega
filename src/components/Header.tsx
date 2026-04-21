@@ -1,7 +1,8 @@
 import { Link } from "@tanstack/react-router";
 import { useState, useEffect } from "react";
-import { Menu, X } from "lucide-react";
+import { Menu, X, ShoppingCart } from "lucide-react";
 import logoGrupoVega from "@/assets/logo-grupo-vega.png";
+import { useCart } from "@/contexts/CartContext";
 
 const links = [
   { to: "/", label: "Inicio" },
@@ -12,6 +13,7 @@ const links = [
 export function Header() {
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const { count } = useCart();
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 20);
@@ -59,6 +61,20 @@ export function Header() {
 
           <div className="hidden lg:block">
             <Link
+              to="/carrito"
+              aria-label="Carrito"
+              className={`relative inline-flex items-center justify-center w-10 h-10 rounded-full mr-2 transition-colors ${
+                scrolled ? "text-navy-deep hover:bg-foam" : "text-white hover:bg-white/10"
+              }`}
+            >
+              <ShoppingCart className="w-5 h-5" />
+              {count > 0 && (
+                <span className="absolute -top-1 -right-1 bg-ocean text-white text-[10px] font-bold rounded-full min-w-[18px] h-[18px] px-1 flex items-center justify-center">
+                  {count}
+                </span>
+              )}
+            </Link>
+            <Link
               to="/contacto"
               className="inline-flex items-center px-5 py-2.5 rounded-full gradient-wave text-white text-sm font-semibold shadow-glow hover:scale-105 transition-transform"
             >
@@ -66,13 +82,27 @@ export function Header() {
             </Link>
           </div>
 
-          <button
+          <div className="flex items-center gap-2 lg:hidden">
+            <Link
+              to="/carrito"
+              aria-label="Carrito"
+              className={`relative p-2 rounded-md ${scrolled ? "text-navy-deep" : "text-white"}`}
+            >
+              <ShoppingCart className="w-5 h-5" />
+              {count > 0 && (
+                <span className="absolute top-0 right-0 bg-ocean text-white text-[10px] font-bold rounded-full min-w-[18px] h-[18px] px-1 flex items-center justify-center">
+                  {count}
+                </span>
+              )}
+            </Link>
+            <button
             onClick={() => setOpen(!open)}
-            className={`lg:hidden p-2 rounded-md ${scrolled ? "text-navy-deep" : "text-white"}`}
+            className={`p-2 rounded-md ${scrolled ? "text-navy-deep" : "text-white"}`}
             aria-label="Menú"
-          >
-            {open ? <X /> : <Menu />}
-          </button>
+            >
+              {open ? <X /> : <Menu />}
+            </button>
+          </div>
         </div>
       </div>
 
