@@ -1,68 +1,75 @@
-/**
- * Hero decoration: floating shrimp feed sacks with parallax + bubbles.
- * Replaces the previous Three.js atom-style scene with real product imagery.
- */
-const sacks = [
-  {
-    src: "/sacks/exia-duo.png",
-    alt: "Sacos Exia Perform y Exia Prime",
-    className:
-      "left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-72 sm:w-96 lg:w-[32rem] rotate-[-4deg] animate-float-slow drop-shadow-[0_45px_60px_rgba(8,20,55,0.65)]",
-    delay: "0s",
-  },
-  {
-    src: "/sacks/exia-prime.png",
-    alt: "Saco Exia Prime",
-    className:
-      "left-[4%] top-[22%] w-32 sm:w-40 lg:w-48 rotate-[-10deg] animate-float opacity-90",
-    delay: "0.8s",
-  },
-  {
-    src: "/sacks/exia-perform.png",
-    alt: "Saco Exia Perform",
-    className:
-      "right-[5%] bottom-[14%] w-32 sm:w-40 lg:w-52 rotate-[8deg] animate-float opacity-90",
-    delay: "1.4s",
-  },
-];
+import { Canvas, useFrame } from "@react-three/fiber";
+import { Float, Environment, MeshDistortMaterial } from "@react-three/drei";
+import { useRef, Suspense } from "react";
+import * as THREE from "three";
+
+function Bubble({ position, scale = 1, speed = 1 }: { position: [number, number, number]; scale?: number; speed?: number }) {
+  const ref = useRef<THREE.Mesh>(null);
+  useFrame((state) => {
+    if (!ref.current) return;
+    ref.current.position.y = position[1] + ((state.clock.elapsedTime * speed) % 8) - 4;
+    ref.current.position.x = position[0] + Math.sin(state.clock.elapsedTime * speed * 0.5) * 0.3;
+  });
+  return (
+    <mesh ref={ref} position={position} scale={scale}>
+      <sphereGeometry args={[0.15, 16, 16]} />
+      <meshPhysicalMaterial color="#ffffff" transparent opacity={0.4} roughness={0} transmission={0.9} thickness={0.5} />
+    </mesh>
+  );
+}
+
+function ShrimpBlob({ position, color }: { position: [number, number, number]; color: string }) {
+  const ref = useRef<THREE.Mesh>(null);
+  useFrame((state) => {
+    if (!ref.current) return;
+    ref.current.rotation.y = state.clock.elapsedTime * 0.2;
+    ref.current.rotation.x = Math.sin(state.clock.elapsedTime * 0.3) * 0.2;
+  });
+  return (
+    <Float speed={2} rotationIntensity={1} floatIntensity={2}>
+      <mesh ref={ref} position={position}>
+        <torusKnotGeometry args={[0.7, 0.25, 128, 16]} />
+        <MeshDistortMaterial color={color} roughness={0.2} metalness={0.4} distort={0.3} speed={2} />
+      </mesh>
+    </Float>
+  );
+}
+
+function Scene() {
+  const bubbles = Array.from({ length: 25 }, (_, i) => ({
+    position: [(Math.random() - 0.5) * 10, Math.random() * 8 - 4, (Math.random() - 0.5) * 5] as [number, number, number],
+    scale: 0.5 + Math.random() * 1.5,
+    speed: 0.3 + Math.random() * 0.8,
+  }));
+
+  return (
+    <>
+      <ambientLight intensity={0.4} />
+      <directionalLight position={[5, 10, 5]} intensity={1.5} color="#88ddff" />
+      <pointLight position={[-5, -5, 5]} intensity={2} color="#4DA6FF" />
+      <pointLight position={[5, 5, -5]} intensity={1.5} color="#00C2CB" />
+
+      <ShrimpBlob position={[-2.5, 0.5, 0]} color="#4DA6FF" />
+      <ShrimpBlob position={[2.5, -0.5, -1]} color="#00C2CB" />
+      <ShrimpBlob position={[0, 1.5, -2]} color="#1E5AA8" />
+
+      {bubbles.map((b, i) => (
+        <Bubble key={i} {...b} />
+      ))}
+
+      <Environment preset="sunset" />
+    </>
+  );
+}
 
 export function UnderwaterScene() {
   return (
-    <div className="pointer-events-none absolute inset-0 -z-0 overflow-hidden">
-      {/* Glow accents */}
-      <div className="absolute -top-24 left-1/2 h-[420px] w-[420px] -translate-x-1/2 rounded-full bg-[var(--gradient-glow)] opacity-60 blur-2xl" />
-
-      {/* Floating bubbles */}
-      {Array.from({ length: 14 }).map((_, i) => {
-        const size = 8 + Math.random() * 22;
-        const left = Math.random() * 100;
-        const duration = 8 + Math.random() * 10;
-        const delay = Math.random() * 8;
-        return (
-          <span
-            key={i}
-            className="absolute bottom-[-40px] rounded-full bg-white/30 backdrop-blur-[2px] ring-1 ring-white/40"
-            style={{
-              width: `${size}px`,
-              height: `${size}px`,
-              left: `${left}%`,
-              animation: `bubble-rise ${duration}s linear ${delay}s infinite`,
-            }}
-          />
-        );
-      })}
-
-      {/* Floating sacks */}
-      {sacks.map((s, i) => (
-        <img
-          key={i}
-          src={s.src}
-          alt={s.alt}
-          loading="eager"
-          className={`absolute drop-shadow-[0_25px_45px_rgba(8,20,55,0.55)] ${s.className}`}
-          style={{ animationDelay: s.delay }}
-        />
-      ))}
+    <div className="absolute inset-0 -z-0">
+      <Canvas camera={{ position: [0, 0, 6], fov: 60 }} dpr={[1, 2]}>
+        <Suspense fallback={null}>
+          <Scene />
+        </Suspense>
+      </Canvas>
     </div>
   );
 }
