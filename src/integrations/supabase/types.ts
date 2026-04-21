@@ -14,66 +14,7 @@ export type Database = {
   }
   public: {
     Tables: {
-      orders: {
-        Row: {
-          created_at: string
-          customer_email: string
-          customer_name: string
-          customer_phone: string
-          id: string
-          items: Json
-          order_number: string
-          shipping_address: string
-          shipping_city: string
-          shipping_country: string
-          shipping_notes: string | null
-          shipping_postal_code: string | null
-          shipping_province: string
-          status: string
-          subtotal: number
-          total: number
-          updated_at: string
-        }
-        Insert: {
-          created_at?: string
-          customer_email: string
-          customer_name: string
-          customer_phone: string
-          id?: string
-          items: Json
-          order_number?: string
-          shipping_address: string
-          shipping_city: string
-          shipping_country?: string
-          shipping_notes?: string | null
-          shipping_postal_code?: string | null
-          shipping_province: string
-          status?: string
-          subtotal?: number
-          total?: number
-          updated_at?: string
-        }
-        Update: {
-          created_at?: string
-          customer_email?: string
-          customer_name?: string
-          customer_phone?: string
-          id?: string
-          items?: Json
-          order_number?: string
-          shipping_address?: string
-          shipping_city?: string
-          shipping_country?: string
-          shipping_notes?: string | null
-          shipping_postal_code?: string | null
-          shipping_province?: string
-          status?: string
-          subtotal?: number
-          total?: number
-          updated_at?: string
-        }
-        Relationships: []
-      }
+      [_ in never]: never
     }
     Views: {
       [_ in never]: never
