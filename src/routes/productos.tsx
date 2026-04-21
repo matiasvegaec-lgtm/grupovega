@@ -1,14 +1,13 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { Search, Download, ShoppingCart, Check } from "lucide-react";
+import { Search, ShoppingCart, Loader2 } from "lucide-react";
 import { Layout } from "@/components/Layout";
 import { PageHero } from "@/components/PageHero";
 import { useCart } from "@/contexts/CartContext";
 import { toast } from "sonner";
+import { supabase } from "@/integrations/supabase/client";
 import feedImg from "@/assets/product-feed.jpg";
-import labImg from "@/assets/service-lab.jpg";
-import equipImg from "@/assets/service-equipment.jpg";
 
 export const Route = createFileRoute("/productos")({
   head: () => ({
@@ -22,24 +21,33 @@ export const Route = createFileRoute("/productos")({
   component: ProductosPage,
 });
 
-const categories = ["Todos", "Alimento", "Probióticos", "Fertilizantes", "Equipos", "Laboratorio"];
-
-const products = [
-  { id: "feed-larva-45", name: "AquaFeed Larva 45%", price: 48.5, category: "Alimento", desc: "Alimento de inicio para post-larva PL10-PL15.", img: feedImg },
-  { id: "feed-juvenil-38", name: "AquaFeed Juvenil 38%", price: 42.0, category: "Alimento", desc: "Crecimiento óptimo en fase juvenil.", img: feedImg },
-  { id: "feed-engorde-32", name: "AquaFeed Engorde 32%", price: 38.0, category: "Alimento", desc: "Maximiza FCR en fase de engorde.", img: feedImg },
-  { id: "probio-plus", name: "ProBio Plus", price: 65.0, category: "Probióticos", desc: "Mezcla de Bacillus para sanidad intestinal.", img: labImg },
-  { id: "vibriostop", name: "VibrioStop", price: 72.0, category: "Probióticos", desc: "Control biológico de vibriosis.", img: labImg },
-  { id: "fertipond", name: "FertiPond", price: 28.0, category: "Fertilizantes", desc: "Fertilizante orgánico para floración natural.", img: labImg },
-  { id: "aeromax-5hp", name: "AeroMax 5HP", price: 1450.0, category: "Equipos", desc: "Aireador paddle wheel de alta eficiencia.", img: equipImg },
-  { id: "oxymonitor-iot", name: "OxyMonitor IoT", price: 890.0, category: "Equipos", desc: "Sensor de oxígeno disuelto con conexión 4G.", img: equipImg },
-  { id: "pcr-wssv-kit", name: "PCR WSSV Kit", price: 320.0, category: "Laboratorio", desc: "Detección rápida de mancha blanca.", img: labImg },
-];
+type Product = {
+  id: string;
+  name: string;
+  description: string | null;
+  price: number;
+  category: string;
+  image_url: string | null;
+  stock: number;
+};
 
 function ProductosPage() {
   const [active, setActive] = useState("Todos");
   const [query, setQuery] = useState("");
+  const [products, setProducts] = useState<Product[]>([]);
+  const [loading, setLoading] = useState(true);
   const { addItem } = useCart();
+
+  useEffect(() => {
+    (async () => {
+      const { data, error } = await supabase
+        .from("products").select("*").eq("active", true).order("display_order").order("created_at", { ascending: false });
+      if (!error) setProducts((data ?? []) as Product[]);
+      setLoading(false);
+    })();
+  }, []);
+
+  const categories = ["Todos", ...Array.from(new Set(products.map((p) => p.category)))];
 
   const filtered = products.filter(
     (p) =>
@@ -84,6 +92,9 @@ function ProductosPage() {
             </div>
           </div>
 
+          {loading ? (
+            <div className="text-center py-20"><Loader2 className="w-8 h-8 animate-spin mx-auto text-ocean" /></div>
+          ) : (
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {filtered.map((p, i) => (
               <motion.div
@@ -95,24 +106,23 @@ function ProductosPage() {
                 className="group bg-card rounded-2xl overflow-hidden shadow-card hover:shadow-elegant transition-all hover:-translate-y-2"
               >
                 <div className="aspect-square overflow-hidden relative">
-                  <img src={p.img} alt={p.name} loading="lazy" className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
+                  <img src={p.image_url || feedImg} alt={p.name} loading="lazy" className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
                   <span className="absolute top-3 left-3 px-3 py-1 rounded-full glass text-white text-xs font-semibold">{p.category}</span>
                 </div>
                 <div className="p-5">
                   <h3 className="font-bold text-navy-deep mb-1">{p.name}</h3>
-                  <p className="text-muted-foreground text-sm mb-4">{p.desc}</p>
+                  <p className="text-muted-foreground text-sm mb-4 line-clamp-2">{p.description}</p>
                   <div className="flex items-center justify-between mb-3">
-                    <span className="text-xl font-bold text-navy-deep">${p.price.toFixed(2)}</span>
-                    <button className="inline-flex items-center gap-1 text-ocean text-xs font-semibold hover:gap-2 transition-all">
-                      <Download className="w-3.5 h-3.5" /> Ficha
-                    </button>
+                    <span className="text-xl font-bold text-navy-deep">${Number(p.price).toFixed(2)}</span>
+                    {p.stock > 0 ? <span className="text-xs text-green-700 font-semibold">En stock</span> : <span className="text-xs text-muted-foreground">Agotado</span>}
                   </div>
                   <button
+                    disabled={p.stock <= 0}
                     onClick={() => {
-                      addItem({ id: p.id, name: p.name, price: p.price, category: p.category, img: p.img });
+                      addItem({ id: p.id, name: p.name, price: Number(p.price), category: p.category, img: p.image_url || feedImg });
                       toast.success(`${p.name} agregado al carrito`);
                     }}
-                    className="w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-full gradient-wave text-white text-sm font-semibold shadow-glow hover:scale-[1.02] transition-transform"
+                    className="w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-full gradient-wave text-white text-sm font-semibold shadow-glow hover:scale-[1.02] transition-transform disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     <ShoppingCart className="w-4 h-4" /> Agregar al carrito
                   </button>
@@ -120,8 +130,9 @@ function ProductosPage() {
               </motion.div>
             ))}
           </div>
+          )}
 
-          {filtered.length === 0 && (
+          {!loading && filtered.length === 0 && (
             <p className="text-center text-muted-foreground py-16">No se encontraron productos.</p>
           )}
         </div>
