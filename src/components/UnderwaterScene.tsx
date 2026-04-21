@@ -1,5 +1,5 @@
 import { Canvas, useFrame } from "@react-three/fiber";
-import { Float, Environment } from "@react-three/drei";
+import { Float, Environment, useTexture } from "@react-three/drei";
 import { useRef, Suspense } from "react";
 import * as THREE from "three";
 
@@ -18,78 +18,46 @@ function Bubble({ position, scale = 1, speed = 1 }: { position: [number, number,
   );
 }
 
-/** Saco de balanceado estilizado en 3D */
-function FeedSack({ position, rotation = [0, 0, 0], color = "#ffffff" }: { position: [number, number, number]; rotation?: [number, number, number]; color?: string }) {
+/** Saco de balanceado real renderizado en 3D usando textura */
+function FeedSack({
+  position,
+  rotation = [0, 0, 0],
+  textureUrl,
+  scale = 1,
+}: {
+  position: [number, number, number];
+  rotation?: [number, number, number];
+  textureUrl: string;
+  scale?: number;
+}) {
   const ref = useRef<THREE.Group>(null);
-  useFrame((state) => {
-    if (!ref.current) return;
-    ref.current.rotation.y = rotation[1] + state.clock.elapsedTime * 0.25;
-  });
-  return (
-    <Float speed={1.6} rotationIntensity={0.4} floatIntensity={1.4}>
-      <group ref={ref} position={position} rotation={rotation}>
-        {/* cuerpo del saco */}
-        <mesh castShadow>
-          <boxGeometry args={[1.1, 1.5, 0.55]} />
-          <meshPhysicalMaterial color={color} roughness={0.85} sheen={1} sheenColor="#cfe6ff" clearcoat={0.2} />
-        </mesh>
-        {/* franja superior (cierre) */}
-        <mesh position={[0, 0.78, 0]}>
-          <boxGeometry args={[1.12, 0.1, 0.57]} />
-          <meshStandardMaterial color="#1E5AA8" roughness={0.5} />
-        </mesh>
-        {/* etiqueta central */}
-        <mesh position={[0, 0.1, 0.281]}>
-          <planeGeometry args={[0.85, 0.55]} />
-          <meshStandardMaterial color="#1E5AA8" roughness={0.4} metalness={0.1} />
-        </mesh>
-        {/* acento turquesa */}
-        <mesh position={[0, -0.25, 0.282]}>
-          <planeGeometry args={[0.85, 0.08]} />
-          <meshStandardMaterial color="#00C2CB" emissive="#00C2CB" emissiveIntensity={0.3} />
-        </mesh>
-      </group>
-    </Float>
-  );
-}
+  const texture = useTexture(textureUrl);
+  texture.anisotropy = 8;
 
-/** Camarón estilizado: cuerpo segmentado + cola */
-function Shrimp({ position, color = "#ff8c69" }: { position: [number, number, number]; color?: string }) {
-  const ref = useRef<THREE.Group>(null);
   useFrame((state) => {
     if (!ref.current) return;
-    ref.current.rotation.z = Math.sin(state.clock.elapsedTime * 1.2) * 0.25;
-    ref.current.rotation.y = state.clock.elapsedTime * 0.4;
+    ref.current.rotation.y = rotation[1] + Math.sin(state.clock.elapsedTime * 0.6) * 0.4;
+    ref.current.rotation.z = rotation[2] + Math.sin(state.clock.elapsedTime * 0.4) * 0.05;
   });
-  const segments = [0, 1, 2, 3, 4];
+
+  // Proporción real del saco aprox 1:1.4
+  const w = 1.4 * scale;
+  const h = 2.0 * scale;
+  const d = 0.45 * scale;
+
   return (
-    <Float speed={2.2} rotationIntensity={0.6} floatIntensity={1.8}>
-      <group ref={ref} position={position}>
-        {/* cabeza */}
-        <mesh position={[0.55, 0, 0]}>
-          <sphereGeometry args={[0.32, 24, 24]} />
-          <meshPhysicalMaterial color={color} roughness={0.35} clearcoat={0.6} sheen={1} sheenColor="#ffd1b8" />
-        </mesh>
-        {/* segmentos del cuerpo */}
-        {segments.map((i) => (
-          <mesh key={i} position={[0.25 - i * 0.22, -i * 0.04, 0]} rotation={[0, 0, -i * 0.12]}>
-            <torusGeometry args={[0.22 - i * 0.025, 0.09, 16, 24, Math.PI]} />
-            <meshPhysicalMaterial color={color} roughness={0.4} clearcoat={0.5} />
-          </mesh>
-        ))}
-        {/* cola */}
-        <mesh position={[-0.95, -0.18, 0]} rotation={[0, 0, -0.7]}>
-          <coneGeometry args={[0.22, 0.45, 16]} />
-          <meshPhysicalMaterial color={color} roughness={0.4} clearcoat={0.5} />
-        </mesh>
-        {/* antenas */}
-        <mesh position={[0.85, 0.18, 0.05]} rotation={[0, 0, 0.5]}>
-          <cylinderGeometry args={[0.012, 0.012, 0.7, 8]} />
-          <meshStandardMaterial color="#7a3320" />
-        </mesh>
-        <mesh position={[0.85, 0.18, -0.05]} rotation={[0, 0, 0.7]}>
-          <cylinderGeometry args={[0.012, 0.012, 0.7, 8]} />
-          <meshStandardMaterial color="#7a3320" />
+    <Float speed={1.4} rotationIntensity={0.3} floatIntensity={1.6}>
+      <group ref={ref} position={position} rotation={rotation}>
+        {/* Cuerpo del saco con textura al frente y atrás */}
+        <mesh>
+          <boxGeometry args={[w, h, d]} />
+          {/* 6 materiales: +x, -x, +y, -y, +z (frente), -z (atrás) */}
+          <meshStandardMaterial attach="material-0" color="#e8eef5" roughness={0.9} />
+          <meshStandardMaterial attach="material-1" color="#e8eef5" roughness={0.9} />
+          <meshStandardMaterial attach="material-2" color="#dfe6ee" roughness={0.9} />
+          <meshStandardMaterial attach="material-3" color="#dfe6ee" roughness={0.9} />
+          <meshStandardMaterial attach="material-4" map={texture} roughness={0.75} />
+          <meshStandardMaterial attach="material-5" map={texture} roughness={0.75} />
         </mesh>
       </group>
     </Float>
@@ -110,11 +78,9 @@ function Scene() {
       <pointLight position={[-5, -5, 5]} intensity={2} color="#4DA6FF" />
       <pointLight position={[5, 5, -5]} intensity={1.5} color="#00C2CB" />
 
-      <FeedSack position={[-2.8, 0.3, 0]} rotation={[0.2, 0.4, 0.1]} color="#f5f7fa" />
-      <FeedSack position={[2.6, -0.8, -1.5]} rotation={[-0.1, -0.3, -0.15]} color="#eef3f8" />
-      <Shrimp position={[2.2, 1.2, 0]} color="#ff8c69" />
-      <Shrimp position={[-2.0, -1.1, -0.5]} color="#ff7a5c" />
-      <Shrimp position={[0.2, 0.6, -2]} color="#ffa07a" />
+      <FeedSack position={[-2.6, 0.2, 0]} rotation={[0.1, 0.3, 0.08]} textureUrl="/sacks/exia-prime.png" scale={1} />
+      <FeedSack position={[2.7, -0.3, -1]} rotation={[-0.1, -0.4, -0.12]} textureUrl="/sacks/exia-perform.png" scale={1} />
+      <FeedSack position={[0.2, 1.4, -2.2]} rotation={[0.05, 0.2, 0]} textureUrl="/sacks/exia-prime.png" scale={0.8} />
 
       {bubbles.map((b, i) => (
         <Bubble key={i} {...b} />
