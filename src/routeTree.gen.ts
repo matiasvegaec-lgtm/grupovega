@@ -9,48 +9,18 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as SostenibilidadRouteImport } from './routes/sostenibilidad'
-import { Route as ServiciosRouteImport } from './routes/servicios'
 import { Route as ProductosRouteImport } from './routes/productos'
-import { Route as NosotrosRouteImport } from './routes/nosotros'
-import { Route as CotizarRouteImport } from './routes/cotizar'
 import { Route as ContactoRouteImport } from './routes/contacto'
-import { Route as BlogRouteImport } from './routes/blog'
 import { Route as IndexRouteImport } from './routes/index'
 
-const SostenibilidadRoute = SostenibilidadRouteImport.update({
-  id: '/sostenibilidad',
-  path: '/sostenibilidad',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ServiciosRoute = ServiciosRouteImport.update({
-  id: '/servicios',
-  path: '/servicios',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const ProductosRoute = ProductosRouteImport.update({
   id: '/productos',
   path: '/productos',
   getParentRoute: () => rootRouteImport,
 } as any)
-const NosotrosRoute = NosotrosRouteImport.update({
-  id: '/nosotros',
-  path: '/nosotros',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const CotizarRoute = CotizarRouteImport.update({
-  id: '/cotizar',
-  path: '/cotizar',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const ContactoRoute = ContactoRouteImport.update({
   id: '/contacto',
   path: '/contacto',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const BlogRoute = BlogRouteImport.update({
-  id: '/blog',
-  path: '/blog',
   getParentRoute: () => rootRouteImport,
 } as any)
 const IndexRoute = IndexRouteImport.update({
@@ -61,95 +31,36 @@ const IndexRoute = IndexRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/blog': typeof BlogRoute
   '/contacto': typeof ContactoRoute
-  '/cotizar': typeof CotizarRoute
-  '/nosotros': typeof NosotrosRoute
   '/productos': typeof ProductosRoute
-  '/servicios': typeof ServiciosRoute
-  '/sostenibilidad': typeof SostenibilidadRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/blog': typeof BlogRoute
   '/contacto': typeof ContactoRoute
-  '/cotizar': typeof CotizarRoute
-  '/nosotros': typeof NosotrosRoute
   '/productos': typeof ProductosRoute
-  '/servicios': typeof ServiciosRoute
-  '/sostenibilidad': typeof SostenibilidadRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/blog': typeof BlogRoute
   '/contacto': typeof ContactoRoute
-  '/cotizar': typeof CotizarRoute
-  '/nosotros': typeof NosotrosRoute
   '/productos': typeof ProductosRoute
-  '/servicios': typeof ServiciosRoute
-  '/sostenibilidad': typeof SostenibilidadRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths:
-    | '/'
-    | '/blog'
-    | '/contacto'
-    | '/cotizar'
-    | '/nosotros'
-    | '/productos'
-    | '/servicios'
-    | '/sostenibilidad'
+  fullPaths: '/' | '/contacto' | '/productos'
   fileRoutesByTo: FileRoutesByTo
-  to:
-    | '/'
-    | '/blog'
-    | '/contacto'
-    | '/cotizar'
-    | '/nosotros'
-    | '/productos'
-    | '/servicios'
-    | '/sostenibilidad'
-  id:
-    | '__root__'
-    | '/'
-    | '/blog'
-    | '/contacto'
-    | '/cotizar'
-    | '/nosotros'
-    | '/productos'
-    | '/servicios'
-    | '/sostenibilidad'
+  to: '/' | '/contacto' | '/productos'
+  id: '__root__' | '/' | '/contacto' | '/productos'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  BlogRoute: typeof BlogRoute
   ContactoRoute: typeof ContactoRoute
-  CotizarRoute: typeof CotizarRoute
-  NosotrosRoute: typeof NosotrosRoute
   ProductosRoute: typeof ProductosRoute
-  ServiciosRoute: typeof ServiciosRoute
-  SostenibilidadRoute: typeof SostenibilidadRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/sostenibilidad': {
-      id: '/sostenibilidad'
-      path: '/sostenibilidad'
-      fullPath: '/sostenibilidad'
-      preLoaderRoute: typeof SostenibilidadRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/servicios': {
-      id: '/servicios'
-      path: '/servicios'
-      fullPath: '/servicios'
-      preLoaderRoute: typeof ServiciosRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/productos': {
       id: '/productos'
       path: '/productos'
@@ -157,32 +68,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ProductosRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/nosotros': {
-      id: '/nosotros'
-      path: '/nosotros'
-      fullPath: '/nosotros'
-      preLoaderRoute: typeof NosotrosRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/cotizar': {
-      id: '/cotizar'
-      path: '/cotizar'
-      fullPath: '/cotizar'
-      preLoaderRoute: typeof CotizarRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/contacto': {
       id: '/contacto'
       path: '/contacto'
       fullPath: '/contacto'
       preLoaderRoute: typeof ContactoRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/blog': {
-      id: '/blog'
-      path: '/blog'
-      fullPath: '/blog'
-      preLoaderRoute: typeof BlogRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/': {
@@ -197,13 +87,8 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  BlogRoute: BlogRoute,
   ContactoRoute: ContactoRoute,
-  CotizarRoute: CotizarRoute,
-  NosotrosRoute: NosotrosRoute,
   ProductosRoute: ProductosRoute,
-  ServiciosRoute: ServiciosRoute,
-  SostenibilidadRoute: SostenibilidadRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

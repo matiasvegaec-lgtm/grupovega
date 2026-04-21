@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { motion } from "framer-motion";
-import { ArrowRight, Droplets, FlaskConical, Leaf, ShieldCheck, Truck, Award, ChevronRight } from "lucide-react";
+import { ArrowRight, Droplets, FlaskConical, Truck, Sprout, MapPin, Phone } from "lucide-react";
 import { Layout } from "@/components/Layout";
 import { UnderwaterScene } from "@/components/UnderwaterScene";
 import heroImg from "@/assets/hero-shrimp-farm.jpg";
@@ -11,39 +11,45 @@ import equipImg from "@/assets/service-equipment.jpg";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "AquaMar — Soluciones Integrales para Camaroneras del Ecuador" },
-      { name: "description", content: "Alimento balanceado, probióticos, asesoría técnica y tecnología 4.0 para la industria camaronera." },
+      { title: "AquaMar — Insumos para Camaroneras del Ecuador" },
+      { name: "description", content: "Alimento balanceado, probióticos, fertilizantes y equipos para la industria camaronera. Encuentra nuestros puntos de venta en Ecuador." },
       { property: "og:title", content: "AquaMar — Industria Camaronera" },
-      { property: "og:description", content: "Soluciones integrales para acuicultura de camarón." },
+      { property: "og:description", content: "Insumos y equipos para camaroneras del Ecuador." },
     ],
   }),
   component: Index,
 });
 
-const stats = [
-  { value: "26+", label: "Años de experiencia" },
-  { value: "850+", label: "Camaroneras atendidas" },
-  { value: "120K", label: "Hectáreas asesoradas" },
-  { value: "98%", label: "Satisfacción cliente" },
-];
-
 const categories = [
-  { icon: Droplets, title: "Alimento Balanceado", desc: "Fórmulas premium para cada fase: larva, juvenil y engorde.", img: feedImg },
-  { icon: FlaskConical, title: "Probióticos & Aditivos", desc: "Mejora la conversión alimenticia y la sanidad del cultivo.", img: labImg },
-  { icon: Truck, title: "Equipos & Aireación", desc: "Tecnología de monitoreo y aireación para máxima productividad.", img: equipImg },
+  { icon: Droplets, title: "Alimento Balanceado", desc: "Fórmulas premium para larva, juvenil y engorde." },
+  { icon: FlaskConical, title: "Probióticos", desc: "Salud intestinal y control de vibriosis." },
+  { icon: Sprout, title: "Fertilizantes", desc: "Floración natural y productividad del estanque." },
+  { icon: Truck, title: "Equipos & Aireación", desc: "Aireadores, sensores IoT y monitoreo 24/7." },
 ];
 
-const features = [
-  { icon: ShieldCheck, title: "Calidad certificada", desc: "Plantas con certificaciones BAP, ASC e ISO 9001." },
-  { icon: Leaf, title: "Sostenibilidad", desc: "Procesos responsables con el ecosistema marino." },
-  { icon: Award, title: "I+D continuo", desc: "Laboratorio propio y alianzas con universidades." },
+const featured = [
+  { name: "AquaFeed Engorde 32%", category: "Alimento", img: feedImg },
+  { name: "ProBio Plus", category: "Probióticos", img: labImg },
+  { name: "AeroMax 5HP", category: "Equipos", img: equipImg },
+  { name: "FertiPond", category: "Fertilizantes", img: labImg },
+];
+
+const suppliers = [
+  "Cargill", "Skretting", "BioMar", "Nutreco", "INVE Aquaculture", "Zeigler", "Alltech", "Nicovita",
+];
+
+const stores = [
+  { city: "Guayaquil", address: "Km 8.5 Vía Daule", phone: "+593 4 222 3344" },
+  { city: "Machala", address: "Av. Las Palmeras 200", phone: "+593 7 293 1122" },
+  { city: "Manta", address: "Vía Puerto, Manta", phone: "+593 5 262 4455" },
+  { city: "Esmeraldas", address: "Malecón 12-34", phone: "+593 6 272 8899" },
 ];
 
 function Index() {
   return (
     <Layout>
       {/* HERO */}
-      <section className="relative min-h-screen flex items-center overflow-hidden gradient-deep">
+      <section className="relative min-h-[85vh] flex items-center overflow-hidden gradient-deep">
         <div className="absolute inset-0">
           <img src={heroImg} alt="" className="w-full h-full object-cover opacity-40" width={1920} height={1080} />
           <div className="absolute inset-0 gradient-deep opacity-70" />
@@ -59,7 +65,7 @@ function Index() {
               className="inline-flex items-center gap-2 px-4 py-2 glass rounded-full text-white/90 text-sm mb-6"
             >
               <span className="w-2 h-2 rounded-full bg-turquoise animate-pulse" />
-              Líderes en industria camaronera del Ecuador
+              Insumos para la industria camaronera
             </motion.div>
             <motion.h1
               initial={{ opacity: 0, y: 30 }}
@@ -67,8 +73,7 @@ function Index() {
               transition={{ duration: 0.7, delay: 0.1 }}
               className="text-5xl sm:text-6xl lg:text-7xl font-bold text-white leading-[1.05] mb-6"
             >
-              Cultivamos el futuro del{" "}
-              <span className="text-gradient">camarón</span> ecuatoriano
+              Todo para tu <span className="text-gradient">camaronera</span> en un solo lugar
             </motion.h1>
             <motion.p
               initial={{ opacity: 0, y: 30 }}
@@ -76,7 +81,7 @@ function Index() {
               transition={{ duration: 0.7, delay: 0.2 }}
               className="text-lg sm:text-xl text-white/80 mb-8 max-w-2xl leading-relaxed"
             >
-              Insumos premium, asesoría técnica y tecnología 4.0 para maximizar la productividad y sostenibilidad de tu camaronera.
+              Alimento balanceado, probióticos, fertilizantes y equipos de las mejores marcas del mundo, con puntos de venta en toda la costa ecuatoriana.
             </motion.p>
             <motion.div
               initial={{ opacity: 0, y: 30 }}
@@ -85,80 +90,85 @@ function Index() {
               className="flex flex-wrap gap-4"
             >
               <Link
-                to="/cotizar"
+                to="/productos"
                 className="group inline-flex items-center gap-2 px-7 py-4 rounded-full gradient-wave text-white font-semibold shadow-glow hover:scale-105 transition-transform"
               >
-                Solicitar cotización
+                Ver productos
                 <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition" />
               </Link>
               <Link
-                to="/productos"
+                to="/contacto"
                 className="inline-flex items-center gap-2 px-7 py-4 rounded-full glass text-white font-semibold hover:bg-white/20 transition"
               >
-                Ver catálogo
+                Contáctanos
               </Link>
-            </motion.div>
-
-            {/* Stats */}
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.6, duration: 0.8 }}
-              className="mt-16 grid grid-cols-2 md:grid-cols-4 gap-6 max-w-3xl"
-            >
-              {stats.map((s) => (
-                <div key={s.label} className="glass rounded-2xl p-4 text-white">
-                  <div className="text-3xl md:text-4xl font-bold text-gradient">{s.value}</div>
-                  <div className="text-xs md:text-sm text-white/70 mt-1">{s.label}</div>
-                </div>
-              ))}
             </motion.div>
           </div>
         </div>
 
-        {/* Wave bottom */}
         <div className="absolute bottom-0 left-0 right-0">
           <svg viewBox="0 0 1440 120" className="w-full h-auto" preserveAspectRatio="none">
-            <path fill="hsl(var(--background))" d="M0,64L80,69.3C160,75,320,85,480,80C640,75,800,53,960,48C1120,43,1280,53,1360,58.7L1440,64L1440,120L0,120Z" style={{ fill: "var(--background)" }} />
+            <path d="M0,64L80,69.3C160,75,320,85,480,80C640,75,800,53,960,48C1120,43,1280,53,1360,58.7L1440,64L1440,120L0,120Z" style={{ fill: "var(--background)" }} />
           </svg>
         </div>
       </section>
 
-      {/* Categorías */}
-      <section className="py-24 bg-background">
+      {/* CATEGORÍAS */}
+      <section className="py-20 bg-background">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center max-w-2xl mx-auto mb-16">
-            <p className="text-sm font-semibold uppercase tracking-widest text-ocean mb-3">Nuestras soluciones</p>
-            <h2 className="text-4xl md:text-5xl font-bold text-navy-deep">
-              Todo lo que tu camaronera necesita
-            </h2>
-            <p className="text-muted-foreground mt-4 text-lg">
-              Desde la siembra hasta la cosecha, te acompañamos con productos y servicios de clase mundial.
-            </p>
+          <div className="text-center max-w-2xl mx-auto mb-12">
+            <p className="text-sm font-semibold uppercase tracking-widest text-ocean mb-3">Categorías</p>
+            <h2 className="text-4xl md:text-5xl font-bold text-navy-deep">Líneas de producto</h2>
           </div>
-
-          <div className="grid md:grid-cols-3 gap-8">
+          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {categories.map((c, i) => (
               <motion.div
                 key={c.title}
-                initial={{ opacity: 0, y: 30 }}
+                initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: i * 0.1 }}
-                className="group relative bg-card rounded-3xl overflow-hidden shadow-card hover:shadow-elegant transition-all duration-500 hover:-translate-y-2"
+                transition={{ duration: 0.4, delay: i * 0.08 }}
+                className="group bg-card rounded-2xl p-6 shadow-card hover:shadow-elegant transition-all hover:-translate-y-1"
               >
-                <div className="aspect-[4/3] overflow-hidden">
-                  <img src={c.img} alt={c.title} loading="lazy" className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
-                </div>
-                <div className="absolute top-4 left-4 w-12 h-12 rounded-2xl gradient-wave flex items-center justify-center shadow-glow">
+                <div className="w-12 h-12 rounded-xl gradient-wave flex items-center justify-center shadow-glow mb-4 group-hover:scale-110 transition">
                   <c.icon className="w-6 h-6 text-white" />
                 </div>
-                <div className="p-6">
-                  <h3 className="text-xl font-bold text-navy-deep mb-2">{c.title}</h3>
-                  <p className="text-muted-foreground text-sm leading-relaxed">{c.desc}</p>
-                  <Link to="/productos" className="inline-flex items-center gap-1 mt-4 text-ocean font-semibold text-sm group/link">
-                    Explorar <ChevronRight className="w-4 h-4 group-hover/link:translate-x-1 transition" />
-                  </Link>
+                <h3 className="font-bold text-navy-deep mb-1">{c.title}</h3>
+                <p className="text-sm text-muted-foreground">{c.desc}</p>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* PRODUCTOS DESTACADOS */}
+      <section className="py-20 bg-foam">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex items-end justify-between mb-12 flex-wrap gap-4">
+            <div>
+              <p className="text-sm font-semibold uppercase tracking-widest text-ocean mb-3">Destacados</p>
+              <h2 className="text-4xl md:text-5xl font-bold text-navy-deep">Productos más vendidos</h2>
+            </div>
+            <Link to="/productos" className="inline-flex items-center gap-1 text-ocean font-semibold hover:gap-2 transition-all">
+              Ver catálogo completo <ArrowRight className="w-4 h-4" />
+            </Link>
+          </div>
+          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            {featured.map((p, i) => (
+              <motion.div
+                key={p.name}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.4, delay: i * 0.08 }}
+                className="group bg-card rounded-2xl overflow-hidden shadow-card hover:shadow-elegant transition-all hover:-translate-y-2"
+              >
+                <div className="aspect-square overflow-hidden relative">
+                  <img src={p.img} alt={p.name} loading="lazy" className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
+                  <span className="absolute top-3 left-3 px-3 py-1 rounded-full glass text-white text-xs font-semibold">{p.category}</span>
+                </div>
+                <div className="p-5">
+                  <h3 className="font-bold text-navy-deep">{p.name}</h3>
                 </div>
               </motion.div>
             ))}
@@ -166,71 +176,45 @@ function Index() {
         </div>
       </section>
 
-      {/* Features */}
-      <section className="py-24 gradient-hero text-white relative overflow-hidden">
-        <div className="absolute inset-0 opacity-30" style={{ background: "var(--gradient-glow)" }} />
-        <div className="relative container mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid lg:grid-cols-2 gap-12 items-center">
-            <div>
-              <p className="text-sm font-semibold uppercase tracking-widest text-turquoise mb-3">Por qué AquaMar</p>
-              <h2 className="text-4xl md:text-5xl font-bold mb-6 leading-tight">
-                Más de 26 años cultivando confianza
-              </h2>
-              <p className="text-white/80 text-lg leading-relaxed mb-8">
-                Somos el aliado estratégico de las camaroneras más productivas del Ecuador. Combinamos investigación, tecnología y servicio en campo.
-              </p>
-              <div className="space-y-4">
-                {features.map((f) => (
-                  <div key={f.title} className="flex gap-4 group">
-                    <div className="shrink-0 w-12 h-12 rounded-xl glass flex items-center justify-center group-hover:scale-110 transition">
-                      <f.icon className="w-6 h-6 text-turquoise" />
-                    </div>
-                    <div>
-                      <h4 className="font-semibold text-lg">{f.title}</h4>
-                      <p className="text-white/70 text-sm">{f.desc}</p>
-                    </div>
-                  </div>
-                ))}
+      {/* PROVEEDORES */}
+      <section className="py-20 bg-background">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center max-w-2xl mx-auto mb-12">
+            <p className="text-sm font-semibold uppercase tracking-widest text-ocean mb-3">Proveedores</p>
+            <h2 className="text-4xl md:text-5xl font-bold text-navy-deep">Marcas que distribuimos</h2>
+            <p className="text-muted-foreground mt-4">Trabajamos con los líderes mundiales en nutrición y sanidad acuícola.</p>
+          </div>
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+            {suppliers.map((s) => (
+              <div key={s} className="bg-card border border-border rounded-2xl py-8 px-4 flex items-center justify-center text-navy-deep font-display font-bold text-lg hover:border-ocean hover:shadow-card transition">
+                {s}
               </div>
-            </div>
-
-            <div className="relative">
-              <div className="absolute inset-0 gradient-wave rounded-3xl blur-3xl opacity-40 animate-pulse" />
-              <div className="relative aspect-square glass rounded-3xl p-8 flex items-center justify-center animate-float-slow">
-                <div className="text-center">
-                  <div className="text-7xl md:text-8xl font-bold text-gradient mb-2">98%</div>
-                  <div className="text-xl font-semibold mb-1">Satisfacción</div>
-                  <div className="text-white/70 text-sm">de nuestros clientes camaroneros</div>
-                </div>
-              </div>
-            </div>
+            ))}
           </div>
         </div>
       </section>
 
-      {/* CTA final */}
-      <section className="py-24 bg-foam">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="relative bg-card rounded-3xl p-10 md:p-16 shadow-elegant overflow-hidden">
-            <div className="absolute -top-20 -right-20 w-80 h-80 gradient-wave rounded-full opacity-20 blur-3xl" />
-            <div className="relative grid md:grid-cols-2 gap-8 items-center">
-              <div>
-                <h2 className="text-3xl md:text-4xl font-bold text-navy-deep mb-4">
-                  ¿Listo para llevar tu producción al siguiente nivel?
-                </h2>
-                <p className="text-muted-foreground text-lg">
-                  Habla con un asesor técnico hoy y recibe un diagnóstico gratuito de tu operación.
+      {/* PUNTOS DE VENTA */}
+      <section className="py-20 gradient-hero text-white relative overflow-hidden">
+        <div className="absolute inset-0 opacity-30" style={{ background: "var(--gradient-glow)" }} />
+        <div className="relative container mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center max-w-2xl mx-auto mb-12">
+            <p className="text-sm font-semibold uppercase tracking-widest text-turquoise mb-3">Puntos de venta</p>
+            <h2 className="text-4xl md:text-5xl font-bold">Encuéntranos en la costa</h2>
+          </div>
+          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
+            {stores.map((s) => (
+              <div key={s.city} className="glass rounded-2xl p-6 hover:bg-white/15 transition">
+                <div className="w-10 h-10 rounded-lg gradient-wave flex items-center justify-center mb-4">
+                  <MapPin className="w-5 h-5" />
+                </div>
+                <h3 className="font-bold text-xl mb-1">{s.city}</h3>
+                <p className="text-white/70 text-sm mb-3">{s.address}</p>
+                <p className="text-turquoise text-sm font-semibold inline-flex items-center gap-1">
+                  <Phone className="w-3.5 h-3.5" /> {s.phone}
                 </p>
               </div>
-              <div className="flex flex-wrap gap-4 md:justify-end">
-                <Link to="/contacto" className="inline-flex items-center gap-2 px-7 py-4 rounded-full gradient-wave text-white font-semibold shadow-glow hover:scale-105 transition">
-                  Contáctanos <ArrowRight className="w-4 h-4" />
-                </Link>
-                <Link to="/cotizar" className="inline-flex items-center gap-2 px-7 py-4 rounded-full border-2 border-navy-deep text-navy-deep font-semibold hover:bg-navy-deep hover:text-white transition">
-                  Cotizar
-                </Link>
-              </div>
-            </div>
+            ))}
           </div>
         </div>
       </section>
