@@ -34,12 +34,15 @@ const BANCO_DEMO = {
 
 type PayMethod = "card" | "transfer" | "cash";
 
+const CUSTOMER_STORAGE_KEY = "gv_customer_data_v1";
+
 function CheckoutPage() {
   const { items, subtotal, clear } = useCart();
   const { user, loading: authLoading } = useAuth();
   const navigate = useNavigate();
   const [submitting, setSubmitting] = useState(false);
   const [method, setMethod] = useState<PayMethod>("transfer");
+  const [saveData, setSaveData] = useState(true);
   const [form, setForm] = useState({
     customer_name: "",        // nombres y apellidos
     receiver_name: "",        // quien recibe
@@ -58,12 +61,20 @@ function CheckoutPage() {
     }
   }, [user, authLoading, navigate]);
 
-  // Prellenar email
+  // Cargar datos guardados + prellenar email
   useEffect(() => {
-    if (user?.email && !form.customer_email) {
-      setForm((f) => ({ ...f, customer_email: user.email! }));
+    if (typeof window === "undefined") return;
+    try {
+      const saved = localStorage.getItem(CUSTOMER_STORAGE_KEY);
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        setForm((f) => ({ ...f, ...parsed }));
+      }
+    } catch {}
+    if (user?.email) {
+      setForm((f) => (f.customer_email ? f : { ...f, customer_email: user.email! }));
     }
-  }, [user, form.customer_email]);
+  }, [user]);
 
   const update = (k: keyof typeof form) => (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
     setForm((f) => ({ ...f, [k]: e.target.value }));
