@@ -7,7 +7,7 @@ export function PageHero({
 }: {
   eyebrow: string;
   title: string;
-  description: string;
+  description?: string;
 }) {
   return (
     <section className="relative pt-32 pb-20 gradient-hero text-white overflow-hidden">
@@ -22,7 +22,7 @@ export function PageHero({
         >
           <p className="text-sm font-semibold uppercase tracking-widest text-turquoise mb-4">{eyebrow}</p>
           <h1 className="text-5xl md:text-6xl font-bold leading-tight mb-6">{title}</h1>
-          <p className="text-lg md:text-xl text-white/80 leading-relaxed">{description}</p>
+          {description && <p className="text-lg md:text-xl text-white/80 leading-relaxed">{description}</p>}
         </motion.div>
       </div>
       <div className="absolute bottom-0 left-0 right-0">
