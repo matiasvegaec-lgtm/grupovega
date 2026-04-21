@@ -299,6 +299,15 @@ function CheckoutPage() {
                   <span>Total</span><span>${subtotal.toFixed(2)}</span>
                 </div>
               </div>
+              <label className="flex items-start gap-2 mt-4 cursor-pointer text-xs text-muted-foreground select-none">
+                <input
+                  type="checkbox"
+                  checked={saveData}
+                  onChange={(e) => setSaveData(e.target.checked)}
+                  className="mt-0.5 w-4 h-4 accent-ocean cursor-pointer"
+                />
+                <span>Guardar mis datos en este dispositivo para futuras compras (más rápido la próxima vez).</span>
+              </label>
               <button
                 type="submit"
                 disabled={submitting || method === "card"}
