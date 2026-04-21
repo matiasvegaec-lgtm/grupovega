@@ -11,7 +11,6 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as ProductosRouteImport } from './routes/productos'
 import { Route as ContactoRouteImport } from './routes/contacto'
-import { Route as IndexRouteImport } from './routes/index'
 
 const ProductosRoute = ProductosRouteImport.update({
   id: '/productos',
@@ -23,38 +22,29 @@ const ContactoRoute = ContactoRouteImport.update({
   path: '/contacto',
   getParentRoute: () => rootRouteImport,
 } as any)
-const IndexRoute = IndexRouteImport.update({
-  id: '/',
-  path: '/',
-  getParentRoute: () => rootRouteImport,
-} as any)
 
 export interface FileRoutesByFullPath {
-  '/': typeof IndexRoute
   '/contacto': typeof ContactoRoute
   '/productos': typeof ProductosRoute
 }
 export interface FileRoutesByTo {
-  '/': typeof IndexRoute
   '/contacto': typeof ContactoRoute
   '/productos': typeof ProductosRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
-  '/': typeof IndexRoute
   '/contacto': typeof ContactoRoute
   '/productos': typeof ProductosRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/contacto' | '/productos'
+  fullPaths: '/contacto' | '/productos'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/contacto' | '/productos'
-  id: '__root__' | '/' | '/contacto' | '/productos'
+  to: '/contacto' | '/productos'
+  id: '__root__' | '/contacto' | '/productos'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
-  IndexRoute: typeof IndexRoute
   ContactoRoute: typeof ContactoRoute
   ProductosRoute: typeof ProductosRoute
 }
@@ -75,18 +65,10 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ContactoRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/': {
-      id: '/'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof IndexRouteImport
-      parentRoute: typeof rootRouteImport
-    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
-  IndexRoute: IndexRoute,
   ContactoRoute: ContactoRoute,
   ProductosRoute: ProductosRoute,
 }
