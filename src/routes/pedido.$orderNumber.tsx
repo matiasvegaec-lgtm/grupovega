@@ -60,8 +60,8 @@ function OrderConfirmation() {
       <section className="pt-32 pb-16 bg-gradient-to-b from-foam to-background">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-3xl">
           <div className="text-center mb-10">
-            <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-green-100 mb-4">
-              <CheckCircle2 className="w-12 h-12 text-green-600" />
+            <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-foam mb-4">
+              <CheckCircle2 className="w-12 h-12 text-ocean" />
             </div>
             <h1 className="text-3xl md:text-4xl font-bold text-navy-deep mb-2">¡Gracias por tu pedido!</h1>
             <p className="text-muted-foreground">Tu pedido <span className="font-semibold text-ocean">#{order.order_number}</span> ha sido recibido.</p>

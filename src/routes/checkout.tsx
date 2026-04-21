@@ -79,7 +79,7 @@ function CheckoutPage() {
   if (items.length === 0) {
     return (
       <Layout>
-        <PageHero eyebrow="Checkout" title="Finaliza tu compra" />
+        <PageHero eyebrow="Checkout" title="Finaliza tu compra" description="Tu carrito está vacío." />
         <section className="py-20 text-center">
           <ShoppingBag className="w-16 h-16 mx-auto text-muted-foreground mb-4" />
           <p className="text-muted-foreground mb-6">No tienes productos en el carrito.</p>
