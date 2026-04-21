@@ -19,6 +19,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as PedidoOrderNumberRouteImport } from './routes/pedido.$orderNumber'
 import { Route as AdminUsuariosRouteImport } from './routes/admin.usuarios'
 import { Route as AdminProductosRouteImport } from './routes/admin.productos'
+import { Route as AdminPedidosRouteImport } from './routes/admin.pedidos'
 
 const ProductosRoute = ProductosRouteImport.update({
   id: '/productos',
@@ -70,6 +71,11 @@ const AdminProductosRoute = AdminProductosRouteImport.update({
   path: '/productos',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminPedidosRoute = AdminPedidosRouteImport.update({
+  id: '/pedidos',
+  path: '/pedidos',
+  getParentRoute: () => AdminRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -79,6 +85,7 @@ export interface FileRoutesByFullPath {
   '/checkout': typeof CheckoutRoute
   '/contacto': typeof ContactoRoute
   '/productos': typeof ProductosRoute
+  '/admin/pedidos': typeof AdminPedidosRoute
   '/admin/productos': typeof AdminProductosRoute
   '/admin/usuarios': typeof AdminUsuariosRoute
   '/pedido/$orderNumber': typeof PedidoOrderNumberRoute
@@ -91,6 +98,7 @@ export interface FileRoutesByTo {
   '/checkout': typeof CheckoutRoute
   '/contacto': typeof ContactoRoute
   '/productos': typeof ProductosRoute
+  '/admin/pedidos': typeof AdminPedidosRoute
   '/admin/productos': typeof AdminProductosRoute
   '/admin/usuarios': typeof AdminUsuariosRoute
   '/pedido/$orderNumber': typeof PedidoOrderNumberRoute
@@ -104,6 +112,7 @@ export interface FileRoutesById {
   '/checkout': typeof CheckoutRoute
   '/contacto': typeof ContactoRoute
   '/productos': typeof ProductosRoute
+  '/admin/pedidos': typeof AdminPedidosRoute
   '/admin/productos': typeof AdminProductosRoute
   '/admin/usuarios': typeof AdminUsuariosRoute
   '/pedido/$orderNumber': typeof PedidoOrderNumberRoute
@@ -118,6 +127,7 @@ export interface FileRouteTypes {
     | '/checkout'
     | '/contacto'
     | '/productos'
+    | '/admin/pedidos'
     | '/admin/productos'
     | '/admin/usuarios'
     | '/pedido/$orderNumber'
@@ -130,6 +140,7 @@ export interface FileRouteTypes {
     | '/checkout'
     | '/contacto'
     | '/productos'
+    | '/admin/pedidos'
     | '/admin/productos'
     | '/admin/usuarios'
     | '/pedido/$orderNumber'
@@ -142,6 +153,7 @@ export interface FileRouteTypes {
     | '/checkout'
     | '/contacto'
     | '/productos'
+    | '/admin/pedidos'
     | '/admin/productos'
     | '/admin/usuarios'
     | '/pedido/$orderNumber'
@@ -230,15 +242,24 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminProductosRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/admin/pedidos': {
+      id: '/admin/pedidos'
+      path: '/pedidos'
+      fullPath: '/admin/pedidos'
+      preLoaderRoute: typeof AdminPedidosRouteImport
+      parentRoute: typeof AdminRoute
+    }
   }
 }
 
 interface AdminRouteChildren {
+  AdminPedidosRoute: typeof AdminPedidosRoute
   AdminProductosRoute: typeof AdminProductosRoute
   AdminUsuariosRoute: typeof AdminUsuariosRoute
 }
 
 const AdminRouteChildren: AdminRouteChildren = {
+  AdminPedidosRoute: AdminPedidosRoute,
   AdminProductosRoute: AdminProductosRoute,
   AdminUsuariosRoute: AdminUsuariosRoute,
 }

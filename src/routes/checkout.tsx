@@ -76,6 +76,15 @@ function CheckoutPage() {
       if (error) throw error;
       clear();
       toast.success("¡Pago aprobado!");
+      // Notificación por WhatsApp al admin del negocio
+      const itemsList = items.map((i) => `• ${i.name} x${i.quantity} — $${(i.price * i.quantity).toFixed(2)}`).join("\n");
+      const waText = encodeURIComponent(
+        `🛒 *Nuevo pedido ${data.order_number}*\n\n` +
+        `👤 ${form.customer_name}\n📧 ${form.customer_email}\n📞 ${form.customer_phone}\n\n` +
+        `📍 ${form.shipping_address}, ${form.shipping_city}, ${form.shipping_province}, ${form.shipping_country}\n\n` +
+        `${itemsList}\n\n💰 *Total: $${subtotal.toFixed(2)}*`
+      );
+      window.open(`https://wa.me/593997738026?text=${waText}`, "_blank");
       navigate({ to: "/pedido/$orderNumber", params: { orderNumber: data.order_number } });
     } catch (err: any) {
       toast.error(err.message || "Error al procesar el pedido");
