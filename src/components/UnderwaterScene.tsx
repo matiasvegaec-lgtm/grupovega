@@ -8,6 +8,10 @@ import productMobileImg from "@/assets/hero-product-mobile.png";
 function ProductsGroup({ textureUrl, aspect = 1.05 }: { textureUrl: string; aspect?: number }) {
   const ref = useRef<THREE.Mesh>(null);
   const texture = useTexture(textureUrl);
+  texture.anisotropy = 16;
+  texture.minFilter = THREE.LinearMipmapLinearFilter;
+  texture.magFilter = THREE.LinearFilter;
+  texture.generateMipmaps = true;
 
   useFrame((state) => {
     if (!ref.current) return;
@@ -74,7 +78,7 @@ export function UnderwaterScene() {
     <div
       className="
         pointer-events-none absolute -z-0
-        bottom-2 right-2 w-[78%] max-w-[340px] h-[42%]
+        bottom-20 -right-2 w-[48%] max-w-[210px] h-[30%]
         sm:bottom-0 sm:right-0 sm:w-[60%] sm:max-w-[460px] sm:h-[60%]
         md:w-[55%] md:max-w-[640px] md:h-[85%]
         lg:max-w-[760px] lg:h-[95%]
@@ -101,7 +105,7 @@ export function UnderwaterScene() {
       />
       <Canvas
         camera={{ position: [0, 0, 4], fov: 45 }}
-        dpr={[1, 2]}
+        dpr={[2, 3]}
         gl={{ alpha: true, antialias: true }}
         style={{ background: "transparent" }}
       >
