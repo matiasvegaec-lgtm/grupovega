@@ -235,7 +235,7 @@ function Index() {
               transition={{ duration: 0.6 }}
               className="glass rounded-3xl p-8 md:p-10 flex flex-col justify-center"
             >
-              <h3 className="text-3xl font-bold mb-2">AquaMar Guayaquil</h3>
+              <h3 className="text-3xl font-bold mb-2">Grupo Vega — Importadora Vega</h3>
               <p className="text-turquoise font-semibold mb-8">Sede principal y centro de distribución</p>
 
               <ul className="space-y-5">
@@ -245,7 +245,7 @@ function Index() {
                   </div>
                   <div>
                     <div className="text-white/60 text-xs uppercase tracking-widest font-semibold">Dirección</div>
-                    <div className="text-lg">Km 8.5 Vía Daule, Guayaquil — Ecuador</div>
+                    <div className="text-lg">Importadora Vega, Manta — Ecuador</div>
                   </div>
                 </li>
                 <li className="flex gap-4">
@@ -254,7 +254,7 @@ function Index() {
                   </div>
                   <div>
                     <div className="text-white/60 text-xs uppercase tracking-widest font-semibold">Teléfono</div>
-                    <div className="text-lg">+593 4 222 3344</div>
+                    <div className="text-lg">+593 99 773 8026</div>
                   </div>
                 </li>
                 <li className="flex gap-4">
@@ -263,7 +263,7 @@ function Index() {
                   </div>
                   <div>
                     <div className="text-white/60 text-xs uppercase tracking-widest font-semibold">Email</div>
-                    <div className="text-lg">info@aquamar.ec</div>
+                    <div className="text-lg">grupovega.ec@gmail.com</div>
                   </div>
                 </li>
                 <li className="flex gap-4">
@@ -278,7 +278,7 @@ function Index() {
               </ul>
 
               <a
-                href="https://www.google.com/maps/dir/?api=1&destination=Km+8.5+Via+Daule+Guayaquil+Ecuador"
+                href="https://www.google.com/maps/dir/?api=1&destination=Importadora+Vega+Manta+Ecuador&destination_place_id=ChIJ5-aJN05_1Y8R-2WTR4cfJ6Q"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="mt-8 inline-flex items-center justify-center gap-2 px-6 py-3 rounded-full gradient-wave text-white font-semibold shadow-glow hover:scale-105 transition w-fit"
@@ -296,8 +296,8 @@ function Index() {
               className="rounded-3xl overflow-hidden shadow-elegant min-h-[400px] lg:min-h-full border border-white/20"
             >
               <iframe
-                title="Ubicación AquaMar"
-                src="https://www.google.com/maps?q=Km+8.5+Via+Daule+Guayaquil+Ecuador&output=embed"
+                title="Ubicación Grupo Vega - Importadora Vega Manta"
+                src="https://www.google.com/maps?q=Importadora+Vega+Manta+Ecuador&ll=0.0709191,-80.0481097&z=17&output=embed"
                 width="100%"
                 height="100%"
                 loading="lazy"

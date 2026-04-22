@@ -9,8 +9,8 @@ export const Route = createFileRoute("/contacto")({
   head: () => ({
     meta: [
       { title: "Contacto — AquaMar" },
-      { name: "description", content: "Habla con nuestro equipo técnico. Sucursales en Guayaquil, Machala, Manta y Esmeraldas." },
-      { property: "og:title", content: "Contacto AquaMar" },
+      { name: "description", content: "Habla con nuestro equipo de Grupo Vega. Estamos en Manta, Ecuador." },
+      { property: "og:title", content: "Contacto Grupo Vega" },
       { property: "og:description", content: "Estamos cerca de tu camaronera." },
     ],
   }),
@@ -18,10 +18,7 @@ export const Route = createFileRoute("/contacto")({
 });
 
 const offices = [
-  { city: "Guayaquil", address: "Km 8.5 Vía Daule", phone: "+593 4 222 3344" },
-  { city: "Machala", address: "Av. Las Palmeras 200", phone: "+593 7 293 1122" },
-  { city: "Manta", address: "Vía Puerto, Manta", phone: "+593 5 262 4455" },
-  { city: "Esmeraldas", address: "Malecón 12-34", phone: "+593 6 272 8899" },
+  { city: "Manta (Matriz)", address: "Importadora Vega, Manta", phone: "+593 99 773 8026" },
 ];
 
 function ContactoPage() {
@@ -97,9 +94,9 @@ function ContactoPage() {
               <div className="bg-card rounded-3xl p-8 shadow-card">
                 <h3 className="text-2xl font-bold text-navy-deep mb-6">Información de contacto</h3>
                 <div className="space-y-4">
-                  <div className="flex gap-3"><Mail className="w-5 h-5 text-ocean shrink-0 mt-0.5" /><span className="text-muted-foreground">info@aquamar.ec</span></div>
-                  <div className="flex gap-3"><Phone className="w-5 h-5 text-ocean shrink-0 mt-0.5" /><span className="text-muted-foreground">+593 4 222 3344</span></div>
-                  <div className="flex gap-3"><MapPin className="w-5 h-5 text-ocean shrink-0 mt-0.5" /><span className="text-muted-foreground">Km 8.5 Vía Daule, Guayaquil — Ecuador</span></div>
+                  <div className="flex gap-3"><Mail className="w-5 h-5 text-ocean shrink-0 mt-0.5" /><span className="text-muted-foreground">grupovega.ec@gmail.com</span></div>
+                  <div className="flex gap-3"><Phone className="w-5 h-5 text-ocean shrink-0 mt-0.5" /><span className="text-muted-foreground">+593 99 773 8026</span></div>
+                  <div className="flex gap-3"><MapPin className="w-5 h-5 text-ocean shrink-0 mt-0.5" /><span className="text-muted-foreground">Importadora Vega, Manta — Ecuador</span></div>
                 </div>
               </div>
 
