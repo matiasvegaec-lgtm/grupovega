@@ -296,27 +296,33 @@ function Index() {
               className="flex gap-12 w-max animate-marquee hover:[animation-play-state:paused]"
             >
               {carouselItems.map((p, i) => (
-                <Link
+                <motion.div
                   key={`${p.name}-${i}`}
-                  to="/productos/$productId"
-                  params={{ productId: p.slug || p.id }}
-                  data-marquee-item
-                  className="marquee-item group flex flex-col items-center w-56 shrink-0 cursor-pointer"
+                  whileHover={{ scale: 1.15, rotate: -2 }}
+                  transition={{ type: "spring", stiffness: 300 }}
+                  className="shrink-0"
                 >
-                  <div className="relative w-56 h-56 flex items-center justify-center">
-                    <div className="absolute inset-4 rounded-full gradient-wave opacity-0 group-hover:opacity-40 blur-2xl transition-all duration-700 group-hover:scale-110" />
-                    <div className="absolute inset-0 rounded-full border-2 border-dashed border-ocean/0 group-hover:border-ocean/30 group-hover:rotate-180 transition-all duration-1000" />
-                    <img
-                      src={p.img}
-                      alt={p.name}
-                      loading="lazy"
-                      className="relative max-h-full max-w-full object-contain drop-shadow-2xl group-hover:scale-125 group-hover:-translate-y-2 group-hover:-rotate-3 transition-all duration-500"
-                      style={{ filter: "drop-shadow(0 20px 30px oklch(0.22 0.1 258 / 0.25))" }}
-                    />
-                  </div>
-                  <p className="mt-4 font-semibold text-navy-deep text-center group-hover:text-ocean transition-colors">{p.name}</p>
-                  <span className="destacado-label text-xs text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity duration-300 mt-1">Destacado ⭐</span>
-                </Link>
+                  <Link
+                    to="/productos/$productId"
+                    params={{ productId: p.slug || p.id }}
+                    data-marquee-item
+                    className="marquee-item group flex flex-col items-center w-56 cursor-pointer"
+                  >
+                    <div className="relative w-56 h-56 flex items-center justify-center">
+                      {/* Glow de luces tipo proveedores */}
+                      <div className="absolute inset-4 rounded-full gradient-wave opacity-0 group-hover:opacity-100 blur-2xl transition duration-500" />
+                      <img
+                        src={p.img}
+                        alt={p.name}
+                        loading="lazy"
+                        className="relative max-h-full max-w-full object-contain transition-transform duration-300"
+                        style={{ filter: "drop-shadow(0 20px 30px oklch(0.22 0.1 258 / 0.25))" }}
+                      />
+                    </div>
+                    <p className="mt-4 font-semibold text-navy-deep text-center group-hover:text-ocean transition-colors">{p.name}</p>
+                    <span className="destacado-label text-xs text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity duration-300 mt-1">Destacado ⭐</span>
+                  </Link>
+                </motion.div>
               ))}
             </div>
           </div>
