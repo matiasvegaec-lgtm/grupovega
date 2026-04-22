@@ -67,7 +67,7 @@ function AdminProductos() {
 
   const openEdit = (p: Product) => {
     setEditing(p);
-    setForm({ name: p.name, description: p.description ?? "", price: Number(p.price), category: p.category, image_url: p.image_url ?? "", stock: p.stock, active: p.active, display_order: p.display_order, featured: p.featured, subcategory_id: p.subcategory_id ?? null });
+    setForm({ name: p.name, description: p.description ?? "", price: Number(p.price), category: p.category, image_url: p.image_url ?? "", stock: p.stock, active: p.active, display_order: p.display_order, featured: p.featured, subcategory_id: p.subcategory_id ?? null, presentation: p.presentation ?? "", protein_content: p.protein_content ?? "", price_card_3m: p.price_card_3m ?? null });
     setShowForm(true);
   };
 
@@ -92,7 +92,7 @@ function AdminProductos() {
     e.preventDefault();
     setSaving(true);
     try {
-      const payload = { ...form, price: Number(form.price), stock: Number(form.stock), display_order: Number(form.display_order), image_url: form.image_url || null, description: form.description || null, subcategory_id: form.subcategory_id || null };
+      const payload = { ...form, price: Number(form.price), stock: Number(form.stock), display_order: Number(form.display_order), image_url: form.image_url || null, description: form.description || null, subcategory_id: form.subcategory_id || null, presentation: form.presentation || null, protein_content: form.protein_content || null, price_card_3m: form.price_card_3m === null || form.price_card_3m === undefined || (form.price_card_3m as any) === "" ? null : Number(form.price_card_3m) };
       if (editing) {
         const { error } = await supabase.from("products").update(payload).eq("id", editing.id);
         if (error) throw error;
