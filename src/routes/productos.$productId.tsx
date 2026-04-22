@@ -59,6 +59,20 @@ function ProductDetailPage() {
   const [qty, setQty] = useState(1);
   const [subcategoryName, setSubcategoryName] = useState<string | null>(null);
   const [related, setRelated] = useState<Product[]>([]);
+  const [emblaRef, emblaApi] = useEmblaCarousel({ loop: false, align: "center" });
+  const [selectedIdx, setSelectedIdx] = useState(0);
+
+  useEffect(() => {
+    if (!emblaApi) return;
+    const onSelect = () => setSelectedIdx(emblaApi.selectedScrollSnap());
+    onSelect();
+    emblaApi.on("select", onSelect);
+    emblaApi.on("reInit", onSelect);
+    return () => {
+      emblaApi.off("select", onSelect);
+      emblaApi.off("reInit", onSelect);
+    };
+  }, [emblaApi, related.length]);
 
   useEffect(() => {
     let alive = true;
