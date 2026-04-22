@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState, FormEvent } from "react";
-import { Plus, Pencil, Trash2, Loader2, X, Upload, Eye, EyeOff } from "lucide-react";
+import { Plus, Pencil, Trash2, Loader2, X, Upload, Eye, EyeOff, Star } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 
@@ -14,6 +14,7 @@ type Product = {
   stock: number;
   active: boolean;
   display_order: number;
+  featured: boolean;
 };
 
 export const Route = createFileRoute("/admin/productos")({
@@ -22,7 +23,7 @@ export const Route = createFileRoute("/admin/productos")({
 
 const empty: Omit<Product, "id"> = {
   name: "", description: "", price: 0, category: "Alimentos",
-  image_url: "", stock: 0, active: true, display_order: 0,
+  image_url: "", stock: 0, active: true, display_order: 0, featured: false,
 };
 
 function AdminProductos() {
@@ -51,7 +52,7 @@ function AdminProductos() {
 
   const openEdit = (p: Product) => {
     setEditing(p);
-    setForm({ name: p.name, description: p.description ?? "", price: Number(p.price), category: p.category, image_url: p.image_url ?? "", stock: p.stock, active: p.active, display_order: p.display_order });
+    setForm({ name: p.name, description: p.description ?? "", price: Number(p.price), category: p.category, image_url: p.image_url ?? "", stock: p.stock, active: p.active, display_order: p.display_order, featured: p.featured });
     setShowForm(true);
   };
 
@@ -108,6 +109,12 @@ function AdminProductos() {
     else await load();
   };
 
+  const toggleFeatured = async (p: Product) => {
+    const { error } = await supabase.from("products").update({ featured: !p.featured }).eq("id", p.id);
+    if (error) toast.error(error.message);
+    else { toast.success(p.featured ? "Quitado de destacados" : "Marcado como destacado"); await load(); }
+  };
+
   const inputCls = "w-full px-3 py-2 rounded-lg bg-background border border-border focus:border-ocean focus:outline-none text-sm";
 
   return (
@@ -139,6 +146,7 @@ function AdminProductos() {
                 <th className="text-left p-3">Categoría</th>
                 <th className="text-right p-3">Precio</th>
                 <th className="text-right p-3">Stock</th>
+                <th className="text-center p-3">Destacado</th>
                 <th className="text-center p-3">Estado</th>
                 <th className="text-right p-3">Acciones</th>
               </tr>
@@ -153,6 +161,11 @@ function AdminProductos() {
                   <td className="p-3 text-muted-foreground">{p.category}</td>
                   <td className="p-3 text-right font-semibold">${Number(p.price).toFixed(2)}</td>
                   <td className="p-3 text-right">{p.stock}</td>
+                  <td className="p-3 text-center">
+                    <button onClick={() => toggleFeatured(p)} title={p.featured ? "Quitar de destacados" : "Marcar como destacado"} className={`p-1.5 rounded-lg transition ${p.featured ? "text-yellow-500 hover:bg-yellow-50" : "text-gray-300 hover:bg-foam"}`}>
+                      <Star className={`w-4 h-4 ${p.featured ? "fill-current" : ""}`} />
+                    </button>
+                  </td>
                   <td className="p-3 text-center">
                     <button onClick={() => toggleActive(p)} className={`inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-semibold ${p.active ? "bg-green-100 text-green-700" : "bg-gray-100 text-gray-600"}`}>
                       {p.active ? <Eye className="w-3 h-3" /> : <EyeOff className="w-3 h-3" />} {p.active ? "Activo" : "Oculto"}
@@ -222,6 +235,10 @@ function AdminProductos() {
               <label className="sm:col-span-2 flex items-center gap-2 text-sm">
                 <input type="checkbox" checked={form.active} onChange={(e) => setForm({ ...form, active: e.target.checked })} />
                 <span>Activo (visible en la tienda)</span>
+              </label>
+              <label className="sm:col-span-2 flex items-center gap-2 text-sm">
+                <input type="checkbox" checked={form.featured} onChange={(e) => setForm({ ...form, featured: e.target.checked })} />
+                <span>Destacado (aparece en la página principal)</span>
               </label>
             </div>
             <div className="flex gap-3 justify-end mt-6">

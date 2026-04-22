@@ -1,6 +1,8 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { motion } from "framer-motion";
 import { ArrowRight, Wheat, Droplet, FlaskConical, Sprout, Pill, Beaker, MapPin, Phone, Mail, Clock } from "lucide-react";
+import { useEffect, useState } from "react";
+import { supabase } from "@/integrations/supabase/client";
 import { Layout } from "@/components/Layout";
 import { UnderwaterScene } from "@/components/UnderwaterScene";
 import heroImg from "@/assets/hero-shrimp-farm.jpg";
@@ -36,7 +38,7 @@ const categories = [
   { icon: Beaker, name: "Insumos" },
 ];
 
-const featured = [
+const featuredFallback = [
   { name: "Balanceado Engorde", img: pBalanceado },
   { name: "Aceite de Pescado", img: pAceite },
   { name: "Aditivo Probiótico", img: pAditivo },
@@ -55,6 +57,22 @@ const supplierLogos = [
 ];
 
 function Index() {
+  const [featured, setFeatured] = useState<{ name: string; img: string }[]>(featuredFallback);
+
+  useEffect(() => {
+    supabase
+      .from("products")
+      .select("name, image_url")
+      .eq("active", true)
+      .eq("featured", true)
+      .order("display_order")
+      .then(({ data }) => {
+        if (data && data.length > 0) {
+          setFeatured(data.map((p) => ({ name: p.name, img: p.image_url || "" })).filter((p) => p.img));
+        }
+      });
+  }, []);
+
   // Duplicamos el array para crear loop infinito sin saltos
   const carouselItems = [...featured, ...featured];
   const supplierItems = [...supplierLogos, ...supplierLogos];
