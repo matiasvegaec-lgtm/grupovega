@@ -211,12 +211,39 @@ function AdminProductos() {
               </div>
               <div>
                 <label className="text-xs font-semibold text-navy-deep">Categoría</label>
-                <select required value={form.category} onChange={(e) => setForm({ ...form, category: e.target.value })} className={inputCls}>
-                  <option value="Alimentos">Alimentos</option>
-                  <option value="Fertilizantes">Fertilizantes</option>
-                  <option value="Aditivos">Aditivos</option>
-                  <option value="Insumos">Insumos</option>
+                <select required value={form.category} onChange={(e) => setForm({ ...form, category: e.target.value, subcategory_id: null })} className={inputCls}>
+                  {categories.length === 0 && (
+                    <>
+                      <option value="Alimentos">Alimentos</option>
+                      <option value="Fertilizantes">Fertilizantes</option>
+                      <option value="Aditivos">Aditivos</option>
+                      <option value="Insumos">Insumos</option>
+                    </>
+                  )}
+                  {categories.map((c) => (
+                    <option key={c.id} value={c.name}>{c.name}</option>
+                  ))}
                 </select>
+              </div>
+              <div>
+                <label className="text-xs font-semibold text-navy-deep">Subcategoría</label>
+                {(() => {
+                  const parent = categories.find((c) => c.name === form.category);
+                  const subs = parent ? subcategories.filter((s) => s.category_id === parent.id) : [];
+                  return (
+                    <select
+                      value={form.subcategory_id ?? ""}
+                      onChange={(e) => setForm({ ...form, subcategory_id: e.target.value || null })}
+                      disabled={subs.length === 0}
+                      className={inputCls + (subs.length === 0 ? " opacity-50 cursor-not-allowed" : "")}
+                    >
+                      <option value="">{subs.length === 0 ? "Sin subcategorías" : "— Ninguna —"}</option>
+                      {subs.map((s) => (
+                        <option key={s.id} value={s.id}>{s.name}</option>
+                      ))}
+                    </select>
+                  );
+                })()}
               </div>
               <div>
                 <label className="text-xs font-semibold text-navy-deep">Precio (USD)</label>
