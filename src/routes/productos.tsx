@@ -61,25 +61,33 @@ const SUPPLIERS = [
 
 function ProductosPage() {
   const [active, setActive] = useState("Todos");
+  const [activeSub, setActiveSub] = useState<string | null>(null);
   const [query, setQuery] = useState("");
   const [stockOnly, setStockOnly] = useState(false);
   const [maxPrice, setMaxPrice] = useState<number>(0);
   const [sort, setSort] = useState<"recent" | "price-asc" | "price-desc" | "name">("recent");
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [products, setProducts] = useState<Product[]>([]);
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [subcategories, setSubcategories] = useState<Subcategory[]>([]);
   const [loading, setLoading] = useState(true);
   const { addItem } = useCart();
 
   useEffect(() => {
     (async () => {
-      const { data, error } = await supabase
-        .from("products").select("*").eq("active", true).order("display_order").order("created_at", { ascending: false });
-      if (!error) {
-        const list = (data ?? []) as Product[];
+      const [prodRes, catRes, subRes] = await Promise.all([
+        supabase.from("products").select("*").eq("active", true).order("display_order").order("created_at", { ascending: false }),
+        supabase.from("categories").select("id,name").eq("active", true).order("display_order"),
+        supabase.from("subcategories").select("id,name,category_id").eq("active", true).order("display_order"),
+      ]);
+      if (!prodRes.error) {
+        const list = (prodRes.data ?? []) as Product[];
         setProducts(list);
         const max = list.reduce((m, p) => Math.max(m, Number(p.price) || 0), 0);
         setMaxPrice(Math.ceil(max) || 100);
       }
+      if (!catRes.error) setCategories((catRes.data ?? []) as Category[]);
+      if (!subRes.error) setSubcategories((subRes.data ?? []) as Subcategory[]);
       setLoading(false);
     })();
   }, []);
