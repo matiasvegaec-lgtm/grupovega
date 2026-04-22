@@ -1,6 +1,6 @@
 import { Link, Outlet, useNavigate, useLocation } from "@tanstack/react-router";
 import { useEffect } from "react";
-import { Package, Users, LogOut, Loader2, ShieldAlert, ShoppingBag } from "lucide-react";
+import { Package, Users, LogOut, Loader2, ShieldAlert, ShoppingBag, FolderTree } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 
 export function AdminLayout() {
@@ -37,6 +37,7 @@ export function AdminLayout() {
 
   const links = [
     { to: "/admin/productos", label: "Productos", icon: Package },
+    { to: "/admin/categorias", label: "Categorías", icon: FolderTree },
     { to: "/admin/pedidos", label: "Pedidos", icon: ShoppingBag },
     { to: "/admin/usuarios", label: "Usuarios", icon: Users },
   ];
