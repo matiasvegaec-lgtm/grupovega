@@ -1,4 +1,4 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, Outlet, useLocation } from "@tanstack/react-router";
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Search, ShoppingCart, Loader2, Wheat, Sprout, FlaskConical, Beaker, Pill, Droplet, Layers, X } from "lucide-react";
@@ -61,6 +61,7 @@ const SUPPLIERS = [
 ];
 
 function ProductosPage() {
+  const location = useLocation();
   const [active, setActive] = useState("Todos");
   const [activeSub, setActiveSub] = useState<string | null>(null);
   const [query, setQuery] = useState("");
@@ -73,6 +74,10 @@ function ProductosPage() {
   const [subcategories, setSubcategories] = useState<Subcategory[]>([]);
   const [loading, setLoading] = useState(true);
   const { addItem } = useCart();
+
+  if (location.pathname !== "/productos") {
+    return <Outlet />;
+  }
 
   useEffect(() => {
     (async () => {
