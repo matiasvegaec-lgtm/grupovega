@@ -130,76 +130,68 @@ export function Header() {
                   )}
                 </DropdownMenuLabel>
                 <DropdownMenuSeparator />
-                {user ? (
-                  <DropdownMenuItem asChild className="rounded-lg cursor-pointer">
-                    <Link to="/auth" search={{ redirect: undefined }} className="flex items-center gap-2.5 px-3 py-2">
-                      <UserCircle className="w-4 h-4 text-ocean" />
-                      <span>Mi cuenta</span>
-                    </Link>
-                  </DropdownMenuItem>
-                ) : (
+                {!user ? (
                   <DropdownMenuItem asChild className="rounded-lg cursor-pointer">
                     <Link to="/auth" search={{ redirect: undefined }} className="flex items-center gap-2.5 px-3 py-2">
                       <LogIn className="w-4 h-4 text-ocean" />
                       <span>Iniciar sesión / Registrarse</span>
                     </Link>
                   </DropdownMenuItem>
-                )}
-                <DropdownMenuItem asChild className="rounded-lg cursor-pointer">
-                  <Link to="/mis-pedidos" className="flex items-center gap-2.5 px-3 py-2">
-                    <Package className="w-4 h-4 text-ocean" />
-                    <span>Mis pedidos</span>
-                  </Link>
-                </DropdownMenuItem>
-                <DropdownMenuItem asChild className="rounded-lg cursor-pointer">
-                  <button
-                    type="button"
-                    onClick={() => setCartOpen(true)}
-                    className="w-full flex items-center justify-between gap-2.5 px-3 py-2"
-                  >
-                    <span className="flex items-center gap-2.5">
-                      <ShoppingCart className="w-4 h-4 text-ocean" />
-                      <span>Carrito</span>
-                    </span>
-                    {count > 0 && (
-                      <span className="bg-ocean text-white text-[10px] font-bold rounded-full min-w-[20px] h-[20px] px-1 flex items-center justify-center">
-                        {count}
-                      </span>
-                    )}
-                  </button>
-                </DropdownMenuItem>
-                <DropdownMenuItem asChild className="rounded-lg cursor-pointer">
-                  <Link to="/favoritos" className="flex items-center justify-between gap-2.5 px-3 py-2">
-                    <span className="flex items-center gap-2.5">
-                      <Heart className="w-4 h-4 text-orange-500" />
-                      <span>Favoritos</span>
-                    </span>
-                    {favCount > 0 && (
-                      <span className="bg-orange-500 text-white text-[10px] font-bold rounded-full min-w-[20px] h-[20px] px-1 flex items-center justify-center">
-                        {favCount}
-                      </span>
-                    )}
-                  </Link>
-                </DropdownMenuItem>
-                <DropdownMenuItem asChild className="rounded-lg cursor-pointer">
-                  <button
-                    type="button"
-                    onClick={() => setPromoOpen(true)}
-                    className="w-full flex items-center gap-2.5 px-3 py-2"
-                  >
-                    <Mail className="w-4 h-4 text-turquoise" />
-                    <span>Recibir promociones</span>
-                  </button>
-                </DropdownMenuItem>
-                <DropdownMenuItem disabled className="rounded-lg">
-                  <span className="flex items-center gap-2.5 px-3 py-2 text-muted-foreground">
-                    <Bell className="w-4 h-4" />
-                    <span>Notificaciones</span>
-                    <span className="ml-auto text-[10px] uppercase tracking-wide">Pronto</span>
-                  </span>
-                </DropdownMenuItem>
-                {user && (
+                ) : (
                   <>
+                    <DropdownMenuItem asChild className="rounded-lg cursor-pointer">
+                      <Link to="/mis-pedidos" className="flex items-center gap-2.5 px-3 py-2">
+                        <Package className="w-4 h-4 text-ocean" />
+                        <span>Mis pedidos</span>
+                      </Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem asChild className="rounded-lg cursor-pointer">
+                      <button
+                        type="button"
+                        onClick={() => setCartOpen(true)}
+                        className="w-full flex items-center justify-between gap-2.5 px-3 py-2"
+                      >
+                        <span className="flex items-center gap-2.5">
+                          <ShoppingCart className="w-4 h-4 text-ocean" />
+                          <span>Carrito</span>
+                        </span>
+                        {count > 0 && (
+                          <span className="bg-ocean text-white text-[10px] font-bold rounded-full min-w-[20px] h-[20px] px-1 flex items-center justify-center">
+                            {count}
+                          </span>
+                        )}
+                      </button>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem asChild className="rounded-lg cursor-pointer">
+                      <Link to="/favoritos" className="flex items-center justify-between gap-2.5 px-3 py-2">
+                        <span className="flex items-center gap-2.5">
+                          <Heart className="w-4 h-4 text-orange-500" />
+                          <span>Favoritos</span>
+                        </span>
+                        {favCount > 0 && (
+                          <span className="bg-orange-500 text-white text-[10px] font-bold rounded-full min-w-[20px] h-[20px] px-1 flex items-center justify-center">
+                            {favCount}
+                          </span>
+                        )}
+                      </Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem asChild className="rounded-lg cursor-pointer">
+                      <button
+                        type="button"
+                        onClick={() => setPromoOpen(true)}
+                        className="w-full flex items-center gap-2.5 px-3 py-2"
+                      >
+                        <Mail className="w-4 h-4 text-turquoise" />
+                        <span>Recibir promociones</span>
+                      </button>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem disabled className="rounded-lg">
+                      <span className="flex items-center gap-2.5 px-3 py-2 text-muted-foreground">
+                        <Bell className="w-4 h-4" />
+                        <span>Notificaciones</span>
+                        <span className="ml-auto text-[10px] uppercase tracking-wide">Pronto</span>
+                      </span>
+                    </DropdownMenuItem>
                     <DropdownMenuSeparator />
                     <DropdownMenuItem
                       onClick={() => signOut()}
@@ -269,22 +261,34 @@ export function Header() {
               </Link>
             ))}
             <div className="my-2 h-px bg-border" />
-            <Link to="/auth" search={{ redirect: undefined }} onClick={() => setOpen(false)} className="px-4 py-3 rounded-lg text-navy-deep hover:bg-foam font-medium flex items-center gap-2">
-              <UserCircle className="w-4 h-4" /> Mi cuenta
-            </Link>
-            <Link to="/mis-pedidos" onClick={() => setOpen(false)} className="px-4 py-3 rounded-lg text-navy-deep hover:bg-foam font-medium flex items-center gap-2">
-              <Package className="w-4 h-4" /> Mis pedidos
-            </Link>
-            <Link to="/favoritos" onClick={() => setOpen(false)} className="px-4 py-3 rounded-lg text-navy-deep hover:bg-foam font-medium flex items-center gap-2">
-              <Heart className="w-4 h-4" /> Favoritos
-            </Link>
-            <button
-              type="button"
-              onClick={() => { setOpen(false); setPromoOpen(true); }}
-              className="text-left px-4 py-3 rounded-lg text-navy-deep hover:bg-foam font-medium flex items-center gap-2"
-            >
-              <Mail className="w-4 h-4" /> Recibir promociones
-            </button>
+            {!user ? (
+              <Link to="/auth" search={{ redirect: undefined }} onClick={() => setOpen(false)} className="px-4 py-3 rounded-lg text-navy-deep hover:bg-foam font-medium flex items-center gap-2">
+                <LogIn className="w-4 h-4" /> Iniciar sesión / Registrarse
+              </Link>
+            ) : (
+              <>
+                <Link to="/mis-pedidos" onClick={() => setOpen(false)} className="px-4 py-3 rounded-lg text-navy-deep hover:bg-foam font-medium flex items-center gap-2">
+                  <Package className="w-4 h-4" /> Mis pedidos
+                </Link>
+                <Link to="/favoritos" onClick={() => setOpen(false)} className="px-4 py-3 rounded-lg text-navy-deep hover:bg-foam font-medium flex items-center gap-2">
+                  <Heart className="w-4 h-4" /> Favoritos
+                </Link>
+                <button
+                  type="button"
+                  onClick={() => { setOpen(false); setPromoOpen(true); }}
+                  className="text-left px-4 py-3 rounded-lg text-navy-deep hover:bg-foam font-medium flex items-center gap-2"
+                >
+                  <Mail className="w-4 h-4" /> Recibir promociones
+                </button>
+                <button
+                  type="button"
+                  onClick={() => { setOpen(false); signOut(); }}
+                  className="text-left px-4 py-3 rounded-lg text-destructive hover:bg-foam font-medium flex items-center gap-2"
+                >
+                  <LogOut className="w-4 h-4" /> Cerrar sesión
+                </button>
+              </>
+            )}
             <Link
               to="/contacto"
               onClick={() => setOpen(false)}
