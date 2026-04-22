@@ -177,16 +177,13 @@ function ProductDetailPage() {
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.5 }}
-              className="relative bg-card rounded-3xl overflow-hidden shadow-elegant aspect-square lg:col-span-3"
+              className="relative bg-white rounded-3xl overflow-hidden shadow-elegant aspect-square lg:col-span-3 border border-border"
             >
               <img
                 src={product.image_url || feedImg}
                 alt={product.name}
-                className="w-full h-full object-contain p-6"
+                className="w-full h-full object-contain p-8"
               />
-              <span className="absolute top-4 left-4 px-3 py-1.5 rounded-full glass text-white text-xs font-semibold flex items-center gap-1.5 z-10">
-                <Tag className="w-3 h-3" /> {product.category}
-              </span>
             </motion.div>
 
             <motion.div
@@ -195,37 +192,80 @@ function ProductDetailPage() {
               transition={{ duration: 0.5, delay: 0.1 }}
               className="flex flex-col lg:col-span-2 lg:sticky lg:top-24"
             >
-              <p className="text-sm font-semibold uppercase tracking-widest text-ocean mb-3">
-                {product.category}
+              <span className="inline-flex items-center gap-1.5 self-start px-3 py-1 rounded-md bg-ocean/10 text-ocean text-xs font-bold uppercase tracking-wider mb-3">
+                <Tag className="w-3 h-3" /> {product.category}
                 {subcategoryName && (
-                  <span className="text-muted-foreground normal-case tracking-normal font-medium">
-                    {" / "}{subcategoryName}
+                  <span className="font-semibold normal-case tracking-normal opacity-80">
+                    {" · "}{subcategoryName}
                   </span>
                 )}
-              </p>
-              <h1 className="text-4xl md:text-5xl font-bold text-navy-deep mb-4 leading-tight">
+              </span>
+              <h1 className="text-3xl md:text-4xl font-bold text-navy-deep mb-3 leading-tight">
                 {product.name}
               </h1>
 
-              <div className="flex items-baseline gap-4 mb-6">
-                <span className="text-4xl font-bold text-navy-deep">
+              {product.stock > 0 ? (
+                <p className="text-base font-bold text-red-600 mb-4">
+                  ¡Disponibles {product.stock}!
+                </p>
+              ) : (
+                <p className="text-base font-bold text-muted-foreground mb-4">Agotado</p>
+              )}
+
+              <div className="flex items-baseline gap-3 mb-6">
+                <span className="text-4xl font-bold text-ocean">
                   ${Number(product.price).toFixed(2)}
                 </span>
-                {product.stock > 0 ? (
-                  <span className="inline-flex items-center gap-1.5 text-sm font-semibold text-green-700">
-                    <Check className="w-4 h-4" /> En stock ({product.stock} disponibles)
-                  </span>
-                ) : (
-                  <span className="text-sm font-semibold text-muted-foreground">Agotado</span>
-                )}
+                <span className="text-sm text-muted-foreground">precio x unidad</span>
               </div>
 
-              <div className="prose prose-sm max-w-none text-muted-foreground mb-8 leading-relaxed">
-                {product.description ? (
-                  <p className="whitespace-pre-line">{product.description}</p>
-                ) : (
-                  <p className="italic">Sin descripción disponible.</p>
-                )}
+              {/* Cantidad + CTA en línea, estilo referencia */}
+              <div className="flex flex-col sm:flex-row sm:items-center gap-3 mb-6">
+                <div className="flex items-center gap-3">
+                  <span className="text-sm font-semibold text-navy-deep">Cantidad</span>
+                  <div className="inline-flex items-center bg-card border border-border rounded-lg overflow-hidden">
+                    <button
+                      onClick={() => setQty(Math.max(1, qty - 1))}
+                      className="px-3 py-2 text-lg font-bold text-navy-deep hover:bg-foam transition"
+                      aria-label="Disminuir"
+                    >
+                      −
+                    </button>
+                    <span className="px-4 py-2 font-semibold text-navy-deep min-w-[3ch] text-center border-x border-border">
+                      {qty}
+                    </span>
+                    <button
+                      onClick={() => setQty(Math.min(product.stock || 99, qty + 1))}
+                      className="px-3 py-2 text-lg font-bold text-navy-deep hover:bg-foam transition"
+                      aria-label="Aumentar"
+                    >
+                      +
+                    </button>
+                  </div>
+                </div>
+                <button
+                  disabled={product.stock <= 0}
+                  onClick={handleAdd}
+                  className="flex-1 inline-flex items-center justify-center gap-2 px-6 py-3 rounded-full bg-turquoise hover:bg-turquoise/90 text-white font-bold uppercase tracking-wide text-sm shadow-glow transition disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  <ShoppingCart className="w-5 h-5" /> Agregar al carrito
+                </button>
+              </div>
+
+              <p className="text-sm text-navy-deep mb-6">
+                <span className="font-semibold">Referencia:</span>{" "}
+                <span className="text-muted-foreground">{product.id.slice(0, 8).toUpperCase()}</span>
+              </p>
+
+              <div className="border-t border-border pt-6 mb-6">
+                <h2 className="text-lg font-bold text-navy-deep mb-3">Descripción del producto</h2>
+                <div className="prose prose-sm max-w-none text-muted-foreground leading-relaxed">
+                  {product.description ? (
+                    <p className="whitespace-pre-line">{product.description}</p>
+                  ) : (
+                    <p className="italic">Sin descripción disponible.</p>
+                  )}
+                </div>
               </div>
 
               <div className="bg-foam rounded-2xl p-5 mb-6">
@@ -236,36 +276,6 @@ function ProductDetailPage() {
                     Coordinamos envío a toda la costa ecuatoriana.
                   </div>
                 </div>
-              </div>
-
-              {/* Cantidad + CTA */}
-              <div className="flex flex-col sm:flex-row gap-4 mb-6">
-                <div className="inline-flex items-center bg-card border border-border rounded-full overflow-hidden">
-                  <button
-                    onClick={() => setQty(Math.max(1, qty - 1))}
-                    className="px-4 py-3 text-lg font-bold text-navy-deep hover:bg-foam transition"
-                    aria-label="Disminuir"
-                  >
-                    −
-                  </button>
-                  <span className="px-5 font-semibold text-navy-deep min-w-[3ch] text-center">
-                    {qty}
-                  </span>
-                  <button
-                    onClick={() => setQty(Math.min(product.stock || 99, qty + 1))}
-                    className="px-4 py-3 text-lg font-bold text-navy-deep hover:bg-foam transition"
-                    aria-label="Aumentar"
-                  >
-                    +
-                  </button>
-                </div>
-                <button
-                  disabled={product.stock <= 0}
-                  onClick={handleAdd}
-                  className="flex-1 inline-flex items-center justify-center gap-2 px-6 py-3 rounded-full gradient-wave text-white font-semibold shadow-glow hover:scale-[1.02] transition-transform disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  <ShoppingCart className="w-5 h-5" /> Agregar al carrito
-                </button>
               </div>
 
               <Link
