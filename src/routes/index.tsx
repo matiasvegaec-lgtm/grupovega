@@ -281,13 +281,17 @@ function Index() {
           <div className="relative">
             <div className="pointer-events-none absolute left-0 top-0 bottom-0 w-12 md:w-24 z-10 bg-gradient-to-r from-foam to-transparent" />
             <div className="pointer-events-none absolute right-0 top-0 bottom-0 w-12 md:w-24 z-10 bg-gradient-to-l from-foam to-transparent" />
-            <div className="flex gap-12 w-max animate-marquee hover:[animation-play-state:paused]">
+            <div
+              ref={marqueeRef}
+              className="flex gap-12 w-max animate-marquee hover:[animation-play-state:paused]"
+            >
               {carouselItems.map((p, i) => (
                 <Link
                   key={`${p.name}-${i}`}
                   to="/productos/$productId"
                   params={{ productId: p.slug || p.id }}
-                  className="group flex flex-col items-center w-56 shrink-0 cursor-pointer"
+                  data-marquee-item
+                  className="marquee-item group flex flex-col items-center w-56 shrink-0 cursor-pointer"
                 >
                   <div className="relative w-56 h-56 flex items-center justify-center">
                     <div className="absolute inset-4 rounded-full gradient-wave opacity-0 group-hover:opacity-40 blur-2xl transition-all duration-700 group-hover:scale-110" />
