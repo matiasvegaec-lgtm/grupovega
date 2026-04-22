@@ -1,5 +1,16 @@
 import { motion } from "framer-motion";
 
+const HERO_BUBBLES = Array.from({ length: 14 }, (_, i) => {
+  const size = 8 + ((i * 7) % 28);
+  return {
+    size,
+    left: ((i * 37) % 100),
+    delay: (i * 0.7) % 8,
+    duration: 9 + ((i * 3) % 8),
+    opacity: 0.25 + ((i % 5) * 0.08),
+  };
+});
+
 export function PageHero({
   eyebrow,
   title,
@@ -32,6 +43,24 @@ export function PageHero({
       )}
       <div className="absolute inset-0 opacity-30" style={{ background: "var(--gradient-glow)" }} />
       <div className="absolute top-20 right-10 w-72 h-72 gradient-wave rounded-full blur-3xl opacity-30 animate-float-slow" />
+      {/* Burbujas decorativas */}
+      <div className="pointer-events-none absolute inset-0 overflow-hidden">
+        {HERO_BUBBLES.map((b, i) => (
+          <span
+            key={i}
+            className="absolute bottom-0 rounded-full"
+            style={{
+              width: b.size,
+              height: b.size,
+              left: `${b.left}%`,
+              background: "oklch(1 0 0 / 0.18)",
+              border: "1px solid oklch(1 0 0 / 0.4)",
+              opacity: b.opacity,
+              animation: `bubble-rise ${b.duration}s linear ${b.delay}s infinite`,
+            }}
+          />
+        ))}
+      </div>
       <div className="relative container mx-auto px-4 sm:px-6 lg:px-8">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
