@@ -81,15 +81,15 @@ function AdminPedidos() {
   const filtered = filter === "all" ? orders : orders.filter((o) => o.status === filter);
 
   return (
-    <div className="p-8">
-      <div className="mb-6 flex items-center justify-between flex-wrap gap-4">
-        <div>
-          <h1 className="text-2xl font-bold text-navy-deep flex items-center gap-2">
+    <div className="p-4 md:p-8">
+      <div className="mb-6 flex items-start md:items-center justify-between flex-wrap gap-3">
+        <div className="min-w-0">
+          <h1 className="text-xl md:text-2xl font-bold text-navy-deep flex items-center gap-2">
             <ShoppingBag className="w-6 h-6 text-ocean" /> Pedidos
           </h1>
-          <p className="text-sm text-muted-foreground">{orders.length} pedido{orders.length !== 1 && "s"} en total</p>
+          <p className="text-xs md:text-sm text-muted-foreground">{orders.length} pedido{orders.length !== 1 && "s"} en total</p>
         </div>
-        <div className="flex gap-2 flex-wrap">
+        <div className="flex gap-2 flex-wrap w-full md:w-auto overflow-x-auto -mx-1 px-1">
           <button onClick={() => setFilter("all")} className={`px-3 py-1.5 rounded-full text-xs font-semibold ${filter === "all" ? "gradient-wave text-white" : "bg-foam text-navy-deep"}`}>
             Todos ({orders.length})
           </button>
