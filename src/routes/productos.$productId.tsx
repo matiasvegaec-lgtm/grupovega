@@ -109,20 +109,20 @@ function ProductDetailPage() {
       </section>
 
       <section className="py-12 bg-background">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid lg:grid-cols-2 gap-10 lg:gap-16">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl">
+          <div className="grid lg:grid-cols-5 gap-10 lg:gap-16 items-start">
             <motion.div
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.5 }}
-              className="relative bg-card rounded-3xl overflow-hidden shadow-elegant aspect-square"
+              className="relative bg-card rounded-3xl overflow-hidden shadow-elegant aspect-square lg:col-span-3"
             >
               <img
                 src={product.image_url || feedImg}
                 alt={product.name}
-                className="w-full h-full object-cover"
+                className="w-full h-full object-contain p-6"
               />
-              <span className="absolute top-4 left-4 px-3 py-1.5 rounded-full glass text-white text-xs font-semibold flex items-center gap-1.5">
+              <span className="absolute top-4 left-4 px-3 py-1.5 rounded-full glass text-white text-xs font-semibold flex items-center gap-1.5 z-10">
                 <Tag className="w-3 h-3" /> {product.category}
               </span>
             </motion.div>
@@ -131,7 +131,7 @@ function ProductDetailPage() {
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.5, delay: 0.1 }}
-              className="flex flex-col"
+              className="flex flex-col lg:col-span-2 lg:sticky lg:top-24"
             >
               <p className="text-sm font-semibold uppercase tracking-widest text-ocean mb-3">
                 {product.category}
