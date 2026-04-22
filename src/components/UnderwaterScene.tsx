@@ -49,22 +49,22 @@ export function UnderwaterScene() {
 
     <div
       className="
-        pointer-events-none absolute -z-0 animate-fade-in
-        bottom-0 right-0 w-[70%] max-w-[560px] h-[75%]
-        md:w-[65%] md:max-w-[820px] md:h-[100%]
-        lg:max-w-[980px] lg:h-[110%]
-        xl:max-w-[1120px]
-        2xl:max-w-[1280px]
+        pointer-events-none absolute -z-0
+        bottom-[-5%] -right-[8%] w-[80%] max-w-[640px] h-[85%]
+        md:-right-[10%] md:w-[75%] md:max-w-[960px] md:h-[115%]
+        lg:-right-[12%] lg:max-w-[1140px] lg:h-[125%]
+        xl:-right-[14%] xl:max-w-[1300px]
+        2xl:max-w-[1480px]
       "
-        style={{ animationDuration: "1.2s" }}
     >
       {/* Halo / glow detrás de los productos */}
       <div
-        className="absolute inset-0"
+        className="absolute inset-0 animate-pulse"
         style={{
           background:
-            "radial-gradient(ellipse at 70% 70%, oklch(0.65 0.15 230 / 0.35), transparent 60%)",
-          filter: "blur(20px)",
+            "radial-gradient(ellipse at 60% 60%, oklch(0.7 0.18 220 / 0.55), transparent 65%)",
+          filter: "blur(30px)",
+          animationDuration: "4s",
         }}
       />
       {/* Sombra proyectada en el suelo */}
@@ -78,7 +78,7 @@ export function UnderwaterScene() {
       <img
         src={productsImg}
         alt="Productos Grupo Vega"
-        className="relative z-10 w-full h-full object-contain drop-shadow-2xl"
+        className="relative z-10 w-full h-full object-contain hero-product-reveal"
       />
       </div>
     </>
