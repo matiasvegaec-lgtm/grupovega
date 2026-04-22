@@ -237,35 +237,58 @@ function Index() {
         </div>
 
         <div className="relative w-full">
-          {/* fade laterales */}
-          <div className="pointer-events-none absolute left-0 top-0 bottom-0 w-24 z-10 bg-gradient-to-r from-foam to-transparent" />
-          <div className="pointer-events-none absolute right-0 top-0 bottom-0 w-24 z-10 bg-gradient-to-l from-foam to-transparent" />
+          {/* DESKTOP: marquee automático */}
+          <div className="hidden md:block relative">
+            <div className="pointer-events-none absolute left-0 top-0 bottom-0 w-24 z-10 bg-gradient-to-r from-foam to-transparent" />
+            <div className="pointer-events-none absolute right-0 top-0 bottom-0 w-24 z-10 bg-gradient-to-l from-foam to-transparent" />
+            <div className="flex gap-12 w-max animate-marquee hover:[animation-play-state:paused]">
+              {carouselItems.map((p, i) => (
+                <Link
+                  key={`${p.name}-${i}`}
+                  to="/productos/$productId"
+                  params={{ productId: p.slug || p.id }}
+                  className="group flex flex-col items-center w-56 shrink-0 cursor-pointer"
+                >
+                  <div className="relative w-56 h-56 flex items-center justify-center">
+                    <div className="absolute inset-4 rounded-full gradient-wave opacity-0 group-hover:opacity-40 blur-2xl transition-all duration-700 group-hover:scale-110" />
+                    <div className="absolute inset-0 rounded-full border-2 border-dashed border-ocean/0 group-hover:border-ocean/30 group-hover:rotate-180 transition-all duration-1000" />
+                    <img
+                      src={p.img}
+                      alt={p.name}
+                      loading="lazy"
+                      className="relative max-h-full max-w-full object-contain drop-shadow-2xl group-hover:scale-125 group-hover:-translate-y-2 group-hover:-rotate-3 transition-all duration-500"
+                      style={{ filter: "drop-shadow(0 20px 30px oklch(0.22 0.1 258 / 0.25))" }}
+                    />
+                  </div>
+                  <p className="mt-4 font-semibold text-navy-deep text-center group-hover:text-ocean transition-colors">{p.name}</p>
+                  <span className="text-xs text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity duration-300 mt-1">Destacado ⭐</span>
+                </Link>
+              ))}
+            </div>
+          </div>
 
-          <div className="flex gap-12 w-max animate-marquee md:hover:[animation-play-state:paused] max-md:animate-none max-md:w-auto max-md:overflow-x-auto max-md:flex-nowrap max-md:px-4 max-md:snap-x max-md:snap-mandatory">
-            {carouselItems.map((p, i) => (
-              <Link
-                key={`${p.name}-${i}`}
-                to="/productos/$productId"
-                params={{ productId: p.slug || p.id }}
-                className="group flex flex-col items-center w-56 shrink-0 cursor-pointer max-md:snap-center"
-              >
-                <div className="relative w-56 h-56 flex items-center justify-center">
-                  {/* halo glow */}
-                  <div className="absolute inset-4 rounded-full gradient-wave opacity-0 group-hover:opacity-40 blur-2xl transition-all duration-700 group-hover:scale-110" />
-                  {/* anillo decorativo */}
-                  <div className="absolute inset-0 rounded-full border-2 border-dashed border-ocean/0 group-hover:border-ocean/30 group-hover:rotate-180 transition-all duration-1000" />
-                  <img
-                    src={p.img}
-                    alt={p.name}
-                    loading="lazy"
-                    className="relative max-h-full max-w-full object-contain drop-shadow-2xl group-hover:scale-125 group-hover:-translate-y-2 group-hover:-rotate-3 transition-all duration-500"
-                    style={{ filter: "drop-shadow(0 20px 30px oklch(0.22 0.1 258 / 0.25))" }}
-                  />
-                </div>
-                <p className="mt-4 font-semibold text-navy-deep text-center group-hover:text-ocean transition-colors">{p.name}</p>
-                <span className="text-xs text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity duration-300 mt-1">Destacado ⭐</span>
-              </Link>
-            ))}
+          {/* MOBILE: scroll horizontal manual con snap, sin animación */}
+          <div className="md:hidden overflow-x-auto overflow-y-hidden snap-x snap-mandatory scroll-smooth -mx-4 px-4 pb-2">
+            <div className="flex gap-6 w-max">
+              {featured.map((p) => (
+                <Link
+                  key={p.id}
+                  to="/productos/$productId"
+                  params={{ productId: p.slug || p.id }}
+                  className="group flex flex-col items-center w-44 shrink-0 snap-center"
+                >
+                  <div className="relative w-44 h-44 flex items-center justify-center">
+                    <img
+                      src={p.img}
+                      alt={p.name}
+                      loading="lazy"
+                      className="relative max-h-full max-w-full object-contain drop-shadow-xl"
+                    />
+                  </div>
+                  <p className="mt-3 font-semibold text-navy-deep text-center text-sm">{p.name}</p>
+                </Link>
+              ))}
+            </div>
           </div>
         </div>
 
