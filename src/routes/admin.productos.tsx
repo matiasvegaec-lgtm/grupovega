@@ -407,6 +407,7 @@ function AdminProductos() {
                       {uploading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Upload className="w-4 h-4" />} Subir archivo
                       <input type="file" accept="image/*" className="hidden" onChange={(e) => e.target.files?.[0] && handleUpload(e.target.files[0])} />
                     </label>
+                    <p className="text-[11px] text-muted-foreground mt-1.5">✨ Al subir, la IA quita el fondo y centra el producto en cuadrado para que el catálogo se vea uniforme.</p>
                   </div>
                 </div>
               </div>
