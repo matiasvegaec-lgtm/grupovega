@@ -16,7 +16,10 @@ type Product = {
   category: string;
   image_url: string | null;
   stock: number;
+  subcategory_id: string | null;
 };
+
+type Subcategory = { id: string; name: string };
 
 export const Route = createFileRoute("/productos/$productId")({
   head: () => ({
@@ -35,9 +38,12 @@ function ProductDetailPage() {
   const [product, setProduct] = useState<Product | null>(null);
   const [loading, setLoading] = useState(true);
   const [qty, setQty] = useState(1);
+  const [subcategoryName, setSubcategoryName] = useState<string | null>(null);
+  const [related, setRelated] = useState<Product[]>([]);
 
   useEffect(() => {
     let alive = true;
+    window.scrollTo({ top: 0, behavior: "instant" as ScrollBehavior });
     (async () => {
       setLoading(true);
       const { data } = await supabase
@@ -48,6 +54,26 @@ function ProductDetailPage() {
       if (!alive) return;
       const prod = (data ?? null) as Product | null;
       setProduct(prod);
+      if (prod) {
+        const [subRes, relRes] = await Promise.all([
+          prod.subcategory_id
+            ? supabase.from("subcategories").select("id,name").eq("id", prod.subcategory_id).maybeSingle()
+            : Promise.resolve({ data: null }),
+          supabase
+            .from("products")
+            .select("*")
+            .eq("active", true)
+            .eq("category", prod.category)
+            .neq("id", prod.id)
+            .limit(4),
+        ]);
+        if (!alive) return;
+        setSubcategoryName(((subRes.data as Subcategory | null)?.name) ?? null);
+        setRelated(((relRes as { data: Product[] | null }).data ?? []) as Product[]);
+      } else {
+        setSubcategoryName(null);
+        setRelated([]);
+      }
       setLoading(false);
     })();
     return () => {
@@ -135,6 +161,11 @@ function ProductDetailPage() {
             >
               <p className="text-sm font-semibold uppercase tracking-widest text-ocean mb-3">
                 {product.category}
+                {subcategoryName && (
+                  <span className="text-muted-foreground normal-case tracking-normal font-medium">
+                    {" / "}{subcategoryName}
+                  </span>
+                )}
               </p>
               <h1 className="text-4xl md:text-5xl font-bold text-navy-deep mb-4 leading-tight">
                 {product.name}
@@ -209,6 +240,40 @@ function ProductDetailPage() {
               </Link>
             </motion.div>
           </div>
+
+          {related.length > 0 && (
+            <div className="mt-20">
+              <h2 className="text-2xl font-bold text-navy-deep mb-8">
+                Otros productos en {product.category}
+              </h2>
+              <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                {related.map((p) => (
+                  <Link
+                    key={p.id}
+                    to="/productos/$productId"
+                    params={{ productId: p.id }}
+                    className="group bg-card rounded-2xl overflow-hidden shadow-card hover:shadow-elegant transition-all hover:-translate-y-2"
+                  >
+                    <div className="aspect-square overflow-hidden">
+                      <img
+                        src={p.image_url || feedImg}
+                        alt={p.name}
+                        className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+                      />
+                    </div>
+                    <div className="p-4">
+                      <h3 className="font-bold text-navy-deep text-sm mb-1 group-hover:text-ocean transition">
+                        {p.name}
+                      </h3>
+                      <span className="text-lg font-bold text-navy-deep">
+                        ${Number(p.price).toFixed(2)}
+                      </span>
+                    </div>
+                  </Link>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
       </section>
     </Layout>
