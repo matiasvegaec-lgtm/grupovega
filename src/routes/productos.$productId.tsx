@@ -161,6 +161,11 @@ function ProductDetailPage() {
             >
               <p className="text-sm font-semibold uppercase tracking-widest text-ocean mb-3">
                 {product.category}
+                {subcategoryName && (
+                  <span className="text-muted-foreground normal-case tracking-normal font-medium">
+                    {" / "}{subcategoryName}
+                  </span>
+                )}
               </p>
               <h1 className="text-4xl md:text-5xl font-bold text-navy-deep mb-4 leading-tight">
                 {product.name}
