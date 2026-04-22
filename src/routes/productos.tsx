@@ -94,8 +94,7 @@ function ProductosPage() {
     })();
   }, []);
 
-  const dbCategories = Array.from(new Set(products.map((p) => p.category)));
-  const allCategoryNames = Array.from(new Set([...Object.keys(CATEGORY_META), ...dbCategories]));
+  const allCategoryNames = categories.map((c) => c.name);
   const categoryCounts = allCategoryNames.reduce<Record<string, number>>((acc, c) => {
     acc[c] = products.filter((p) => p.category === c).length;
     return acc;
