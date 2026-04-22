@@ -242,10 +242,10 @@ function Index() {
         </div>
 
         <div className="relative w-full">
-          {/* DESKTOP: marquee automático */}
-          <div className="hidden md:block relative">
-            <div className="pointer-events-none absolute left-0 top-0 bottom-0 w-24 z-10 bg-gradient-to-r from-foam to-transparent" />
-            <div className="pointer-events-none absolute right-0 top-0 bottom-0 w-24 z-10 bg-gradient-to-l from-foam to-transparent" />
+          {/* Marquee automático (mismo efecto en mobile y desktop) */}
+          <div className="relative">
+            <div className="pointer-events-none absolute left-0 top-0 bottom-0 w-12 md:w-24 z-10 bg-gradient-to-r from-foam to-transparent" />
+            <div className="pointer-events-none absolute right-0 top-0 bottom-0 w-12 md:w-24 z-10 bg-gradient-to-l from-foam to-transparent" />
             <div className="flex gap-12 w-max animate-marquee hover:[animation-play-state:paused]">
               {carouselItems.map((p, i) => (
                 <Link
@@ -267,35 +267,6 @@ function Index() {
                   </div>
                   <p className="mt-4 font-semibold text-navy-deep text-center group-hover:text-ocean transition-colors">{p.name}</p>
                   <span className="text-xs text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity duration-300 mt-1">Destacado ⭐</span>
-                </Link>
-              ))}
-            </div>
-          </div>
-
-          {/* MOBILE: marquee fluido como desktop, con resaltado al pasar por el centro */}
-          <div className="md:hidden relative overflow-hidden">
-            <div className="pointer-events-none absolute left-0 top-0 bottom-0 w-12 z-10 bg-gradient-to-r from-foam to-transparent" />
-            <div className="pointer-events-none absolute right-0 top-0 bottom-0 w-12 z-10 bg-gradient-to-l from-foam to-transparent" />
-            <div className="flex gap-8 w-max animate-marquee">
-              {carouselItems.map((p, i) => (
-                <Link
-                  key={`m-${p.name}-${i}`}
-                  to="/productos/$productId"
-                  params={{ productId: p.slug || p.id }}
-                  className="group flex flex-col items-center w-36 shrink-0"
-                >
-                  <div className="relative w-36 h-36 flex items-center justify-center">
-                    <img
-                      src={p.img}
-                      alt={p.name}
-                      loading="lazy"
-                      className="max-h-[85%] max-w-[85%] object-contain animate-spotlight"
-                      style={{ animationDelay: `${(i * 1.6) % (carouselItems.length * 0.4)}s` }}
-                    />
-                  </div>
-                  <p className="mt-3 font-semibold text-navy-deep text-center text-sm line-clamp-2 min-h-[2.5rem]">
-                    {p.name}
-                  </p>
                 </Link>
               ))}
             </div>
