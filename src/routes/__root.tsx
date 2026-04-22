@@ -3,6 +3,7 @@ import { Outlet, Link, createRootRoute, HeadContent, Scripts } from "@tanstack/r
 import appCss from "../styles.css?url";
 import { CartProvider } from "@/contexts/CartContext";
 import { AuthProvider } from "@/contexts/AuthContext";
+import { FavoritesProvider } from "@/contexts/FavoritesContext";
 
 function NotFoundComponent() {
   return (
@@ -72,9 +73,11 @@ function RootShell({ children }: { children: React.ReactNode }) {
 function RootComponent() {
   return (
     <AuthProvider>
-      <CartProvider>
-        <Outlet />
-      </CartProvider>
+      <FavoritesProvider>
+        <CartProvider>
+          <Outlet />
+        </CartProvider>
+      </FavoritesProvider>
     </AuthProvider>
   );
 }
