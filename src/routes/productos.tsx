@@ -365,7 +365,7 @@ function ProductosPage() {
                     >
                       <Link
                         to="/productos/$productId"
-                        params={{ productId: p.id }}
+                        params={{ productId: p.slug || p.id }}
                         className="block w-full aspect-square overflow-hidden relative text-left"
                       >
                         <img
@@ -381,7 +381,7 @@ function ProductosPage() {
                       <div className="p-5 flex flex-col flex-1">
                         <Link
                           to="/productos/$productId"
-                          params={{ productId: p.id }}
+                          params={{ productId: p.slug || p.id }}
                           className="text-left font-bold text-navy-deep mb-1 hover:text-ocean transition"
                         >
                           {p.name}
