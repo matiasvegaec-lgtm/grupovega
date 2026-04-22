@@ -10,6 +10,12 @@ import pAditivo from "@/assets/p-aditivo.png";
 import pLarva from "@/assets/p-larva.png";
 import pFertilizante from "@/assets/p-fertilizante.png";
 import pVitamina from "@/assets/p-vitamina.png";
+import provNlproinsu from "@/assets/proveedor-nlproinsu.png";
+import provNaturalstar from "@/assets/proveedor-naturalstar.png";
+import provBlueweight from "@/assets/proveedor-blueweight.png";
+import provLacolina from "@/assets/proveedor-lacolina.png";
+import provLarviva from "@/assets/proveedor-larviva.png";
+import provBiomar from "@/assets/proveedor-biomar.png";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -39,14 +45,19 @@ const featured = [
   { name: "Vitaminas Premix", img: pVitamina },
 ];
 
-const suppliers = [
-  "Cargill", "Skretting", "BioMar", "Nutreco", "INVE", "Zeigler", "Alltech", "Nicovita",
+const supplierLogos = [
+  { name: "NLProinsu", img: provNlproinsu },
+  { name: "NaturalStar", img: provNaturalstar },
+  { name: "Blueweight", img: provBlueweight },
+  { name: "La Colina", img: provLacolina },
+  { name: "Larviva", img: provLarviva },
+  { name: "BioMar", img: provBiomar },
 ];
 
 function Index() {
   // Duplicamos el array para crear loop infinito sin saltos
   const carouselItems = [...featured, ...featured];
-  const supplierItems = [...suppliers, ...suppliers];
+  const supplierItems = [...supplierLogos, ...supplierLogos];
 
   return (
     <Layout>
@@ -197,17 +208,19 @@ function Index() {
           <div className="flex gap-6 animate-marquee-slow w-max hover:[animation-play-state:paused]">
             {supplierItems.map((s, i) => (
               <motion.div
-                key={`${s}-${i}`}
+                key={`${s.name}-${i}`}
                 whileHover={{ scale: 1.1, rotate: -2 }}
                 transition={{ type: "spring", stiffness: 300 }}
                 className="relative shrink-0 w-56 h-28 group"
               >
                 <div className="absolute inset-0 gradient-wave rounded-2xl opacity-0 group-hover:opacity-100 blur-xl transition duration-500" />
-                <div className="relative w-full h-full bg-card border border-border rounded-2xl flex items-center justify-center text-navy-deep font-display font-bold text-2xl group-hover:border-ocean group-hover:text-ocean group-hover:shadow-elegant transition-all duration-300">
-                  <span className="relative">
-                    {s}
-                    <span className="absolute -bottom-1 left-0 w-0 h-0.5 gradient-wave group-hover:w-full transition-all duration-500" />
-                  </span>
+                <div className="relative w-full h-full bg-white border border-border rounded-2xl flex items-center justify-center p-4 group-hover:border-ocean group-hover:shadow-elegant transition-all duration-300 overflow-hidden">
+                  <img
+                    src={s.img}
+                    alt={s.name}
+                    loading="lazy"
+                    className="max-h-full max-w-full object-contain group-hover:scale-105 transition-transform duration-300"
+                  />
                 </div>
               </motion.div>
             ))}
