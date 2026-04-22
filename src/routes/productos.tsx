@@ -352,6 +352,8 @@ function ProductosPage() {
                       <Link
                         to="/productos/$productId"
                         params={{ productId: p.id }}
+                        target="_blank"
+                        rel="noopener noreferrer"
                         className="block aspect-square overflow-hidden relative"
                       >
                         <img
@@ -368,6 +370,8 @@ function ProductosPage() {
                         <Link
                           to="/productos/$productId"
                           params={{ productId: p.id }}
+                          target="_blank"
+                          rel="noopener noreferrer"
                           className="font-bold text-navy-deep mb-1 hover:text-ocean transition"
                         >
                           {p.name}
