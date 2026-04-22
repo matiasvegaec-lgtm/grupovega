@@ -1,74 +1,5 @@
-import { Canvas, useFrame } from "@react-three/fiber";
-import { Environment, useTexture } from "@react-three/drei";
-import { useRef, Suspense, useEffect, useState } from "react";
-import * as THREE from "three";
+import { useEffect, useState } from "react";
 import productsImg from "@/assets/hero-products-group.png";
-import productMobileImg from "@/assets/hero-product-mobile.png";
-
-function ProductsGroup({ textureUrl, aspect = 1.05, animated = true }: { textureUrl: string; aspect?: number; animated?: boolean }) {
-  const ref = useRef<THREE.Mesh>(null);
-  const texture = useTexture(textureUrl);
-  texture.anisotropy = 16;
-  texture.minFilter = THREE.LinearMipmapLinearFilter;
-  texture.magFilter = THREE.LinearFilter;
-  texture.generateMipmaps = true;
-
-  useFrame((state) => {
-    if (!ref.current || !animated) return;
-    const t = state.clock.elapsedTime;
-    // Suave flotación + ligera inclinación 3D para sensación de volumen
-    ref.current.position.y = Math.sin(t * 0.8) * 0.15;
-    ref.current.position.x = Math.sin(t * 0.4) * 0.08;
-    ref.current.rotation.y = Math.sin(t * 0.5) * 0.12;
-    ref.current.rotation.x = Math.cos(t * 0.4) * 0.05;
-    ref.current.rotation.z = Math.sin(t * 0.3) * 0.02;
-  });
-
-  return (
-    <mesh
-      ref={ref}
-      scale={[3.2, 3.2, 1]}
-      rotation={animated ? [0, 0, 0] : [-0.08, -0.25, 0]}
-    >
-      <planeGeometry args={[1, aspect]} />
-      <meshStandardMaterial
-        map={texture}
-        transparent
-        alphaTest={0.05}
-        side={THREE.DoubleSide}
-        roughness={0.4}
-        metalness={0.25}
-      />
-    </mesh>
-  );
-}
-
-function Scene({ isMobile }: { isMobile: boolean }) {
-  return (
-    <>
-      {/* Luz ambiental suave */}
-      <ambientLight intensity={0.5} />
-      {/* Luz principal cálida desde arriba-izquierda */}
-      <directionalLight position={[-4, 6, 5]} intensity={2.4} color="#ffffff" castShadow />
-      {/* Luz de relleno fría desde la derecha */}
-      <pointLight position={[5, 2, 4]} intensity={2} color="#88ccff" />
-      {/* Luz de contorno trasera para resaltar bordes */}
-      <pointLight position={[3, -2, -3]} intensity={1.6} color="#4DA6FF" />
-      {/* Luz superior tipo spot para volumen */}
-      <spotLight position={[0, 5, 3]} angle={0.5} penumbra={0.8} intensity={1.5} color="#ffffff" />
-
-      <Suspense fallback={null}>
-        <ProductsGroup
-          textureUrl={isMobile ? productMobileImg : productsImg}
-          aspect={isMobile ? 1.4 : 1.05}
-          animated={!isMobile}
-        />
-      </Suspense>
-
-      <Environment preset="city" />
-    </>
-  );
-}
 
 export function UnderwaterScene() {
   const [isMobile, setIsMobile] = useState(false);
@@ -86,7 +17,7 @@ export function UnderwaterScene() {
   return (
     <div
       className="
-        pointer-events-none absolute -z-0
+        pointer-events-none absolute -z-0 animate-fade-in
         bottom-0 right-0 w-[60%] max-w-[460px] h-[60%]
         md:w-[55%] md:max-w-[640px] md:h-[85%]
         lg:max-w-[760px] lg:h-[95%]
@@ -111,16 +42,11 @@ export function UnderwaterScene() {
           filter: "blur(14px)",
         }}
       />
-      <Canvas
-        camera={{ position: [0, 0, 4], fov: 45 }}
-        dpr={[2, 3]}
-        gl={{ alpha: true, antialias: true }}
-        style={{ background: "transparent" }}
-      >
-        <Suspense fallback={null}>
-          <Scene key={isMobile ? "m" : "d"} isMobile={isMobile} />
-        </Suspense>
-      </Canvas>
+      <img
+        src={productsImg}
+        alt="Productos Grupo Vega"
+        className="relative z-10 w-full h-full object-contain drop-shadow-2xl"
+      />
     </div>
   );
 }
