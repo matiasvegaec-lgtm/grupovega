@@ -243,7 +243,7 @@ function Index() {
                   </div>
                   <div>
                     <div className="text-white/60 text-xs uppercase tracking-widest font-semibold">Dirección</div>
-                    <div className="text-lg">Pedernales, Manabí — Ecuador</div>
+                    <div className="text-lg">García Moreno y 3 de Noviembre, frente al cementerio — Pedernales, Manabí, Ecuador</div>
                   </div>
                 </li>
                 <li className="flex gap-4">
