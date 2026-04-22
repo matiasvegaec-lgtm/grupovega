@@ -415,6 +415,12 @@ function ProductosPage() {
                         >
                           <ShoppingCart className="w-4 h-4" /> Agregar al carrito
                         </button>
+                        <button
+                          onClick={() => setQuickView(p)}
+                          className="lg:hidden mt-2 w-full inline-flex items-center justify-center gap-2 px-4 py-2 rounded-full border border-border text-navy-deep text-xs font-semibold hover:border-ocean hover:text-ocean transition"
+                        >
+                          <Eye className="w-4 h-4" /> Vista rápida
+                        </button>
                       </div>
                     </motion.div>
                   ))}
@@ -424,6 +430,74 @@ function ProductosPage() {
           </div>
         </div>
       </section>
+
+      {/* Modal Vista Rápida (mobile) */}
+      {quickView && (
+        <div className="fixed inset-0 z-50 lg:hidden flex items-end sm:items-center justify-center">
+          <div
+            className="absolute inset-0 bg-black/60"
+            onClick={() => setQuickView(null)}
+          />
+          <div className="relative w-full sm:max-w-md bg-background rounded-t-3xl sm:rounded-3xl max-h-[90vh] overflow-y-auto shadow-elegant animate-slide-in-right">
+            <button
+              onClick={() => setQuickView(null)}
+              className="absolute top-3 right-3 z-10 p-2 rounded-full bg-white/90 hover:bg-white shadow-card"
+              aria-label="Cerrar"
+            >
+              <X className="w-5 h-5 text-navy-deep" />
+            </button>
+            <div className="aspect-square overflow-hidden">
+              <img
+                src={quickView.image_url || feedImg}
+                alt={quickView.name}
+                className="w-full h-full object-cover"
+              />
+            </div>
+            <div className="p-6 space-y-4">
+              <span className="inline-block px-3 py-1 rounded-full bg-foam text-ocean text-xs font-semibold">
+                {quickView.category}
+              </span>
+              <h3 className="text-2xl font-bold text-navy-deep">{quickView.name}</h3>
+              <p className="text-muted-foreground text-sm">{quickView.description}</p>
+              <div className="flex items-center justify-between">
+                <span className="text-3xl font-bold text-navy-deep">
+                  ${Number(quickView.price).toFixed(2)}
+                </span>
+                {quickView.stock > 0 ? (
+                  <span className="text-sm text-green-700 font-semibold">En stock</span>
+                ) : (
+                  <span className="text-sm text-muted-foreground">Agotado</span>
+                )}
+              </div>
+              <div className="flex flex-col gap-2 pt-2">
+                <button
+                  disabled={quickView.stock <= 0}
+                  onClick={() => {
+                    addItem({
+                      id: quickView.id,
+                      name: quickView.name,
+                      price: Number(quickView.price),
+                      category: quickView.category,
+                      img: quickView.image_url || feedImg,
+                    });
+                    toast.success(`${quickView.name} agregado al carrito`);
+                  }}
+                  className="w-full inline-flex items-center justify-center gap-2 px-4 py-3 rounded-full gradient-wave text-white text-sm font-semibold shadow-glow disabled:opacity-50"
+                >
+                  <ShoppingCart className="w-4 h-4" /> Agregar al carrito
+                </button>
+                <Link
+                  to="/productos/$productId"
+                  params={{ productId: quickView.id }}
+                  className="w-full inline-flex items-center justify-center gap-2 px-4 py-3 rounded-full border border-border text-navy-deep text-sm font-semibold hover:border-ocean hover:text-ocean transition"
+                >
+                  Ver página completa
+                </Link>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* PROVEEDORES — marquee */}
       <section className="py-20 bg-foam overflow-hidden">
