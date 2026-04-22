@@ -121,7 +121,7 @@ function Index() {
             <p className="text-sm font-semibold uppercase tracking-widest text-ocean mb-3">Categorías</p>
             <h2 className="text-4xl md:text-5xl font-bold text-navy-deep">Líneas de producto</h2>
           </div>
-          <div className="grid grid-cols-3 md:grid-cols-6 gap-6">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 max-w-3xl mx-auto justify-items-center">
             {categories.map((c, i) => (
               <motion.div
                 key={c.name}
