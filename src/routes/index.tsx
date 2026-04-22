@@ -302,6 +302,8 @@ function Index() {
                   className="marquee-item group flex flex-col items-center w-56 shrink-0 cursor-pointer"
                 >
                   <div className="relative w-56 h-56 flex items-center justify-center">
+                    {/* Fondo circular suave que actúa como "marco" sin recortar la imagen */}
+                    <div className="absolute inset-2 rounded-full bg-gradient-to-br from-white via-foam to-ocean/10 shadow-inner" />
                     <div className="absolute inset-4 rounded-full gradient-wave opacity-0 group-hover:opacity-40 blur-2xl transition-all duration-700 group-hover:scale-110" />
                     <div className="absolute inset-0 rounded-full border-2 border-dashed border-ocean/0 group-hover:border-ocean/30 group-hover:rotate-180 transition-all duration-1000" />
                     <img
