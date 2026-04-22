@@ -187,11 +187,42 @@ function Index() {
       </section>
 
       {/* PRODUCTOS DESTACADOS — carrusel automático, sueltos sin caja */}
-      <section className="py-20 bg-foam overflow-hidden">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8 mb-12">
+      <section className="relative py-24 bg-foam overflow-hidden">
+        {/* fondo decorativo inmersivo */}
+        <div className="absolute inset-0 pointer-events-none">
+          <div className="absolute -top-32 -left-32 w-96 h-96 rounded-full bg-ocean/10 blur-3xl animate-float-slow" />
+          <div className="absolute -bottom-32 -right-32 w-96 h-96 rounded-full bg-turquoise/15 blur-3xl animate-float-slow" style={{ animationDelay: "2s" }} />
+          <div className="absolute top-1/3 left-1/2 w-72 h-72 rounded-full bg-primary/10 blur-3xl animate-float" />
+        </div>
+
+        <div className="relative container mx-auto px-4 sm:px-6 lg:px-8 mb-14">
           <div className="text-center max-w-2xl mx-auto">
-            <p className="text-sm font-semibold uppercase tracking-widest text-ocean mb-3">Destacados</p>
-            <h2 className="text-4xl md:text-5xl font-bold text-navy-deep">Productos más vendidos</h2>
+            <motion.p
+              initial={{ opacity: 0, y: 10 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              className="inline-flex items-center gap-2 text-sm font-semibold uppercase tracking-widest text-ocean mb-3"
+            >
+              <span className="w-8 h-px bg-ocean" /> Destacados <span className="w-8 h-px bg-ocean" />
+            </motion.p>
+            <motion.h2
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.1 }}
+              className="text-4xl md:text-5xl font-bold text-navy-deep mb-4"
+            >
+              Productos más <span className="text-gradient">vendidos</span>
+            </motion.h2>
+            <motion.p
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.2 }}
+              className="text-muted-foreground text-lg"
+            >
+              Los favoritos de los camaroneros ecuatorianos, seleccionados por calidad y rendimiento.
+            </motion.p>
           </div>
         </div>
 
@@ -202,26 +233,44 @@ function Index() {
 
           <div className="flex gap-12 animate-marquee w-max hover:[animation-play-state:paused]">
             {carouselItems.map((p, i) => (
-              <div key={`${p.name}-${i}`} className="flex flex-col items-center w-56 shrink-0">
-                <div className="w-56 h-56 flex items-center justify-center group">
+              <div key={`${p.name}-${i}`} className="group flex flex-col items-center w-56 shrink-0 cursor-pointer">
+                <div className="relative w-56 h-56 flex items-center justify-center">
+                  {/* halo glow */}
+                  <div className="absolute inset-4 rounded-full gradient-wave opacity-0 group-hover:opacity-40 blur-2xl transition-all duration-700 group-hover:scale-110" />
+                  {/* anillo decorativo */}
+                  <div className="absolute inset-0 rounded-full border-2 border-dashed border-ocean/0 group-hover:border-ocean/30 group-hover:rotate-180 transition-all duration-1000" />
                   <img
                     src={p.img}
                     alt={p.name}
                     loading="lazy"
-                    className="max-h-full max-w-full object-contain drop-shadow-2xl group-hover:scale-110 transition-transform duration-500"
+                    className="relative max-h-full max-w-full object-contain drop-shadow-2xl group-hover:scale-125 group-hover:-translate-y-2 group-hover:-rotate-3 transition-all duration-500"
                     style={{ filter: "drop-shadow(0 20px 30px oklch(0.22 0.1 258 / 0.25))" }}
                   />
                 </div>
-                <p className="mt-4 font-semibold text-navy-deep text-center">{p.name}</p>
+                <p className="mt-4 font-semibold text-navy-deep text-center group-hover:text-ocean transition-colors">{p.name}</p>
+                <span className="text-xs text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity duration-300 mt-1">Destacado ⭐</span>
               </div>
             ))}
           </div>
         </div>
 
-        <div className="text-center mt-12">
-          <Link to="/productos" className="inline-flex items-center gap-1 text-ocean font-semibold hover:gap-2 transition-all">
-            Ver catálogo completo <ArrowRight className="w-4 h-4" />
-          </Link>
+        <div className="relative text-center mt-14">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="inline-block"
+          >
+            <Link
+              to="/productos"
+              className="group relative inline-flex items-center gap-3 px-8 py-4 rounded-full gradient-wave text-white font-semibold shadow-glow hover:scale-105 transition-all duration-300 overflow-hidden"
+            >
+              {/* shimmer effect */}
+              <span className="absolute inset-0 -translate-x-full group-hover:translate-x-full bg-gradient-to-r from-transparent via-white/30 to-transparent transition-transform duration-1000" />
+              <span className="relative">Ver catálogo completo</span>
+              <ArrowRight className="relative w-5 h-5 group-hover:translate-x-1 transition-transform" />
+            </Link>
+          </motion.div>
         </div>
       </section>
 
