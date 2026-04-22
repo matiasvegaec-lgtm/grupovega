@@ -272,6 +272,9 @@ export function Header() {
                 <Link to="/favoritos" onClick={() => setOpen(false)} className="px-4 py-3 rounded-lg text-navy-deep hover:bg-foam font-medium flex items-center gap-2">
                   <Heart className="w-4 h-4" /> Favoritos
                 </Link>
+                <Link to="/notificaciones" onClick={() => setOpen(false)} className="px-4 py-3 rounded-lg text-navy-deep hover:bg-foam font-medium flex items-center gap-2">
+                  <Bell className="w-4 h-4" /> Notificaciones
+                </Link>
                 <button
                   type="button"
                   onClick={() => { setOpen(false); setPromoOpen(true); }}
