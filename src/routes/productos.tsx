@@ -352,7 +352,7 @@ function ProductosPage() {
               ) : filtered.length === 0 ? (
                 <p className="text-center text-muted-foreground py-16">No se encontraron productos.</p>
               ) : (
-                <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6">
                   {filtered.map((p, i) => (
                     <motion.div
                       key={p.id}
