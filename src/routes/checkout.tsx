@@ -1,6 +1,6 @@
 import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
 import { useState, FormEvent, useEffect } from "react";
-import { Loader2, CreditCard, ShoppingBag, Building2, Banknote, Send, Lock, Clock } from "lucide-react";
+import { Loader2, CreditCard, ShoppingBag, Building2, Banknote, Send, Lock, Clock, ChevronLeft, ChevronRight, Check, User, MapPin, Wallet } from "lucide-react";
 import { Layout } from "@/components/Layout";
 import { PageHero } from "@/components/PageHero";
 import { useCart } from "@/contexts/CartContext";
@@ -36,6 +36,13 @@ type PayMethod = "card" | "transfer" | "cash";
 
 const CUSTOMER_STORAGE_KEY = "gv_customer_data_v1";
 
+type StepKey = "customer" | "shipping" | "payment";
+const STEPS: { key: StepKey; label: string; icon: any }[] = [
+  { key: "customer", label: "Datos", icon: User },
+  { key: "shipping", label: "Entrega", icon: MapPin },
+  { key: "payment", label: "Pago", icon: Wallet },
+];
+
 function CheckoutPage() {
   const { items, subtotal, clear } = useCart();
   const { user, loading: authLoading } = useAuth();
@@ -43,6 +50,8 @@ function CheckoutPage() {
   const [submitting, setSubmitting] = useState(false);
   const [method, setMethod] = useState<PayMethod>("transfer");
   const [saveData, setSaveData] = useState(true);
+  const [step, setStep] = useState<number>(0);
+  const [errors, setErrors] = useState<Record<string, string>>({});
   const [form, setForm] = useState({
     customer_name: "",        // nombres y apellidos
     receiver_name: "",        // quien recibe
