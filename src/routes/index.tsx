@@ -92,7 +92,16 @@ function Index() {
     if (!isMobile) return;
 
     let raf = 0;
+    let lastTick = 0;
+    let lastClosest: HTMLElement | null = null;
     const tick = () => {
+      // Throttle a ~10fps: suficiente para detectar el centro sin saturar el hilo principal
+      const now = performance.now();
+      if (now - lastTick < 100) {
+        raf = requestAnimationFrame(tick);
+        return;
+      }
+      lastTick = now;
       const container = marqueeRef.current;
       if (container) {
         const items = container.querySelectorAll<HTMLElement>("[data-marquee-item]");
@@ -108,10 +117,11 @@ function Index() {
             closest = el;
           }
         });
-        items.forEach((el) => {
-          if (el === closest) el.classList.add("is-centered");
-          else el.classList.remove("is-centered");
-        });
+        if (closest !== lastClosest) {
+          if (lastClosest) lastClosest.classList.remove("is-centered");
+          if (closest) (closest as HTMLElement).classList.add("is-centered");
+          lastClosest = closest;
+        }
       }
       raf = requestAnimationFrame(tick);
     };
