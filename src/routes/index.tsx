@@ -45,10 +45,6 @@ const featured = [
   { name: "Vitaminas Premix", img: pVitamina },
 ];
 
-const suppliers = [
-  "Cargill", "Skretting", "BioMar", "Nutreco", "INVE", "Zeigler", "Alltech", "Nicovita",
-];
-
 const supplierLogos = [
   { name: "NLProinsu", img: provNlproinsu },
   { name: "NaturalStar", img: provNaturalstar },
