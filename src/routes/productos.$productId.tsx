@@ -16,7 +16,10 @@ type Product = {
   category: string;
   image_url: string | null;
   stock: number;
+  subcategory_id: string | null;
 };
+
+type Subcategory = { id: string; name: string };
 
 export const Route = createFileRoute("/productos/$productId")({
   head: () => ({
@@ -35,9 +38,12 @@ function ProductDetailPage() {
   const [product, setProduct] = useState<Product | null>(null);
   const [loading, setLoading] = useState(true);
   const [qty, setQty] = useState(1);
+  const [subcategoryName, setSubcategoryName] = useState<string | null>(null);
+  const [related, setRelated] = useState<Product[]>([]);
 
   useEffect(() => {
     let alive = true;
+    window.scrollTo({ top: 0, behavior: "instant" as ScrollBehavior });
     (async () => {
       setLoading(true);
       const { data } = await supabase
@@ -48,6 +54,26 @@ function ProductDetailPage() {
       if (!alive) return;
       const prod = (data ?? null) as Product | null;
       setProduct(prod);
+      if (prod) {
+        const [subRes, relRes] = await Promise.all([
+          prod.subcategory_id
+            ? supabase.from("subcategories").select("id,name").eq("id", prod.subcategory_id).maybeSingle()
+            : Promise.resolve({ data: null }),
+          supabase
+            .from("products")
+            .select("*")
+            .eq("active", true)
+            .eq("category", prod.category)
+            .neq("id", prod.id)
+            .limit(4),
+        ]);
+        if (!alive) return;
+        setSubcategoryName(((subRes.data as Subcategory | null)?.name) ?? null);
+        setRelated(((relRes as { data: Product[] | null }).data ?? []) as Product[]);
+      } else {
+        setSubcategoryName(null);
+        setRelated([]);
+      }
       setLoading(false);
     })();
     return () => {
