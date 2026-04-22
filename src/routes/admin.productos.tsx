@@ -299,41 +299,69 @@ function AdminProductos() {
               </div>
               <div>
                 <label className="text-xs font-semibold text-navy-deep">Precio (USD)</label>
-                <input required type="number" step="0.01" min="0" value={form.price} onChange={(e) => setForm({ ...form, price: parseFloat(e.target.value) || 0 })} className={inputCls} />
+                <div className="relative">
+                  <span className="absolute left-3 top-1/2 -translate-y-1/2 text-sm font-semibold text-muted-foreground pointer-events-none">$</span>
+                  <input required type="number" step="0.01" min="0" value={form.price} onChange={(e) => setForm({ ...form, price: parseFloat(e.target.value) || 0 })} className={inputCls + " pl-7"} />
+                </div>
               </div>
               <div>
                 <label className="text-xs font-semibold text-navy-deep">Stock</label>
-                <input required type="number" min="0" value={form.stock} onChange={(e) => setForm({ ...form, stock: parseInt(e.target.value) || 0 })} className={inputCls} />
+                <div className="relative">
+                  <input required type="number" min="0" value={form.stock} onChange={(e) => setForm({ ...form, stock: parseInt(e.target.value) || 0 })} className={inputCls + " pr-12"} />
+                  <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs font-semibold text-muted-foreground pointer-events-none">uds</span>
+                </div>
               </div>
               <div>
                 <label className="text-xs font-semibold text-navy-deep">Presentación</label>
-                <input
-                  value={form.presentation ?? ""}
-                  onChange={(e) => setForm({ ...form, presentation: e.target.value })}
-                  placeholder="Ej: 25 kg, 500 g, 1 L"
-                  className={inputCls}
-                />
+                <div className="relative">
+                  <input
+                    type="number"
+                    step="0.01"
+                    min="0"
+                    value={(form.presentation ?? "").replace(/[^0-9.]/g, "")}
+                    onChange={(e) => {
+                      const num = e.target.value;
+                      setForm({ ...form, presentation: num === "" ? "" : `${num} kg` });
+                    }}
+                    placeholder="25"
+                    className={inputCls + " pr-12"}
+                  />
+                  <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs font-semibold text-muted-foreground pointer-events-none">kg</span>
+                </div>
               </div>
               <div>
                 <label className="text-xs font-semibold text-navy-deep">Contenido de proteína</label>
-                <input
-                  value={form.protein_content ?? ""}
-                  onChange={(e) => setForm({ ...form, protein_content: e.target.value })}
-                  placeholder="Ej: 35%"
-                  className={inputCls}
-                />
+                <div className="relative">
+                  <input
+                    type="number"
+                    step="0.1"
+                    min="0"
+                    max="100"
+                    value={(form.protein_content ?? "").replace(/[^0-9.]/g, "")}
+                    onChange={(e) => {
+                      const num = e.target.value;
+                      setForm({ ...form, protein_content: num === "" ? "" : `${num}%` });
+                    }}
+                    placeholder="35"
+                    className={inputCls + " pr-8"}
+                  />
+                  <span className="absolute right-3 top-1/2 -translate-y-1/2 text-sm font-semibold text-muted-foreground pointer-events-none">%</span>
+                </div>
               </div>
               <div className="sm:col-span-2">
                 <label className="text-xs font-semibold text-navy-deep">Precio con tarjeta a 3 meses (USD)</label>
-                <input
-                  type="number"
-                  step="0.01"
-                  min="0"
-                  value={form.price_card_3m ?? ""}
-                  onChange={(e) => setForm({ ...form, price_card_3m: e.target.value === "" ? null : parseFloat(e.target.value) })}
-                  placeholder="Opcional — total diferido a 3 cuotas"
-                  className={inputCls}
-                />
+                <div className="relative">
+                  <span className="absolute left-3 top-1/2 -translate-y-1/2 text-sm font-semibold text-muted-foreground pointer-events-none">$</span>
+                  <input
+                    type="number"
+                    step="0.01"
+                    min="0"
+                    value={form.price_card_3m ?? ""}
+                    onChange={(e) => setForm({ ...form, price_card_3m: e.target.value === "" ? null : parseFloat(e.target.value) })}
+                    placeholder="Opcional — total diferido a 3 cuotas"
+                    className={inputCls + " pl-7"}
+                  />
+                </div>
                 <p className="text-[11px] text-muted-foreground mt-1">Si lo dejas vacío no se mostrará el precio diferido.</p>
               </div>
               <div className="sm:col-span-2">
