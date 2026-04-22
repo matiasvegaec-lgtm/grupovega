@@ -261,22 +261,34 @@ export function Header() {
               </Link>
             ))}
             <div className="my-2 h-px bg-border" />
-            <Link to="/auth" search={{ redirect: undefined }} onClick={() => setOpen(false)} className="px-4 py-3 rounded-lg text-navy-deep hover:bg-foam font-medium flex items-center gap-2">
-              <UserCircle className="w-4 h-4" /> Mi cuenta
-            </Link>
-            <Link to="/mis-pedidos" onClick={() => setOpen(false)} className="px-4 py-3 rounded-lg text-navy-deep hover:bg-foam font-medium flex items-center gap-2">
-              <Package className="w-4 h-4" /> Mis pedidos
-            </Link>
-            <Link to="/favoritos" onClick={() => setOpen(false)} className="px-4 py-3 rounded-lg text-navy-deep hover:bg-foam font-medium flex items-center gap-2">
-              <Heart className="w-4 h-4" /> Favoritos
-            </Link>
-            <button
-              type="button"
-              onClick={() => { setOpen(false); setPromoOpen(true); }}
-              className="text-left px-4 py-3 rounded-lg text-navy-deep hover:bg-foam font-medium flex items-center gap-2"
-            >
-              <Mail className="w-4 h-4" /> Recibir promociones
-            </button>
+            {!user ? (
+              <Link to="/auth" search={{ redirect: undefined }} onClick={() => setOpen(false)} className="px-4 py-3 rounded-lg text-navy-deep hover:bg-foam font-medium flex items-center gap-2">
+                <LogIn className="w-4 h-4" /> Iniciar sesión / Registrarse
+              </Link>
+            ) : (
+              <>
+                <Link to="/mis-pedidos" onClick={() => setOpen(false)} className="px-4 py-3 rounded-lg text-navy-deep hover:bg-foam font-medium flex items-center gap-2">
+                  <Package className="w-4 h-4" /> Mis pedidos
+                </Link>
+                <Link to="/favoritos" onClick={() => setOpen(false)} className="px-4 py-3 rounded-lg text-navy-deep hover:bg-foam font-medium flex items-center gap-2">
+                  <Heart className="w-4 h-4" /> Favoritos
+                </Link>
+                <button
+                  type="button"
+                  onClick={() => { setOpen(false); setPromoOpen(true); }}
+                  className="text-left px-4 py-3 rounded-lg text-navy-deep hover:bg-foam font-medium flex items-center gap-2"
+                >
+                  <Mail className="w-4 h-4" /> Recibir promociones
+                </button>
+                <button
+                  type="button"
+                  onClick={() => { setOpen(false); signOut(); }}
+                  className="text-left px-4 py-3 rounded-lg text-destructive hover:bg-foam font-medium flex items-center gap-2"
+                >
+                  <LogOut className="w-4 h-4" /> Cerrar sesión
+                </button>
+              </>
+            )}
             <Link
               to="/contacto"
               onClick={() => setOpen(false)}
