@@ -50,12 +50,13 @@ export function UnderwaterScene() {
     <div
       className="
         pointer-events-none absolute -z-0 animate-fade-in
-        bottom-0 right-0 w-[60%] max-w-[460px] h-[60%]
-        md:w-[55%] md:max-w-[640px] md:h-[85%]
-        lg:max-w-[760px] lg:h-[95%]
-        xl:max-w-[880px]
-        2xl:max-w-[1000px]
+        bottom-0 right-0 w-[70%] max-w-[560px] h-[75%]
+        md:w-[65%] md:max-w-[820px] md:h-[100%]
+        lg:max-w-[980px] lg:h-[110%]
+        xl:max-w-[1120px]
+        2xl:max-w-[1280px]
       "
+        style={{ animationDuration: "1.2s" }}
     >
       {/* Halo / glow detrás de los productos */}
       <div
