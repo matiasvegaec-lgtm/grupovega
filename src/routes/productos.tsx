@@ -75,10 +75,6 @@ function ProductosPage() {
   const [loading, setLoading] = useState(true);
   const { addItem } = useCart();
 
-  if (location.pathname !== "/productos") {
-    return <Outlet />;
-  }
-
   useEffect(() => {
     (async () => {
       const [prodRes, catRes, subRes] = await Promise.all([
@@ -132,6 +128,10 @@ function ProductosPage() {
   };
 
   const supplierItems = [...SUPPLIERS, ...SUPPLIERS, ...SUPPLIERS];
+
+  if (location.pathname !== "/productos") {
+    return <Outlet />;
+  }
 
   const Sidebar = (
     <aside className="space-y-6">
