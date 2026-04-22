@@ -86,7 +86,7 @@ function ProductDetailPage() {
             .eq("active", true)
             .eq("category", prod.category)
             .neq("id", prod.id)
-            .limit(4),
+            .limit(20),
         ]);
         if (!alive) return;
         setSubcategoryName(((subRes.data as Subcategory | null)?.name) ?? null);
