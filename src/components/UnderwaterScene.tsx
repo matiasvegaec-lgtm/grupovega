@@ -57,7 +57,17 @@ function Scene() {
 
 export function UnderwaterScene() {
   return (
-    <div className="pointer-events-none absolute bottom-0 right-0 -z-0 w-[55%] max-w-[640px] h-[85%] md:h-[95%]">
+    <div
+      className="
+        pointer-events-none absolute -z-0
+        bottom-2 right-2 w-[78%] max-w-[340px] h-[42%]
+        sm:bottom-0 sm:right-0 sm:w-[60%] sm:max-w-[460px] sm:h-[60%]
+        md:w-[55%] md:max-w-[640px] md:h-[85%]
+        lg:max-w-[760px] lg:h-[95%]
+        xl:max-w-[880px]
+        2xl:max-w-[1000px]
+      "
+    >
       {/* Halo / glow detrás de los productos */}
       <div
         className="absolute inset-0"
