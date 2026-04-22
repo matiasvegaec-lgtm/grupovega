@@ -279,11 +279,105 @@ function ProductDetailPage() {
 
           {related.length > 0 && (
             <div className="mt-20">
-              <h2 className="text-2xl font-bold text-navy-deep mb-8">
+              {/* Mobile: header tipo banner + carrusel con flechas y dots (estilo referencia) */}
+              <div className="md:hidden mb-6 rounded-2xl gradient-wave py-5 px-4 text-center shadow-card">
+                <h2 className="text-xl font-bold text-white leading-snug">
+                  Otros productos en {product.category}
+                </h2>
+              </div>
+              <h2 className="hidden md:block text-2xl font-bold text-navy-deep mb-8">
                 Otros productos en {product.category}
               </h2>
-              {/* Mobile: caja con scroll vertical y 2 columnas. Desktop: grilla normal */}
-              <div className="grid grid-cols-2 gap-4 max-h-[70vh] overflow-y-auto pr-1 sm:max-h-none sm:overflow-visible sm:gap-6 lg:grid-cols-4">
+
+              {/* Mobile: carrusel una tarjeta a la vez */}
+              <div className="md:hidden relative">
+                <div className="overflow-hidden" ref={emblaRef}>
+                  <div className="flex">
+                    {related.map((p) => (
+                      <div key={p.id} className="flex-[0_0_100%] min-w-0 px-2">
+                        <div className="bg-card rounded-2xl shadow-card overflow-hidden">
+                          <Link
+                            to="/productos/$productId"
+                            params={{ productId: p.slug || p.id }}
+                            className="block relative"
+                          >
+                            <span className="absolute top-3 left-3 z-10 px-3 py-1 rounded-full gradient-wave text-white text-xs font-semibold">
+                              {p.category}
+                            </span>
+                            <div className="aspect-square bg-white flex items-center justify-center p-6">
+                              <img
+                                src={p.image_url || feedImg}
+                                alt={p.name}
+                                className="max-h-full max-w-full object-contain"
+                              />
+                            </div>
+                          </Link>
+                          <div className="p-5">
+                            <p className="text-xs font-semibold uppercase tracking-widest text-ocean mb-1">
+                              {p.category}
+                            </p>
+                            <Link
+                              to="/productos/$productId"
+                              params={{ productId: p.slug || p.id }}
+                              className="block font-bold text-navy-deep text-base mb-2 hover:text-ocean transition"
+                            >
+                              {p.name}
+                            </Link>
+                            <p className="text-lg font-bold text-navy-deep mb-4">
+                              ${Number(p.price).toFixed(2)}
+                            </p>
+                            <Link
+                              to="/productos/$productId"
+                              params={{ productId: p.slug || p.id }}
+                              className="w-full inline-flex items-center justify-center gap-2 px-4 py-3 rounded-full gradient-wave text-white font-semibold shadow-glow"
+                            >
+                              <ShoppingCart className="w-4 h-4" /> Ver producto
+                            </Link>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Flechas laterales */}
+                <button
+                  type="button"
+                  aria-label="Anterior"
+                  onClick={() => emblaApi?.scrollPrev()}
+                  className="absolute left-1 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-ocean/80 text-white flex items-center justify-center shadow-md active:scale-95 transition"
+                >
+                  <ChevronLeft className="w-6 h-6" />
+                </button>
+                <button
+                  type="button"
+                  aria-label="Siguiente"
+                  onClick={() => emblaApi?.scrollNext()}
+                  className="absolute right-1 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-ocean/80 text-white flex items-center justify-center shadow-md active:scale-95 transition"
+                >
+                  <ChevronRight className="w-6 h-6" />
+                </button>
+
+                {/* Dots */}
+                <div className="flex items-center justify-center gap-2 mt-5">
+                  {related.map((_, i) => (
+                    <button
+                      key={i}
+                      type="button"
+                      aria-label={`Ir al producto ${i + 1}`}
+                      onClick={() => emblaApi?.scrollTo(i)}
+                      className={`rounded-full transition-all ${
+                        i === selectedIdx
+                          ? "w-2.5 h-2.5 bg-ocean"
+                          : "w-2 h-2 bg-muted-foreground/30"
+                      }`}
+                    />
+                  ))}
+                </div>
+              </div>
+
+              {/* Desktop: grilla original */}
+              <div className="hidden md:grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
                 {related.map((p) => (
                   <Link
                     key={p.id}
