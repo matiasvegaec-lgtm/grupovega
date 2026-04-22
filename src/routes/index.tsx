@@ -302,15 +302,20 @@ function Index() {
                   className="marquee-item group flex flex-col items-center w-56 shrink-0 cursor-pointer"
                 >
                   <div className="relative w-56 h-56 flex items-center justify-center">
-                    {/* Glow circular suave detrás del producto, sin marco visible */}
-                    <div className="absolute inset-6 rounded-full gradient-wave opacity-0 group-hover:opacity-40 blur-2xl transition-all duration-700 group-hover:scale-110" />
-                    <img
-                      src={p.img}
-                      alt={p.name}
-                      loading="lazy"
-                      className="relative max-h-full max-w-full object-contain drop-shadow-2xl group-hover:scale-125 group-hover:-translate-y-2 group-hover:-rotate-3 transition-all duration-500"
-                      style={{ filter: "drop-shadow(0 20px 30px oklch(0.22 0.1 258 / 0.25))" }}
-                    />
+                    {/* Fondo circular suave que actúa como marco */}
+                    <div className="absolute inset-2 rounded-full bg-gradient-to-br from-white via-foam to-ocean/10 shadow-inner" />
+                    <div className="absolute inset-4 rounded-full gradient-wave opacity-0 group-hover:opacity-40 blur-2xl transition-all duration-700 group-hover:scale-110" />
+                    <div className="absolute inset-0 rounded-full border-2 border-dashed border-ocean/0 group-hover:border-ocean/30 group-hover:rotate-180 transition-all duration-1000" />
+                    {/* Recorte circular inteligente: oculta el área transparente cuadrada del PNG */}
+                    <div className="relative w-48 h-48 rounded-full overflow-hidden flex items-center justify-center">
+                      <img
+                        src={p.img}
+                        alt={p.name}
+                        loading="lazy"
+                        className="max-h-[110%] max-w-[110%] object-contain drop-shadow-2xl group-hover:scale-125 group-hover:-translate-y-2 group-hover:-rotate-3 transition-all duration-500"
+                        style={{ filter: "drop-shadow(0 20px 30px oklch(0.22 0.1 258 / 0.25))" }}
+                      />
+                    </div>
                   </div>
                   <p className="mt-4 font-semibold text-navy-deep text-center group-hover:text-ocean transition-colors">{p.name}</p>
                   <span className="destacado-label text-xs text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity duration-300 mt-1">Destacado ⭐</span>
