@@ -12,9 +12,9 @@ import feedImg from "@/assets/product-feed.jpg";
 export const Route = createFileRoute("/productos")({
   head: () => ({
     meta: [
-      { title: "Productos — AquaMar" },
+      { title: "Productos — Grupo Vega" },
       { name: "description", content: "Catálogo completo de alimento balanceado, probióticos, fertilizantes y equipos para camaroneras." },
-      { property: "og:title", content: "Productos AquaMar" },
+      { property: "og:title", content: "Productos Grupo Vega" },
       { property: "og:description", content: "Catálogo completo para camaroneras." },
     ],
   }),
