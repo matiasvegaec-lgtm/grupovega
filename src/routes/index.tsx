@@ -4,8 +4,10 @@ import { ArrowRight, Wheat, Droplet, FlaskConical, Sprout, Pill, Beaker, MapPin,
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Layout } from "@/components/Layout";
-import { UnderwaterScene } from "@/components/UnderwaterScene";
 import heroImg from "@/assets/hero-shrimp-farm.jpg";
+import heroExia from "@/assets/hero-exia.png";
+import heroEcofresh from "@/assets/hero-ecofresh.png";
+import heroLarviva from "@/assets/hero-larviva.png";
 import pBalanceado from "@/assets/p-balanceado.png";
 import pAceite from "@/assets/p-aceite.png";
 import pAditivo from "@/assets/p-aditivo.png";
