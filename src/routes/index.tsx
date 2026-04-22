@@ -91,41 +91,37 @@ function Index() {
           <img src={heroImg} alt="" className="w-full h-full object-cover opacity-40" width={1920} height={1080} />
           <div className="absolute inset-0 gradient-deep opacity-70" />
         </div>
-        {/* Grupo de productos estáticos en esquina inferior derecha */}
-        <div className="hero-products group hidden md:block absolute bottom-12 right-4 lg:right-12 z-[5] w-[340px] lg:w-[460px] h-[340px] lg:h-[400px] pointer-events-auto">
-          {/* halo glow ambiente */}
-          <div className="absolute inset-0 rounded-full bg-turquoise/20 blur-3xl opacity-60 group-hover:opacity-90 group-hover:scale-110 transition-all duration-700" />
-          <div className="absolute inset-8 rounded-full bg-ocean/30 blur-2xl opacity-50 group-hover:opacity-80 transition-all duration-700" />
+        {/* Grupo de productos en esquina inferior derecha */}
+        <div className="group hidden md:flex absolute bottom-24 right-6 lg:right-16 z-[5] w-[360px] lg:w-[440px] h-[260px] lg:h-[300px] items-end justify-center gap-3 lg:gap-4 pointer-events-auto">
+          {/* halo glow contenido */}
+          <div className="absolute inset-x-4 bottom-4 h-32 rounded-full bg-turquoise/25 blur-2xl opacity-60 group-hover:opacity-90 transition-opacity duration-700 pointer-events-none" />
+          <div className="absolute inset-x-12 bottom-2 h-16 rounded-full bg-ocean/40 blur-xl opacity-50 group-hover:opacity-80 transition-opacity duration-700 pointer-events-none" />
 
-          {/* anillo decorativo giratorio */}
-          <div className="absolute inset-0 rounded-full border border-dashed border-white/10 group-hover:border-white/30 group-hover:rotate-180 transition-all duration-[2000ms]" />
-
-          {/* Wipp / Exia — izquierda, atrás */}
+          {/* Exia — izquierda */}
           <img
             src={heroExia}
             alt="Alimento balanceado Exia Prime"
-            className="hero-prod absolute left-0 bottom-4 w-[42%] drop-shadow-2xl transition-all duration-500 ease-out hover:scale-110 hover:-translate-y-4 hover:z-30"
-            style={{ filter: "drop-shadow(0 25px 35px rgba(0,0,0,0.45))" }}
+            className="relative h-[85%] w-auto object-contain animate-float drop-shadow-2xl transition-all duration-500 ease-out hover:scale-110 hover:-translate-y-3 hover:z-30 cursor-pointer"
+            style={{ filter: "drop-shadow(0 15px 20px rgba(0,0,0,0.5))" }}
           />
-          {/* Ecofresh — derecha, atrás */}
-          <img
-            src={heroEcofresh}
-            alt="Probiótico Ecofresh"
-            className="hero-prod absolute right-0 bottom-2 w-[44%] drop-shadow-2xl transition-all duration-500 ease-out hover:scale-110 hover:-translate-y-4 hover:z-30"
-            style={{ filter: "drop-shadow(0 25px 35px rgba(0,0,0,0.45))" }}
-          />
-          {/* Larviva — centro, adelante */}
+          {/* Larviva — centro (adelantado) */}
           <img
             src={heroLarviva}
             alt="Larviva PL 300"
-            className="hero-prod absolute left-1/2 -translate-x-1/2 bottom-0 w-[38%] z-10 drop-shadow-2xl transition-all duration-500 ease-out hover:scale-110 hover:-translate-y-6 hover:z-30"
-            style={{ filter: "drop-shadow(0 30px 40px rgba(0,0,0,0.55))" }}
+            className="relative h-[95%] w-auto object-contain animate-float-slow drop-shadow-2xl transition-all duration-500 ease-out hover:scale-110 hover:-translate-y-4 hover:z-30 cursor-pointer z-10"
+            style={{ filter: "drop-shadow(0 18px 22px rgba(0,0,0,0.55))", animationDelay: "0.8s" }}
+          />
+          {/* Ecofresh — derecha */}
+          <img
+            src={heroEcofresh}
+            alt="Probiótico Ecofresh"
+            className="relative h-[85%] w-auto object-contain animate-float drop-shadow-2xl transition-all duration-500 ease-out hover:scale-110 hover:-translate-y-3 hover:z-30 cursor-pointer"
+            style={{ filter: "drop-shadow(0 15px 20px rgba(0,0,0,0.5))", animationDelay: "1.6s" }}
           />
 
-          {/* destellos sutiles */}
-          <span className="absolute top-4 left-1/3 w-2 h-2 rounded-full bg-turquoise animate-pulse" />
-          <span className="absolute top-12 right-1/4 w-1.5 h-1.5 rounded-full bg-white/80 animate-pulse" style={{ animationDelay: "0.7s" }} />
-          <span className="absolute bottom-1/3 left-2 w-1 h-1 rounded-full bg-turquoise/80 animate-pulse" style={{ animationDelay: "1.4s" }} />
+          {/* destellos */}
+          <span className="absolute top-2 left-1/4 w-2 h-2 rounded-full bg-turquoise animate-pulse pointer-events-none" />
+          <span className="absolute top-8 right-1/4 w-1.5 h-1.5 rounded-full bg-white/80 animate-pulse pointer-events-none" style={{ animationDelay: "0.7s" }} />
         </div>
 
         <div className="relative z-10 container mx-auto px-4 sm:px-6 lg:px-8 pt-24 pb-16">
