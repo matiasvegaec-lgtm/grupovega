@@ -29,6 +29,7 @@ export const Route = createFileRoute("/productos")({
 
 type Product = {
   id: string;
+  slug: string | null;
   name: string;
   description: string | null;
   price: number;
