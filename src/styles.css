@@ -246,9 +246,50 @@
 }
 .animate-marquee {
   animation: marquee 30s linear infinite;
+  will-change: transform;
+  transform: translateZ(0);
+  backface-visibility: hidden;
 }
 .animate-marquee-slow {
   animation: marquee 50s linear infinite;
+  will-change: transform;
+  transform: translateZ(0);
+  backface-visibility: hidden;
+}
+
+/* Optimización mobile: el marquee es la sección más pesada en pantallas pequeñas */
+@media (max-width: 767px) {
+  /* Ocultar blobs decorativos animados (blur 3xl + animación = caro en GPU mobile) */
+  .animate-float-slow,
+  .animate-float {
+    animation: none;
+  }
+  /* Reducir el coste de los blurs gigantes en mobile */
+  .blur-3xl { filter: blur(40px); opacity: 0.6; }
+  .blur-2xl { filter: blur(24px); }
+
+  /* Acelerar cada tarjeta del marquee y permitir que el navegador
+     omita renderizar las que están fuera de pantalla */
+  .marquee-item {
+    content-visibility: auto;
+    contain-intrinsic-size: 224px 280px;
+  }
+  .marquee-item img {
+    will-change: transform;
+    transform: translateZ(0);
+  }
+  /* Acelera la animación del marquee en mobile para sensación más fluida */
+  .animate-marquee { animation-duration: 24s; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-marquee,
+  .animate-marquee-slow,
+  .animate-float,
+  .animate-float-slow,
+  .animate-spotlight {
+    animation: none !important;
+  }
 }
 
 /* Replica los efectos del :hover del marquee cuando un item está centrado (mobile) */
