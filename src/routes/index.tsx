@@ -306,13 +306,14 @@ function Index() {
                     <div className="absolute inset-2 rounded-full bg-gradient-to-br from-white via-foam to-ocean/10 shadow-inner" />
                     <div className="absolute inset-4 rounded-full gradient-wave opacity-0 group-hover:opacity-40 blur-2xl transition-all duration-700 group-hover:scale-110" />
                     <div className="absolute inset-0 rounded-full border-2 border-dashed border-ocean/0 group-hover:border-ocean/30 group-hover:rotate-180 transition-all duration-1000" />
-                    {/* Recorte circular más cerrado para esconder el fondo/margen cuadrado del PNG */}
-                    <div className="relative w-44 h-44 rounded-full overflow-hidden flex items-center justify-center shadow-[0_20px_40px_-10px_oklch(0.22_0.1_258_/_0.35)]">
+                    {/* Recorte circular en mobile (esconde el margen cuadrado del PNG); en desktop sin recorte para conservar el comportamiento original */}
+                    <div className="relative w-44 h-44 md:w-48 md:h-48 rounded-full md:rounded-none overflow-hidden md:overflow-visible flex items-center justify-center">
                       <img
                         src={p.img}
                         alt={p.name}
                         loading="lazy"
-                        className="h-full w-full object-contain scale-[1.22] group-hover:scale-[1.38] group-hover:-translate-y-2 group-hover:-rotate-3 transition-all duration-500"
+                        className="h-full w-full object-contain scale-[1.22] md:scale-100 group-hover:scale-[1.38] md:group-hover:scale-125 group-hover:-translate-y-2 group-hover:-rotate-3 transition-all duration-500 md:drop-shadow-2xl"
+                        style={{ filter: "drop-shadow(0 20px 30px oklch(0.22 0.1 258 / 0.25))" }}
                       />
                     </div>
                   </div>
