@@ -10,6 +10,8 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as ProductosRouteImport } from './routes/productos'
+import { Route as MisPedidosRouteImport } from './routes/mis-pedidos'
+import { Route as FavoritosRouteImport } from './routes/favoritos'
 import { Route as ContactoRouteImport } from './routes/contacto'
 import { Route as CheckoutRouteImport } from './routes/checkout'
 import { Route as CarritoRouteImport } from './routes/carrito'
@@ -26,6 +28,16 @@ import { Route as AdminCategoriasRouteImport } from './routes/admin.categorias'
 const ProductosRoute = ProductosRouteImport.update({
   id: '/productos',
   path: '/productos',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MisPedidosRoute = MisPedidosRouteImport.update({
+  id: '/mis-pedidos',
+  path: '/mis-pedidos',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const FavoritosRoute = FavoritosRouteImport.update({
+  id: '/favoritos',
+  path: '/favoritos',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ContactoRoute = ContactoRouteImport.update({
@@ -96,6 +108,8 @@ export interface FileRoutesByFullPath {
   '/carrito': typeof CarritoRoute
   '/checkout': typeof CheckoutRoute
   '/contacto': typeof ContactoRoute
+  '/favoritos': typeof FavoritosRoute
+  '/mis-pedidos': typeof MisPedidosRoute
   '/productos': typeof ProductosRouteWithChildren
   '/admin/categorias': typeof AdminCategoriasRoute
   '/admin/pedidos': typeof AdminPedidosRoute
@@ -111,6 +125,8 @@ export interface FileRoutesByTo {
   '/carrito': typeof CarritoRoute
   '/checkout': typeof CheckoutRoute
   '/contacto': typeof ContactoRoute
+  '/favoritos': typeof FavoritosRoute
+  '/mis-pedidos': typeof MisPedidosRoute
   '/productos': typeof ProductosRouteWithChildren
   '/admin/categorias': typeof AdminCategoriasRoute
   '/admin/pedidos': typeof AdminPedidosRoute
@@ -127,6 +143,8 @@ export interface FileRoutesById {
   '/carrito': typeof CarritoRoute
   '/checkout': typeof CheckoutRoute
   '/contacto': typeof ContactoRoute
+  '/favoritos': typeof FavoritosRoute
+  '/mis-pedidos': typeof MisPedidosRoute
   '/productos': typeof ProductosRouteWithChildren
   '/admin/categorias': typeof AdminCategoriasRoute
   '/admin/pedidos': typeof AdminPedidosRoute
@@ -144,6 +162,8 @@ export interface FileRouteTypes {
     | '/carrito'
     | '/checkout'
     | '/contacto'
+    | '/favoritos'
+    | '/mis-pedidos'
     | '/productos'
     | '/admin/categorias'
     | '/admin/pedidos'
@@ -159,6 +179,8 @@ export interface FileRouteTypes {
     | '/carrito'
     | '/checkout'
     | '/contacto'
+    | '/favoritos'
+    | '/mis-pedidos'
     | '/productos'
     | '/admin/categorias'
     | '/admin/pedidos'
@@ -174,6 +196,8 @@ export interface FileRouteTypes {
     | '/carrito'
     | '/checkout'
     | '/contacto'
+    | '/favoritos'
+    | '/mis-pedidos'
     | '/productos'
     | '/admin/categorias'
     | '/admin/pedidos'
@@ -190,6 +214,8 @@ export interface RootRouteChildren {
   CarritoRoute: typeof CarritoRoute
   CheckoutRoute: typeof CheckoutRoute
   ContactoRoute: typeof ContactoRoute
+  FavoritosRoute: typeof FavoritosRoute
+  MisPedidosRoute: typeof MisPedidosRoute
   ProductosRoute: typeof ProductosRouteWithChildren
   PedidoOrderNumberRoute: typeof PedidoOrderNumberRoute
 }
@@ -201,6 +227,20 @@ declare module '@tanstack/react-router' {
       path: '/productos'
       fullPath: '/productos'
       preLoaderRoute: typeof ProductosRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/mis-pedidos': {
+      id: '/mis-pedidos'
+      path: '/mis-pedidos'
+      fullPath: '/mis-pedidos'
+      preLoaderRoute: typeof MisPedidosRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/favoritos': {
+      id: '/favoritos'
+      path: '/favoritos'
+      fullPath: '/favoritos'
+      preLoaderRoute: typeof FavoritosRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/contacto': {
@@ -325,6 +365,8 @@ const rootRouteChildren: RootRouteChildren = {
   CarritoRoute: CarritoRoute,
   CheckoutRoute: CheckoutRoute,
   ContactoRoute: ContactoRoute,
+  FavoritosRoute: FavoritosRoute,
+  MisPedidosRoute: MisPedidosRoute,
   ProductosRoute: ProductosRouteWithChildren,
   PedidoOrderNumberRoute: PedidoOrderNumberRoute,
 }
