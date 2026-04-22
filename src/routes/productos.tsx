@@ -71,7 +71,6 @@ function ProductosPage() {
   const [categories, setCategories] = useState<Category[]>([]);
   const [subcategories, setSubcategories] = useState<Subcategory[]>([]);
   const [loading, setLoading] = useState(true);
-  const [quickView, setQuickView] = useState<Product | null>(null);
   const { addItem } = useCart();
 
   useEffect(() => {
@@ -363,9 +362,9 @@ function ProductosPage() {
                       transition={{ duration: 0.4, delay: (i % 6) * 0.05 }}
                       className="group bg-card rounded-2xl overflow-hidden shadow-card hover:shadow-elegant transition-all hover:-translate-y-2 flex flex-col"
                     >
-                      <button
-                        type="button"
-                        onClick={() => setQuickView(p)}
+                      <Link
+                        to="/productos/$productId"
+                        params={{ productId: p.id }}
                         className="block w-full aspect-square overflow-hidden relative text-left"
                       >
                         <img
@@ -377,15 +376,15 @@ function ProductosPage() {
                         <span className="absolute top-3 left-3 px-3 py-1 rounded-full glass text-white text-xs font-semibold">
                           {p.category}
                         </span>
-                      </button>
+                      </Link>
                       <div className="p-5 flex flex-col flex-1">
-                        <button
-                          type="button"
-                          onClick={() => setQuickView(p)}
+                        <Link
+                          to="/productos/$productId"
+                          params={{ productId: p.id }}
                           className="text-left font-bold text-navy-deep mb-1 hover:text-ocean transition"
                         >
                           {p.name}
-                        </button>
+                        </Link>
                         <p className="text-muted-foreground text-sm mb-4 line-clamp-2 flex-1">
                           {p.description}
                         </p>
@@ -424,92 +423,6 @@ function ProductosPage() {
           </div>
         </div>
       </section>
-
-      {/* Modal Vista Rápida (mobile) */}
-      {quickView && (
-        <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center">
-          <div
-            className="absolute inset-0 bg-black/60"
-            onClick={() => setQuickView(null)}
-          />
-          <div className="relative w-full sm:max-w-lg bg-background rounded-t-3xl sm:rounded-3xl max-h-[90vh] overflow-y-auto shadow-elegant animate-slide-in-right">
-            <button
-              onClick={() => setQuickView(null)}
-              className="absolute top-3 right-3 z-10 p-2 rounded-full bg-white/90 hover:bg-white shadow-card"
-              aria-label="Cerrar"
-            >
-              <X className="w-5 h-5 text-navy-deep" />
-            </button>
-            <div className="aspect-square overflow-hidden">
-              <img
-                src={quickView.image_url || feedImg}
-                alt={quickView.name}
-                className="w-full h-full object-cover"
-              />
-            </div>
-            <div className="p-6 space-y-4">
-              <div className="flex flex-wrap gap-2">
-                <span className="inline-block px-3 py-1 rounded-full bg-foam text-ocean text-xs font-semibold">
-                  {quickView.category}
-                </span>
-                {quickView.subcategory_id && (
-                  <span className="inline-block px-3 py-1 rounded-full bg-foam text-ocean text-xs font-semibold">
-                    {subcategories.find((s) => s.id === quickView.subcategory_id)?.name}
-                  </span>
-                )}
-              </div>
-              <h3 className="text-2xl font-bold text-navy-deep">{quickView.name}</h3>
-              {quickView.description ? (
-                <div>
-                  <h4 className="text-xs font-semibold uppercase tracking-widest text-ocean mb-2">Descripción</h4>
-                  <p className="text-muted-foreground text-sm whitespace-pre-line leading-relaxed">
-                    {quickView.description}
-                  </p>
-                </div>
-              ) : (
-                <p className="text-muted-foreground text-sm italic">Sin descripción disponible.</p>
-              )}
-              <div className="flex items-center justify-between">
-                <span className="text-3xl font-bold text-navy-deep">
-                  ${Number(quickView.price).toFixed(2)}
-                </span>
-                {quickView.stock > 0 ? (
-                  <span className="text-sm text-green-700 font-semibold">
-                    En stock ({quickView.stock} disponibles)
-                  </span>
-                ) : (
-                  <span className="text-sm text-muted-foreground">Agotado</span>
-                )}
-              </div>
-              <div className="flex flex-col gap-2 pt-2">
-                <button
-                  disabled={quickView.stock <= 0}
-                  onClick={() => {
-                    addItem({
-                      id: quickView.id,
-                      name: quickView.name,
-                      price: Number(quickView.price),
-                      category: quickView.category,
-                      img: quickView.image_url || feedImg,
-                    });
-                    toast.success(`${quickView.name} agregado al carrito`);
-                  }}
-                  className="w-full inline-flex items-center justify-center gap-2 px-4 py-3 rounded-full gradient-wave text-white text-sm font-semibold shadow-glow disabled:opacity-50"
-                >
-                  <ShoppingCart className="w-4 h-4" /> Agregar al carrito
-                </button>
-                <Link
-                  to="/productos/$productId"
-                  params={{ productId: quickView.id }}
-                  className="w-full inline-flex items-center justify-center gap-2 px-4 py-3 rounded-full border border-border text-navy-deep text-sm font-semibold hover:border-ocean hover:text-ocean transition"
-                >
-                  Ver página completa
-                </Link>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
 
       {/* PROVEEDORES — marquee */}
       <section className="py-20 bg-foam overflow-hidden">
