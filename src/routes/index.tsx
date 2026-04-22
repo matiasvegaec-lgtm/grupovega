@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { motion } from "framer-motion";
-import { ArrowRight, ArrowLeft, Wheat, Droplet, FlaskConical, Sprout, Pill, Beaker, MapPin, Phone, Mail, Clock } from "lucide-react";
-import { useEffect, useRef, useState } from "react";
+import { ArrowRight, Wheat, Droplet, FlaskConical, Sprout, Pill, Beaker, MapPin, Phone, Mail, Clock } from "lucide-react";
+import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Layout } from "@/components/Layout";
 import { UnderwaterScene } from "@/components/UnderwaterScene";
@@ -58,14 +58,6 @@ const supplierLogos = [
 
 function Index() {
   const [featured, setFeatured] = useState<{ name: string; img: string }[]>(featuredFallback);
-  const scrollerRef = useRef<HTMLDivElement>(null);
-
-  const scrollByAmount = (dir: 1 | -1) => {
-    const el = scrollerRef.current;
-    if (!el) return;
-    const amount = el.clientWidth * 0.8;
-    el.scrollBy({ left: dir * amount, behavior: "smooth" });
-  };
 
   useEffect(() => {
     supabase
@@ -243,28 +235,10 @@ function Index() {
           <div className="pointer-events-none absolute left-0 top-0 bottom-0 w-24 z-10 bg-gradient-to-r from-foam to-transparent" />
           <div className="pointer-events-none absolute right-0 top-0 bottom-0 w-24 z-10 bg-gradient-to-l from-foam to-transparent" />
 
-          {/* Flechas: solo desktop. Pausan el carrusel y permiten desplazar manualmente */}
-          <button
-            type="button"
-            aria-label="Anterior"
-            onClick={() => scrollByAmount(-1)}
-            className="hidden md:flex absolute left-4 top-1/2 -translate-y-1/2 z-20 w-12 h-12 rounded-full bg-white border border-border shadow-elegant items-center justify-center text-navy-deep hover:bg-ocean hover:text-white hover:border-ocean transition-all"
-          >
-            <ArrowLeft className="w-5 h-5" />
-          </button>
-          <button
-            type="button"
-            aria-label="Siguiente"
-            onClick={() => scrollByAmount(1)}
-            className="hidden md:flex absolute right-4 top-1/2 -translate-y-1/2 z-20 w-12 h-12 rounded-full bg-white border border-border shadow-elegant items-center justify-center text-navy-deep hover:bg-ocean hover:text-white hover:border-ocean transition-all"
-          >
-            <ArrowRight className="w-5 h-5" />
-          </button>
-
-          <div ref={scrollerRef} className="overflow-x-auto" style={{ scrollbarWidth: "none" }}>
           <div
-            className="flex gap-12 animate-marquee w-max hover:[animation-play-state:paused]"
+            className="overflow-x-auto overflow-y-hidden [scrollbar-width:thin] [&::-webkit-scrollbar]:h-2 [&::-webkit-scrollbar-thumb]:bg-ocean/30 [&::-webkit-scrollbar-thumb]:rounded-full"
           >
+            <div className="flex gap-12 animate-marquee w-max hover:[animation-play-state:paused] group-hover/carousel:[animation-play-state:paused]">
             {carouselItems.map((p, i) => (
               <div key={`${p.name}-${i}`} className="group flex flex-col items-center w-56 shrink-0 cursor-pointer">
                 <div className="relative w-56 h-56 flex items-center justify-center">
@@ -284,7 +258,7 @@ function Index() {
                 <span className="text-xs text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity duration-300 mt-1">Destacado ⭐</span>
               </div>
             ))}
-          </div>
+            </div>
           </div>
         </div>
 
