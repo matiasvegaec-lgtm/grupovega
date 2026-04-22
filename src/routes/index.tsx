@@ -1,11 +1,12 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { motion } from "framer-motion";
 import { ArrowRight, Wheat, Droplet, FlaskConical, Sprout, Pill, Beaker, MapPin, Phone, Mail, Clock } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Layout } from "@/components/Layout";
 import { UnderwaterScene } from "@/components/UnderwaterScene";
 import { Carousel, CarouselContent, CarouselItem } from "@/components/ui/carousel";
+import Autoplay from "embla-carousel-autoplay";
 import heroImg from "@/assets/hero-shrimp-farm.jpg";
 import pBalanceado from "@/assets/p-balanceado.png";
 import pAceite from "@/assets/p-aceite.png";
@@ -61,6 +62,9 @@ const supplierLogos = [
 
 function Index() {
   const [featured, setFeatured] = useState<FeaturedItem[]>(featuredFallback);
+  const mobileAutoplay = useRef(
+    Autoplay({ delay: 2200, stopOnInteraction: false, stopOnMouseEnter: false })
+  );
 
   useEffect(() => {
     supabase
@@ -268,32 +272,38 @@ function Index() {
             </div>
           </div>
 
-          {/* MOBILE: carrusel táctil sin barra visible */}
+          {/* MOBILE: carrusel automático táctil sin barra */}
           <div className="md:hidden relative px-4">
             <div className="pointer-events-none absolute left-4 top-0 bottom-0 w-8 z-10 bg-gradient-to-r from-foam to-transparent" />
             <div className="pointer-events-none absolute right-4 top-0 bottom-0 w-8 z-10 bg-gradient-to-l from-foam to-transparent" />
             <Carousel
-              opts={{ align: "start", loop: true }}
+              opts={{ align: "start", loop: true, dragFree: false }}
+              plugins={[mobileAutoplay.current]}
               className="w-full"
             >
               <CarouselContent className="-ml-4">
-                {featured.map((p) => (
-                  <CarouselItem key={p.id} className="basis-[72%] pl-4">
+                {carouselItems.map((p, i) => (
+                  <CarouselItem
+                    key={`m-${p.name}-${i}`}
+                    className="basis-1/2 pl-4"
+                  >
                     <Link
                       to="/productos/$productId"
                       params={{ productId: p.slug || p.id }}
-                      className="group flex flex-col items-center"
+                      className="group flex flex-col items-center h-full"
                     >
                       <div className="relative w-full aspect-square flex items-center justify-center">
                         <img
                           src={p.img}
                           alt={p.name}
                           loading="lazy"
-                          className="relative max-h-full max-w-full object-contain drop-shadow-xl"
+                          className="max-h-[85%] max-w-[85%] object-contain drop-shadow-xl"
                           style={{ filter: "drop-shadow(0 15px 25px oklch(0.22 0.1 258 / 0.25))" }}
                         />
                       </div>
-                      <p className="mt-3 font-semibold text-navy-deep text-center text-sm">{p.name}</p>
+                      <p className="mt-3 font-semibold text-navy-deep text-center text-sm line-clamp-2 min-h-[2.5rem]">
+                        {p.name}
+                      </p>
                     </Link>
                   </CarouselItem>
                 ))}
