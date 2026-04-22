@@ -16,6 +16,7 @@ import { Route as CarritoRouteImport } from './routes/carrito'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as ProductosProductIdRouteImport } from './routes/productos.$productId'
 import { Route as PedidoOrderNumberRouteImport } from './routes/pedido.$orderNumber'
 import { Route as AdminUsuariosRouteImport } from './routes/admin.usuarios'
 import { Route as AdminProductosRouteImport } from './routes/admin.productos'
@@ -56,6 +57,11 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ProductosProductIdRoute = ProductosProductIdRouteImport.update({
+  id: '/$productId',
+  path: '/$productId',
+  getParentRoute: () => ProductosRoute,
+} as any)
 const PedidoOrderNumberRoute = PedidoOrderNumberRouteImport.update({
   id: '/pedido/$orderNumber',
   path: '/pedido/$orderNumber',
@@ -84,11 +90,12 @@ export interface FileRoutesByFullPath {
   '/carrito': typeof CarritoRoute
   '/checkout': typeof CheckoutRoute
   '/contacto': typeof ContactoRoute
-  '/productos': typeof ProductosRoute
+  '/productos': typeof ProductosRouteWithChildren
   '/admin/pedidos': typeof AdminPedidosRoute
   '/admin/productos': typeof AdminProductosRoute
   '/admin/usuarios': typeof AdminUsuariosRoute
   '/pedido/$orderNumber': typeof PedidoOrderNumberRoute
+  '/productos/$productId': typeof ProductosProductIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -97,11 +104,12 @@ export interface FileRoutesByTo {
   '/carrito': typeof CarritoRoute
   '/checkout': typeof CheckoutRoute
   '/contacto': typeof ContactoRoute
-  '/productos': typeof ProductosRoute
+  '/productos': typeof ProductosRouteWithChildren
   '/admin/pedidos': typeof AdminPedidosRoute
   '/admin/productos': typeof AdminProductosRoute
   '/admin/usuarios': typeof AdminUsuariosRoute
   '/pedido/$orderNumber': typeof PedidoOrderNumberRoute
+  '/productos/$productId': typeof ProductosProductIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -111,11 +119,12 @@ export interface FileRoutesById {
   '/carrito': typeof CarritoRoute
   '/checkout': typeof CheckoutRoute
   '/contacto': typeof ContactoRoute
-  '/productos': typeof ProductosRoute
+  '/productos': typeof ProductosRouteWithChildren
   '/admin/pedidos': typeof AdminPedidosRoute
   '/admin/productos': typeof AdminProductosRoute
   '/admin/usuarios': typeof AdminUsuariosRoute
   '/pedido/$orderNumber': typeof PedidoOrderNumberRoute
+  '/productos/$productId': typeof ProductosProductIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -131,6 +140,7 @@ export interface FileRouteTypes {
     | '/admin/productos'
     | '/admin/usuarios'
     | '/pedido/$orderNumber'
+    | '/productos/$productId'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -144,6 +154,7 @@ export interface FileRouteTypes {
     | '/admin/productos'
     | '/admin/usuarios'
     | '/pedido/$orderNumber'
+    | '/productos/$productId'
   id:
     | '__root__'
     | '/'
@@ -157,6 +168,7 @@ export interface FileRouteTypes {
     | '/admin/productos'
     | '/admin/usuarios'
     | '/pedido/$orderNumber'
+    | '/productos/$productId'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -166,7 +178,7 @@ export interface RootRouteChildren {
   CarritoRoute: typeof CarritoRoute
   CheckoutRoute: typeof CheckoutRoute
   ContactoRoute: typeof ContactoRoute
-  ProductosRoute: typeof ProductosRoute
+  ProductosRoute: typeof ProductosRouteWithChildren
   PedidoOrderNumberRoute: typeof PedidoOrderNumberRoute
 }
 
@@ -221,6 +233,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/productos/$productId': {
+      id: '/productos/$productId'
+      path: '/$productId'
+      fullPath: '/productos/$productId'
+      preLoaderRoute: typeof ProductosProductIdRouteImport
+      parentRoute: typeof ProductosRoute
+    }
     '/pedido/$orderNumber': {
       id: '/pedido/$orderNumber'
       path: '/pedido/$orderNumber'
@@ -266,6 +285,18 @@ const AdminRouteChildren: AdminRouteChildren = {
 
 const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
 
+interface ProductosRouteChildren {
+  ProductosProductIdRoute: typeof ProductosProductIdRoute
+}
+
+const ProductosRouteChildren: ProductosRouteChildren = {
+  ProductosProductIdRoute: ProductosProductIdRoute,
+}
+
+const ProductosRouteWithChildren = ProductosRoute._addFileChildren(
+  ProductosRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AdminRoute: AdminRouteWithChildren,
@@ -273,7 +304,7 @@ const rootRouteChildren: RootRouteChildren = {
   CarritoRoute: CarritoRoute,
   CheckoutRoute: CheckoutRoute,
   ContactoRoute: ContactoRoute,
-  ProductosRoute: ProductosRoute,
+  ProductosRoute: ProductosRouteWithChildren,
   PedidoOrderNumberRoute: PedidoOrderNumberRoute,
 }
 export const routeTree = rootRouteImport
