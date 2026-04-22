@@ -25,11 +25,9 @@ export const Route = createFileRoute("/")({
 
 const categories = [
   { icon: Wheat, name: "Alimentos" },
-  { icon: Droplet, name: "Aceites" },
-  { icon: FlaskConical, name: "Aditivos" },
   { icon: Sprout, name: "Fertilizantes" },
-  { icon: Pill, name: "Vitaminas" },
-  { icon: Beaker, name: "Probióticos" },
+  { icon: FlaskConical, name: "Aditivos" },
+  { icon: Beaker, name: "Insumos" },
 ];
 
 const featured = [
