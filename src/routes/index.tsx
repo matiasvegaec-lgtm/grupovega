@@ -235,9 +235,7 @@ function Index() {
           <div className="pointer-events-none absolute left-0 top-0 bottom-0 w-24 z-10 bg-gradient-to-r from-foam to-transparent" />
           <div className="pointer-events-none absolute right-0 top-0 bottom-0 w-24 z-10 bg-gradient-to-l from-foam to-transparent" />
 
-          <div
-            className="overflow-x-auto overflow-y-hidden [scrollbar-width:thin] [&::-webkit-scrollbar]:h-2 [&::-webkit-scrollbar-thumb]:bg-ocean/30 [&::-webkit-scrollbar-thumb]:rounded-full"
-          >
+          <div className="overflow-x-auto overflow-y-hidden">
             <div className="flex gap-12 animate-marquee w-max hover:[animation-play-state:paused] group-hover/carousel:[animation-play-state:paused]">
             {carouselItems.map((p, i) => (
               <div key={`${p.name}-${i}`} className="group flex flex-col items-center w-56 shrink-0 cursor-pointer">
