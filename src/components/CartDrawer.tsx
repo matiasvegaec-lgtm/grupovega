@@ -1,12 +1,8 @@
 import { Link } from "@tanstack/react-router";
 import { Minus, Plus, Trash2, ShoppingBag, ArrowRight } from "lucide-react";
-import {
-  Sheet,
-  SheetContent,
-  SheetHeader,
-  SheetTitle,
-  SheetDescription,
-} from "@/components/ui/sheet";
+import { useEffect, useState } from "react";
+import * as SheetPrimitive from "@radix-ui/react-dialog";
+import { X } from "lucide-react";
 import { useCart } from "@/contexts/CartContext";
 
 type CartDrawerProps = {
@@ -17,17 +13,43 @@ type CartDrawerProps = {
 export function CartDrawer({ open, onOpenChange }: CartDrawerProps) {
   const { items, updateQty, removeItem, subtotal, count } = useCart();
   const close = () => onOpenChange(false);
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const check = () => setIsMobile(window.matchMedia("(max-width: 767px)").matches);
+    check();
+    window.addEventListener("resize", check);
+    return () => window.removeEventListener("resize", check);
+  }, []);
 
   return (
-    <Sheet open={open} onOpenChange={onOpenChange}>
-      <SheetContent side="right" className="w-full sm:max-w-md flex flex-col p-0">
-        <SheetHeader className="px-6 pt-6 pb-4 border-b border-border">
-          <SheetTitle className="text-navy-deep flex items-center gap-2">
-            <ShoppingBag className="w-5 h-5" />
-            Tu carrito ({count})
-          </SheetTitle>
-          <SheetDescription>Vista rápida de tus productos.</SheetDescription>
-        </SheetHeader>
+    <SheetPrimitive.Root open={open} onOpenChange={onOpenChange} modal={!isMobile}>
+      <SheetPrimitive.Portal>
+        {!isMobile && (
+          <SheetPrimitive.Overlay className="fixed inset-0 z-50 bg-black/60 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0" />
+        )}
+        <SheetPrimitive.Content
+          onInteractOutside={(e) => {
+            if (isMobile) e.preventDefault();
+          }}
+          onPointerDownOutside={(e) => {
+            if (isMobile) e.preventDefault();
+          }}
+          className="fixed inset-y-0 right-0 z-50 h-full w-[85%] max-w-[360px] sm:max-w-md flex flex-col bg-background border-l shadow-2xl transition ease-in-out data-[state=closed]:duration-300 data-[state=open]:duration-500 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:slide-out-to-right data-[state=open]:slide-in-from-right"
+        >
+          <SheetPrimitive.Close className="absolute right-4 top-4 rounded-sm opacity-70 hover:opacity-100 transition-opacity z-10">
+            <X className="h-4 w-4" />
+            <span className="sr-only">Cerrar</span>
+          </SheetPrimitive.Close>
+          <div className="flex flex-col space-y-1 px-6 pt-6 pb-4 border-b border-border">
+            <SheetPrimitive.Title className="text-lg font-semibold text-navy-deep flex items-center gap-2">
+              <ShoppingBag className="w-5 h-5" />
+              Tu carrito ({count})
+            </SheetPrimitive.Title>
+            <SheetPrimitive.Description className="text-sm text-muted-foreground">
+              Vista rápida de tus productos.
+            </SheetPrimitive.Description>
+          </div>
 
         {items.length === 0 ? (
           <div className="flex-1 flex flex-col items-center justify-center text-center px-6">
@@ -132,7 +154,8 @@ export function CartDrawer({ open, onOpenChange }: CartDrawerProps) {
             </div>
           </>
         )}
-      </SheetContent>
-    </Sheet>
+        </SheetPrimitive.Content>
+      </SheetPrimitive.Portal>
+    </SheetPrimitive.Root>
   );
 }

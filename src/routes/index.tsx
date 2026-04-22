@@ -38,13 +38,15 @@ const categories = [
   { icon: Beaker, name: "Insumos", desc: "Equipos y químicos para el manejo diario", count: "30+ productos" },
 ];
 
-const featuredFallback = [
-  { name: "Balanceado Engorde", img: pBalanceado },
-  { name: "Aceite de Pescado", img: pAceite },
-  { name: "Aditivo Probiótico", img: pAditivo },
-  { name: "Alimento Larva", img: pLarva },
-  { name: "Fertilizante Mineral", img: pFertilizante },
-  { name: "Vitaminas Premix", img: pVitamina },
+type FeaturedItem = { id: string; slug: string | null; name: string; img: string };
+
+const featuredFallback: FeaturedItem[] = [
+  { id: "fb-1", slug: null, name: "Balanceado Engorde", img: pBalanceado },
+  { id: "fb-2", slug: null, name: "Aceite de Pescado", img: pAceite },
+  { id: "fb-3", slug: null, name: "Aditivo Probiótico", img: pAditivo },
+  { id: "fb-4", slug: null, name: "Alimento Larva", img: pLarva },
+  { id: "fb-5", slug: null, name: "Fertilizante Mineral", img: pFertilizante },
+  { id: "fb-6", slug: null, name: "Vitaminas Premix", img: pVitamina },
 ];
 
 const supplierLogos = [
@@ -57,18 +59,22 @@ const supplierLogos = [
 ];
 
 function Index() {
-  const [featured, setFeatured] = useState<{ name: string; img: string }[]>(featuredFallback);
+  const [featured, setFeatured] = useState<FeaturedItem[]>(featuredFallback);
 
   useEffect(() => {
     supabase
       .from("products")
-      .select("name, image_url")
+      .select("id, slug, name, image_url")
       .eq("active", true)
       .eq("featured", true)
       .order("display_order")
       .then(({ data }) => {
         if (data && data.length > 0) {
-          setFeatured(data.map((p) => ({ name: p.name, img: p.image_url || "" })).filter((p) => p.img));
+          setFeatured(
+            data
+              .map((p) => ({ id: p.id, slug: p.slug, name: p.name, img: p.image_url || "" }))
+              .filter((p) => p.img)
+          );
         }
       });
   }, []);
@@ -237,7 +243,12 @@ function Index() {
 
           <div className="flex gap-12 animate-marquee w-max hover:[animation-play-state:paused]">
             {carouselItems.map((p, i) => (
-              <div key={`${p.name}-${i}`} className="group flex flex-col items-center w-56 shrink-0 cursor-pointer">
+              <Link
+                key={`${p.name}-${i}`}
+                to="/productos/$productId"
+                params={{ productId: p.slug || p.id }}
+                className="group flex flex-col items-center w-56 shrink-0 cursor-pointer"
+              >
                 <div className="relative w-56 h-56 flex items-center justify-center">
                   {/* halo glow */}
                   <div className="absolute inset-4 rounded-full gradient-wave opacity-0 group-hover:opacity-40 blur-2xl transition-all duration-700 group-hover:scale-110" />
@@ -253,7 +264,7 @@ function Index() {
                 </div>
                 <p className="mt-4 font-semibold text-navy-deep text-center group-hover:text-ocean transition-colors">{p.name}</p>
                 <span className="text-xs text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity duration-300 mt-1">Destacado ⭐</span>
-              </div>
+              </Link>
             ))}
           </div>
         </div>
