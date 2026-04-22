@@ -1,8 +1,23 @@
 import { Link } from "@tanstack/react-router";
 import { Mail, Phone, MapPin, Facebook, Instagram, Linkedin } from "lucide-react";
+import { useEffect, useState } from "react";
+import { supabase } from "@/integrations/supabase/client";
 import logoGrupoVega from "@/assets/logo-grupo-vega.png";
 
 export function Footer() {
+  const [categories, setCategories] = useState<{ id: string; name: string }[]>([]);
+
+  useEffect(() => {
+    supabase
+      .from("categories")
+      .select("id, name")
+      .eq("active", true)
+      .order("display_order")
+      .then(({ data }) => {
+        if (data) setCategories(data);
+      });
+  }, []);
+
   return (
     <footer className="relative gradient-deep text-white overflow-hidden">
       <div className="absolute inset-0 opacity-20" style={{ background: "var(--gradient-glow)" }} />
@@ -30,12 +45,17 @@ export function Footer() {
           </div>
 
           <div>
-            <h4 className="font-semibold mb-4 text-turquoise">Soluciones</h4>
+            <h4 className="font-semibold mb-4 text-turquoise">Categorías</h4>
             <ul className="space-y-2 text-sm text-white/70">
-              <li><Link to="/productos" className="hover:text-turquoise transition">Alimento balanceado</Link></li>
-              <li><Link to="/productos" className="hover:text-turquoise transition">Probióticos</Link></li>
-              <li><Link to="/productos" className="hover:text-turquoise transition">Fertilizantes</Link></li>
-              <li><Link to="/productos" className="hover:text-turquoise transition">Equipos</Link></li>
+              {categories.length === 0 ? (
+                <li className="text-white/40">Cargando…</li>
+              ) : (
+                categories.map((c) => (
+                  <li key={c.id}>
+                    <Link to="/productos" className="hover:text-turquoise transition">{c.name}</Link>
+                  </li>
+                ))
+              )}
             </ul>
           </div>
 
