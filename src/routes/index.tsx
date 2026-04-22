@@ -65,6 +65,7 @@ function Index() {
   const mobileAutoplay = useRef(
     Autoplay({ delay: 2200, stopOnInteraction: false, stopOnMouseEnter: false })
   );
+  const marqueeRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     supabase
@@ -83,6 +84,40 @@ function Index() {
         }
       });
   }, []);
+
+  // Resaltar la tarjeta más cercana al centro de la pantalla (solo mobile)
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const isMobile = window.matchMedia("(max-width: 767px)").matches;
+    if (!isMobile) return;
+
+    let raf = 0;
+    const tick = () => {
+      const container = marqueeRef.current;
+      if (container) {
+        const items = container.querySelectorAll<HTMLElement>("[data-marquee-item]");
+        const centerX = window.innerWidth / 2;
+        let closest: HTMLElement | null = null;
+        let minDist = Infinity;
+        items.forEach((el) => {
+          const r = el.getBoundingClientRect();
+          if (r.right < 0 || r.left > window.innerWidth) return;
+          const dist = Math.abs(r.left + r.width / 2 - centerX);
+          if (dist < minDist) {
+            minDist = dist;
+            closest = el;
+          }
+        });
+        items.forEach((el) => {
+          if (el === closest) el.classList.add("is-centered");
+          else el.classList.remove("is-centered");
+        });
+      }
+      raf = requestAnimationFrame(tick);
+    };
+    raf = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(raf);
+  }, [featured]);
 
   // Repetimos el array suficientes veces para garantizar loop infinito sin saltos
   // incluso cuando hay pocos productos destacados
@@ -246,13 +281,17 @@ function Index() {
           <div className="relative">
             <div className="pointer-events-none absolute left-0 top-0 bottom-0 w-12 md:w-24 z-10 bg-gradient-to-r from-foam to-transparent" />
             <div className="pointer-events-none absolute right-0 top-0 bottom-0 w-12 md:w-24 z-10 bg-gradient-to-l from-foam to-transparent" />
-            <div className="flex gap-12 w-max animate-marquee hover:[animation-play-state:paused]">
+            <div
+              ref={marqueeRef}
+              className="flex gap-12 w-max animate-marquee hover:[animation-play-state:paused]"
+            >
               {carouselItems.map((p, i) => (
                 <Link
                   key={`${p.name}-${i}`}
                   to="/productos/$productId"
                   params={{ productId: p.slug || p.id }}
-                  className="group flex flex-col items-center w-56 shrink-0 cursor-pointer"
+                  data-marquee-item
+                  className="marquee-item group flex flex-col items-center w-56 shrink-0 cursor-pointer"
                 >
                   <div className="relative w-56 h-56 flex items-center justify-center">
                     <div className="absolute inset-4 rounded-full gradient-wave opacity-0 group-hover:opacity-40 blur-2xl transition-all duration-700 group-hover:scale-110" />
@@ -266,7 +305,7 @@ function Index() {
                     />
                   </div>
                   <p className="mt-4 font-semibold text-navy-deep text-center group-hover:text-ocean transition-colors">{p.name}</p>
-                  <span className="text-xs text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity duration-300 mt-1">Destacado ⭐</span>
+                  <span className="destacado-label text-xs text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity duration-300 mt-1">Destacado ⭐</span>
                 </Link>
               ))}
             </div>
