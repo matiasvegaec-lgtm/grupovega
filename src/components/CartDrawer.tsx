@@ -1,5 +1,6 @@
 import { Link } from "@tanstack/react-router";
 import { Minus, Plus, Trash2, ShoppingBag, ArrowRight } from "lucide-react";
+import { useEffect, useState } from "react";
 import {
   Sheet,
   SheetContent,
@@ -17,10 +18,24 @@ type CartDrawerProps = {
 export function CartDrawer({ open, onOpenChange }: CartDrawerProps) {
   const { items, updateQty, removeItem, subtotal, count } = useCart();
   const close = () => onOpenChange(false);
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const check = () => setIsMobile(window.matchMedia("(max-width: 767px)").matches);
+    check();
+    window.addEventListener("resize", check);
+    return () => window.removeEventListener("resize", check);
+  }, []);
 
   return (
-    <Sheet open={open} onOpenChange={onOpenChange}>
-      <SheetContent side="right" className="w-full sm:max-w-md flex flex-col p-0">
+    <Sheet open={open} onOpenChange={onOpenChange} modal={!isMobile}>
+      <SheetContent
+        side="right"
+        className="w-[85%] max-w-[360px] sm:w-full sm:max-w-md flex flex-col p-0 md:shadow-2xl"
+        onInteractOutside={(e) => {
+          if (isMobile) e.preventDefault();
+        }}
+      >
         <SheetHeader className="px-6 pt-6 pb-4 border-b border-border">
           <SheetTitle className="text-navy-deep flex items-center gap-2">
             <ShoppingBag className="w-5 h-5" />
