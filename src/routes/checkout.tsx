@@ -88,6 +88,36 @@ function CheckoutPage() {
   const update = (k: keyof typeof form) => (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
     setForm((f) => ({ ...f, [k]: e.target.value }));
 
+  const validateStep = (idx: number): boolean => {
+    const e: Record<string, string> = {};
+    if (idx === 0) {
+      if (!form.customer_name.trim()) e.customer_name = "Requerido";
+      if (!form.receiver_name.trim()) e.receiver_name = "Requerido";
+      if (!form.customer_ruc.trim()) e.customer_ruc = "Requerido";
+      else if (!/^\d{10,13}$/.test(form.customer_ruc.trim())) e.customer_ruc = "10 a 13 dígitos";
+      if (!form.customer_email.trim()) e.customer_email = "Requerido";
+      else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.customer_email.trim())) e.customer_email = "Correo inválido";
+      if (!form.customer_phone.trim()) e.customer_phone = "Requerido";
+      else if (!/^[\d+\s-]{7,15}$/.test(form.customer_phone.trim())) e.customer_phone = "Teléfono inválido";
+    }
+    if (idx === 1) {
+      if (!form.farm_name.trim()) e.farm_name = "Requerido";
+      if (!form.reference.trim()) e.reference = "Requerido";
+    }
+    setErrors(e);
+    if (Object.keys(e).length > 0) {
+      toast.error("Completa los campos obligatorios");
+      return false;
+    }
+    return true;
+  };
+
+  const goNext = () => {
+    if (!validateStep(step)) return;
+    setStep((s) => Math.min(s + 1, STEPS.length - 1));
+  };
+  const goBack = () => setStep((s) => Math.max(s - 1, 0));
+
   const buildOrderSummaryText = (orderNumber: string) => {
     const itemsList = items.map((i) => `• ${i.name} x${i.quantity} — $${(i.price * i.quantity).toFixed(2)}`).join("\n");
     const metodoLabel = method === "card" ? "Tarjeta (PlaceToPay)" : method === "transfer" ? "Transferencia bancaria" : "Efectivo en sucursal";
