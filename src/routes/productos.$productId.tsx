@@ -35,6 +35,9 @@ type Product = {
   image_url: string | null;
   stock: number;
   subcategory_id: string | null;
+  presentation: string | null;
+  protein_content: string | null;
+  price_card_3m: number | null;
 };
 
 type Subcategory = { id: string; name: string };
