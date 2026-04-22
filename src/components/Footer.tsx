@@ -25,6 +25,7 @@ export function Footer() {
               <li><Link to="/" className="hover:text-turquoise transition">Inicio</Link></li>
               <li><Link to="/productos" className="hover:text-turquoise transition">Productos</Link></li>
               <li><Link to="/contacto" className="hover:text-turquoise transition">Contacto</Link></li>
+              <li><Link to="/auth" search={{ redirect: "/admin" }} className="hover:text-turquoise transition">Acceso administrativo</Link></li>
             </ul>
           </div>
 
