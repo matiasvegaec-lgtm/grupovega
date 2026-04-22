@@ -9,7 +9,7 @@ export const Route = createFileRoute("/contacto")({
   head: () => ({
     meta: [
       { title: "Contacto — Grupo Vega" },
-      { name: "description", content: "Habla con nuestro equipo de Grupo Vega. Estamos en Manta, Ecuador." },
+      { name: "description", content: "Habla con nuestro equipo de Grupo Vega. Estamos en Pedernales, Manabí — Ecuador." },
       { property: "og:title", content: "Contacto Grupo Vega" },
       { property: "og:description", content: "Estamos cerca de tu camaronera." },
     ],
@@ -18,7 +18,7 @@ export const Route = createFileRoute("/contacto")({
 });
 
 const offices = [
-  { city: "Manta (Matriz)", address: "Importadora Vega, Manta", phone: "+593 99 773 8026" },
+  { city: "Pedernales (Matriz)", address: "Pedernales, Manabí", phone: "+593 99 773 8026" },
 ];
 
 function ContactoPage() {
@@ -96,7 +96,7 @@ function ContactoPage() {
                 <div className="space-y-4">
                   <div className="flex gap-3"><Mail className="w-5 h-5 text-ocean shrink-0 mt-0.5" /><span className="text-muted-foreground">grupovega.ec@gmail.com</span></div>
                   <div className="flex gap-3"><Phone className="w-5 h-5 text-ocean shrink-0 mt-0.5" /><span className="text-muted-foreground">+593 99 773 8026</span></div>
-                  <div className="flex gap-3"><MapPin className="w-5 h-5 text-ocean shrink-0 mt-0.5" /><span className="text-muted-foreground">Importadora Vega, Manta — Ecuador</span></div>
+                  <div className="flex gap-3"><MapPin className="w-5 h-5 text-ocean shrink-0 mt-0.5" /><span className="text-muted-foreground">Pedernales, Manabí — Ecuador</span></div>
                 </div>
               </div>
 
