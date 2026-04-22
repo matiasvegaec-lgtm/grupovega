@@ -1,13 +1,12 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { motion } from "framer-motion";
 import { ArrowRight, Wheat, Droplet, FlaskConical, Sprout, Pill, Beaker, MapPin, Phone, Mail, Clock } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Layout } from "@/components/Layout";
 import { UnderwaterScene } from "@/components/UnderwaterScene";
 import { Carousel, CarouselContent, CarouselItem } from "@/components/ui/carousel";
 import Autoplay from "embla-carousel-autoplay";
-import { useRef } from "react";
 import heroImg from "@/assets/hero-shrimp-farm.jpg";
 import pBalanceado from "@/assets/p-balanceado.png";
 import pAceite from "@/assets/p-aceite.png";
