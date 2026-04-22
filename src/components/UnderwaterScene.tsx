@@ -97,11 +97,15 @@ export function UnderwaterScene() {
 
       {/* Productos en esquina inferior derecha con animación de aparición */}
       <div
-        className="pointer-events-none absolute bottom-0 right-0 -z-0 w-[60%] sm:w-[50%] md:w-[42%] max-w-[520px] h-[55%] sm:h-[65%] md:h-[80%] transition-all duration-[1400ms] ease-out"
+        className="pointer-events-none absolute bottom-0 right-0 -z-0 w-[42%] sm:w-[44%] md:w-[42%] max-w-[520px] h-[45%] sm:h-[60%] md:h-[80%] transition-all duration-[1400ms] ease-out"
         style={{
           opacity: visible ? 1 : 0,
           transform: visible ? "translate(0, 0) scale(1)" : "translate(40px, 40px) scale(0.92)",
           transitionTimingFunction: "cubic-bezier(0.22, 1, 0.36, 1)",
+          maskImage:
+            "radial-gradient(ellipse 85% 90% at 70% 60%, #000 55%, transparent 100%)",
+          WebkitMaskImage:
+            "radial-gradient(ellipse 85% 90% at 70% 60%, #000 55%, transparent 100%)",
         }}
       >
         {/* Halo / glow detrás de los productos */}
