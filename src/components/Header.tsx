@@ -185,12 +185,11 @@ export function Header() {
                         <span>Recibir promociones</span>
                       </button>
                     </DropdownMenuItem>
-                    <DropdownMenuItem disabled className="rounded-lg">
-                      <span className="flex items-center gap-2.5 px-3 py-2 text-muted-foreground">
-                        <Bell className="w-4 h-4" />
+                    <DropdownMenuItem asChild className="rounded-lg cursor-pointer">
+                      <Link to="/notificaciones" className="flex items-center gap-2.5 px-3 py-2">
+                        <Bell className="w-4 h-4 text-turquoise" />
                         <span>Notificaciones</span>
-                        <span className="ml-auto text-[10px] uppercase tracking-wide">Pronto</span>
-                      </span>
+                      </Link>
                     </DropdownMenuItem>
                     <DropdownMenuSeparator />
                     <DropdownMenuItem
@@ -272,6 +271,9 @@ export function Header() {
                 </Link>
                 <Link to="/favoritos" onClick={() => setOpen(false)} className="px-4 py-3 rounded-lg text-navy-deep hover:bg-foam font-medium flex items-center gap-2">
                   <Heart className="w-4 h-4" /> Favoritos
+                </Link>
+                <Link to="/notificaciones" onClick={() => setOpen(false)} className="px-4 py-3 rounded-lg text-navy-deep hover:bg-foam font-medium flex items-center gap-2">
+                  <Bell className="w-4 h-4" /> Notificaciones
                 </Link>
                 <button
                   type="button"

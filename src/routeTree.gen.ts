@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as ProductosRouteImport } from './routes/productos'
+import { Route as NotificacionesRouteImport } from './routes/notificaciones'
 import { Route as MisPedidosRouteImport } from './routes/mis-pedidos'
 import { Route as FavoritosRouteImport } from './routes/favoritos'
 import { Route as ContactoRouteImport } from './routes/contacto'
@@ -28,6 +29,11 @@ import { Route as AdminCategoriasRouteImport } from './routes/admin.categorias'
 const ProductosRoute = ProductosRouteImport.update({
   id: '/productos',
   path: '/productos',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const NotificacionesRoute = NotificacionesRouteImport.update({
+  id: '/notificaciones',
+  path: '/notificaciones',
   getParentRoute: () => rootRouteImport,
 } as any)
 const MisPedidosRoute = MisPedidosRouteImport.update({
@@ -110,6 +116,7 @@ export interface FileRoutesByFullPath {
   '/contacto': typeof ContactoRoute
   '/favoritos': typeof FavoritosRoute
   '/mis-pedidos': typeof MisPedidosRoute
+  '/notificaciones': typeof NotificacionesRoute
   '/productos': typeof ProductosRouteWithChildren
   '/admin/categorias': typeof AdminCategoriasRoute
   '/admin/pedidos': typeof AdminPedidosRoute
@@ -127,6 +134,7 @@ export interface FileRoutesByTo {
   '/contacto': typeof ContactoRoute
   '/favoritos': typeof FavoritosRoute
   '/mis-pedidos': typeof MisPedidosRoute
+  '/notificaciones': typeof NotificacionesRoute
   '/productos': typeof ProductosRouteWithChildren
   '/admin/categorias': typeof AdminCategoriasRoute
   '/admin/pedidos': typeof AdminPedidosRoute
@@ -145,6 +153,7 @@ export interface FileRoutesById {
   '/contacto': typeof ContactoRoute
   '/favoritos': typeof FavoritosRoute
   '/mis-pedidos': typeof MisPedidosRoute
+  '/notificaciones': typeof NotificacionesRoute
   '/productos': typeof ProductosRouteWithChildren
   '/admin/categorias': typeof AdminCategoriasRoute
   '/admin/pedidos': typeof AdminPedidosRoute
@@ -164,6 +173,7 @@ export interface FileRouteTypes {
     | '/contacto'
     | '/favoritos'
     | '/mis-pedidos'
+    | '/notificaciones'
     | '/productos'
     | '/admin/categorias'
     | '/admin/pedidos'
@@ -181,6 +191,7 @@ export interface FileRouteTypes {
     | '/contacto'
     | '/favoritos'
     | '/mis-pedidos'
+    | '/notificaciones'
     | '/productos'
     | '/admin/categorias'
     | '/admin/pedidos'
@@ -198,6 +209,7 @@ export interface FileRouteTypes {
     | '/contacto'
     | '/favoritos'
     | '/mis-pedidos'
+    | '/notificaciones'
     | '/productos'
     | '/admin/categorias'
     | '/admin/pedidos'
@@ -216,6 +228,7 @@ export interface RootRouteChildren {
   ContactoRoute: typeof ContactoRoute
   FavoritosRoute: typeof FavoritosRoute
   MisPedidosRoute: typeof MisPedidosRoute
+  NotificacionesRoute: typeof NotificacionesRoute
   ProductosRoute: typeof ProductosRouteWithChildren
   PedidoOrderNumberRoute: typeof PedidoOrderNumberRoute
 }
@@ -227,6 +240,13 @@ declare module '@tanstack/react-router' {
       path: '/productos'
       fullPath: '/productos'
       preLoaderRoute: typeof ProductosRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/notificaciones': {
+      id: '/notificaciones'
+      path: '/notificaciones'
+      fullPath: '/notificaciones'
+      preLoaderRoute: typeof NotificacionesRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/mis-pedidos': {
@@ -367,6 +387,7 @@ const rootRouteChildren: RootRouteChildren = {
   ContactoRoute: ContactoRoute,
   FavoritosRoute: FavoritosRoute,
   MisPedidosRoute: MisPedidosRoute,
+  NotificacionesRoute: NotificacionesRoute,
   ProductosRoute: ProductosRouteWithChildren,
   PedidoOrderNumberRoute: PedidoOrderNumberRoute,
 }
