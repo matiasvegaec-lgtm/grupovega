@@ -91,7 +91,6 @@ function Index() {
           <img src={heroImg} alt="" className="w-full h-full object-cover opacity-40" width={1920} height={1080} />
           <div className="absolute inset-0 gradient-deep opacity-70" />
         </div>
-
         {/* Grupo de productos estáticos en esquina inferior derecha */}
         <div className="hero-products group hidden md:block absolute bottom-12 right-4 lg:right-12 z-[5] w-[340px] lg:w-[460px] h-[340px] lg:h-[400px] pointer-events-auto">
           {/* halo glow ambiente */}
