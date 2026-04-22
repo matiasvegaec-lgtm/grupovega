@@ -228,6 +228,10 @@ function CheckoutPage() {
   }
 
   const inputCls = "w-full px-4 py-2.5 rounded-lg bg-background border border-border focus:border-ocean focus:outline-none focus:ring-2 focus:ring-ocean/20 transition";
+  const errCls = "border-destructive focus:border-destructive focus:ring-destructive/20";
+
+  const fieldError = (key: string) =>
+    errors[key] ? <p className="text-xs text-destructive mt-1">{errors[key]}</p> : null;
 
   return (
     <Layout>
@@ -236,29 +240,87 @@ function CheckoutPage() {
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-6xl">
           <form onSubmit={handleSubmit} className="grid lg:grid-cols-3 gap-8">
             <div className="lg:col-span-2 space-y-6">
-              {/* Datos del cliente */}
-              <div className="bg-card rounded-2xl p-6 shadow-card">
-                <h3 className="font-bold text-navy-deep text-lg mb-4">Datos del cliente</h3>
-                <div className="grid sm:grid-cols-2 gap-4">
-                  <input required placeholder="Nombres y apellidos" value={form.customer_name} onChange={update("customer_name")} className={`${inputCls} sm:col-span-2`} />
-                  <input required placeholder="Persona que recibe el pedido" value={form.receiver_name} onChange={update("receiver_name")} className={inputCls} />
-                  <input required placeholder="RUC / Cédula" value={form.customer_ruc} onChange={update("customer_ruc")} className={inputCls} />
-                  <input required type="email" placeholder="Correo electrónico" value={form.customer_email} onChange={update("customer_email")} className={inputCls} />
-                  <input required placeholder="Teléfono / WhatsApp" value={form.customer_phone} onChange={update("customer_phone")} className={inputCls} />
+              {/* Stepper */}
+              <div className="bg-card rounded-2xl p-4 sm:p-6 shadow-card">
+                <div className="flex items-center justify-between gap-2">
+                  {STEPS.map((s, i) => {
+                    const Icon = s.icon;
+                    const done = i < step;
+                    const active = i === step;
+                    return (
+                      <div key={s.key} className="flex items-center flex-1 last:flex-none">
+                        <div className="flex flex-col items-center gap-1.5 min-w-0">
+                          <div className={`w-9 h-9 rounded-full flex items-center justify-center border-2 transition shrink-0 ${
+                            done ? "bg-ocean border-ocean text-white"
+                            : active ? "border-ocean text-ocean bg-foam"
+                            : "border-border text-muted-foreground bg-background"
+                          }`}>
+                            {done ? <Check className="w-4 h-4" /> : <Icon className="w-4 h-4" />}
+                          </div>
+                          <span className={`text-[11px] sm:text-xs font-semibold truncate ${active || done ? "text-navy-deep" : "text-muted-foreground"}`}>
+                            Paso {i + 1}: {s.label}
+                          </span>
+                        </div>
+                        {i < STEPS.length - 1 && (
+                          <div className={`h-0.5 flex-1 mx-2 mb-5 transition ${i < step ? "bg-ocean" : "bg-border"}`} />
+                        )}
+                      </div>
+                    );
+                  })}
                 </div>
               </div>
 
-              {/* Dirección de entrega */}
-              <div className="bg-card rounded-2xl p-6 shadow-card">
-                <h3 className="font-bold text-navy-deep text-lg mb-4">Lugar de entrega</h3>
-                <div className="grid sm:grid-cols-2 gap-4">
-                  <input required placeholder="Lugar o nombre de la camaronera" value={form.farm_name} onChange={update("farm_name")} className={`${inputCls} sm:col-span-2`} />
-                  <input required placeholder="Referencia (cómo llegar)" value={form.reference} onChange={update("reference")} className={`${inputCls} sm:col-span-2`} />
-                  <textarea placeholder="Notas adicionales (opcional)" value={form.shipping_notes} onChange={update("shipping_notes")} rows={3} className={`${inputCls} sm:col-span-2 resize-none`} />
+              {/* Paso 1: Datos del cliente */}
+              {step === 0 && (
+                <div className="bg-card rounded-2xl p-6 shadow-card">
+                  <h3 className="font-bold text-navy-deep text-lg mb-1">Datos del cliente</h3>
+                  <p className="text-sm text-muted-foreground mb-4">Todos los campos son obligatorios.</p>
+                  <div className="grid sm:grid-cols-2 gap-4">
+                    <div className="sm:col-span-2">
+                      <input placeholder="Nombres y apellidos *" value={form.customer_name} onChange={update("customer_name")} className={`${inputCls} ${errors.customer_name ? errCls : ""}`} />
+                      {fieldError("customer_name")}
+                    </div>
+                    <div>
+                      <input placeholder="Persona que recibe el pedido *" value={form.receiver_name} onChange={update("receiver_name")} className={`${inputCls} ${errors.receiver_name ? errCls : ""}`} />
+                      {fieldError("receiver_name")}
+                    </div>
+                    <div>
+                      <input placeholder="RUC / Cédula *" value={form.customer_ruc} onChange={update("customer_ruc")} className={`${inputCls} ${errors.customer_ruc ? errCls : ""}`} />
+                      {fieldError("customer_ruc")}
+                    </div>
+                    <div>
+                      <input type="email" placeholder="Correo electrónico *" value={form.customer_email} onChange={update("customer_email")} className={`${inputCls} ${errors.customer_email ? errCls : ""}`} />
+                      {fieldError("customer_email")}
+                    </div>
+                    <div>
+                      <input placeholder="Teléfono / WhatsApp *" value={form.customer_phone} onChange={update("customer_phone")} className={`${inputCls} ${errors.customer_phone ? errCls : ""}`} />
+                      {fieldError("customer_phone")}
+                    </div>
+                  </div>
                 </div>
-              </div>
+              )}
 
-              {/* Método de pago */}
+              {/* Paso 2: Entrega */}
+              {step === 1 && (
+                <div className="bg-card rounded-2xl p-6 shadow-card">
+                  <h3 className="font-bold text-navy-deep text-lg mb-1">Lugar de entrega</h3>
+                  <p className="text-sm text-muted-foreground mb-4">Las notas adicionales son opcionales.</p>
+                  <div className="grid sm:grid-cols-2 gap-4">
+                    <div className="sm:col-span-2">
+                      <input placeholder="Lugar o nombre de la camaronera *" value={form.farm_name} onChange={update("farm_name")} className={`${inputCls} ${errors.farm_name ? errCls : ""}`} />
+                      {fieldError("farm_name")}
+                    </div>
+                    <div className="sm:col-span-2">
+                      <input placeholder="Referencia (cómo llegar) *" value={form.reference} onChange={update("reference")} className={`${inputCls} ${errors.reference ? errCls : ""}`} />
+                      {fieldError("reference")}
+                    </div>
+                    <textarea placeholder="Notas adicionales (opcional)" value={form.shipping_notes} onChange={update("shipping_notes")} rows={3} className={`${inputCls} sm:col-span-2 resize-none`} />
+                  </div>
+                </div>
+              )}
+
+              {/* Paso 3: Método de pago */}
+              {step === 2 && (
               <div className="bg-card rounded-2xl p-6 shadow-card">
                 <h3 className="font-bold text-navy-deep text-lg mb-4">Método de pago</h3>
                 <div className="grid gap-3">
@@ -315,6 +377,28 @@ function CheckoutPage() {
                   <div className="mt-5 p-4 rounded-xl bg-muted border border-border text-sm text-muted-foreground">
                     Estamos integrando <strong className="text-navy-deep">PlaceToPay</strong> para aceptar tarjetas. Mientras tanto, elige transferencia o efectivo.
                   </div>
+                )}
+              </div>
+              )}
+
+              {/* Navegación entre pasos */}
+              <div className="flex items-center justify-between gap-3">
+                <button
+                  type="button"
+                  onClick={goBack}
+                  disabled={step === 0}
+                  className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full border-2 border-border text-navy-deep font-semibold hover:border-ocean transition disabled:opacity-40 disabled:cursor-not-allowed"
+                >
+                  <ChevronLeft className="w-4 h-4" /> Atrás
+                </button>
+                {step < STEPS.length - 1 && (
+                  <button
+                    type="button"
+                    onClick={goNext}
+                    className="inline-flex items-center gap-2 px-6 py-2.5 rounded-full gradient-wave text-white font-semibold shadow-glow hover:scale-[1.02] transition-transform"
+                  >
+                    Siguiente <ChevronRight className="w-4 h-4" />
+                  </button>
                 )}
               </div>
             </div>
