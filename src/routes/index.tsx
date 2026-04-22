@@ -276,7 +276,7 @@ function Index() {
               </ul>
 
               <a
-                href="https://share.google/ZFla4RoAnbQhZ5IOk"
+                href="https://maps.app.goo.gl/z8RTL5Aq4AhWzNMN8"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="mt-8 inline-flex items-center justify-center gap-2 px-6 py-3 rounded-full gradient-wave text-white font-semibold shadow-glow hover:scale-105 transition w-fit"
@@ -295,7 +295,7 @@ function Index() {
             >
               <iframe
                 title="Ubicación Grupo Vega - Pedernales"
-                src="https://www.google.com/maps?q=Grupo+Vega+Pedernales+Manab%C3%AD+Ecuador&z=16&output=embed"
+                src="https://www.google.com/maps?q=Garc%C3%ADa+Moreno+y+3+de+Noviembre+Pedernales+Manab%C3%AD+Ecuador&z=17&output=embed"
                 width="100%"
                 height="100%"
                 loading="lazy"
