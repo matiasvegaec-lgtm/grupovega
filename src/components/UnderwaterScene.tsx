@@ -1,12 +1,13 @@
 import { Canvas, useFrame } from "@react-three/fiber";
 import { Environment, useTexture } from "@react-three/drei";
-import { useRef, Suspense } from "react";
+import { useRef, Suspense, useEffect, useState } from "react";
 import * as THREE from "three";
 import productsImg from "@/assets/hero-products-group.png";
+import productMobileImg from "@/assets/hero-product-mobile.png";
 
-function ProductsGroup() {
+function ProductsGroup({ textureUrl, aspect = 1.05 }: { textureUrl: string; aspect?: number }) {
   const ref = useRef<THREE.Mesh>(null);
-  const texture = useTexture(productsImg);
+  const texture = useTexture(textureUrl);
 
   useFrame((state) => {
     if (!ref.current) return;
@@ -21,7 +22,7 @@ function ProductsGroup() {
 
   return (
     <mesh ref={ref} scale={[3.2, 3.2, 1]}>
-      <planeGeometry args={[1, 1.05]} />
+      <planeGeometry args={[1, aspect]} />
       <meshStandardMaterial
         map={texture}
         transparent
@@ -34,7 +35,7 @@ function ProductsGroup() {
   );
 }
 
-function Scene() {
+function Scene({ isMobile }: { isMobile: boolean }) {
   return (
     <>
       {/* Luz ambiental suave */}
@@ -47,7 +48,10 @@ function Scene() {
       <pointLight position={[0, -3, -3]} intensity={1.2} color="#4DA6FF" />
 
       <Suspense fallback={null}>
-        <ProductsGroup />
+        <ProductsGroup
+          textureUrl={isMobile ? productMobileImg : productsImg}
+          aspect={isMobile ? 1.4 : 1.05}
+        />
       </Suspense>
 
       <Environment preset="city" />
@@ -56,6 +60,16 @@ function Scene() {
 }
 
 export function UnderwaterScene() {
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const mql = window.matchMedia("(max-width: 639px)");
+    const update = () => setIsMobile(mql.matches);
+    update();
+    mql.addEventListener("change", update);
+    return () => mql.removeEventListener("change", update);
+  }, []);
+
   return (
     <div
       className="
@@ -92,7 +106,7 @@ export function UnderwaterScene() {
         style={{ background: "transparent" }}
       >
         <Suspense fallback={null}>
-          <Scene />
+          <Scene key={isMobile ? "m" : "d"} isMobile={isMobile} />
         </Suspense>
       </Canvas>
     </div>
