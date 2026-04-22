@@ -10,6 +10,7 @@ import feedImg from "@/assets/product-feed.jpg";
 
 type Product = {
   id: string;
+  slug: string | null;
   name: string;
   description: string | null;
   price: number;
@@ -22,12 +23,29 @@ type Product = {
 type Subcategory = { id: string; name: string };
 
 export const Route = createFileRoute("/productos/$productId")({
-  head: () => ({
-    meta: [
-      { title: "Producto — Grupo Vega" },
-      { name: "description", content: "Detalle del producto en Grupo Vega." },
-    ],
-  }),
+  loader: async ({ params }) => {
+    const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(
+      params.productId
+    );
+    const { data } = await supabase
+      .from("products")
+      .select("name,description")
+      .eq(isUuid ? "id" : "slug", params.productId)
+      .maybeSingle();
+    return { name: data?.name ?? null, description: data?.description ?? null };
+  },
+  head: ({ loaderData }) => {
+    const name = loaderData?.name ?? "Producto";
+    const desc = loaderData?.description ?? "Detalle del producto en Grupo Vega.";
+    return {
+      meta: [
+        { title: `${name} — Grupo Vega` },
+        { name: "description", content: desc.slice(0, 160) },
+        { property: "og:title", content: `${name} — Grupo Vega` },
+        { property: "og:description", content: desc.slice(0, 160) },
+      ],
+    };
+  },
   component: ProductDetailPage,
 });
 
@@ -46,10 +64,13 @@ function ProductDetailPage() {
     if (typeof window !== "undefined") window.scrollTo(0, 0);
     (async () => {
       setLoading(true);
+      const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(
+        productId
+      );
       const { data } = await supabase
         .from("products")
         .select("*")
-        .eq("id", productId)
+        .eq(isUuid ? "id" : "slug", productId)
         .maybeSingle();
       if (!alive) return;
       const prod = (data ?? null) as Product | null;
