@@ -116,6 +116,7 @@ export type Database = {
           image_url: string | null
           name: string
           price: number
+          slug: string | null
           stock: number
           subcategory_id: string | null
           updated_at: string
@@ -131,6 +132,7 @@ export type Database = {
           image_url?: string | null
           name: string
           price?: number
+          slug?: string | null
           stock?: number
           subcategory_id?: string | null
           updated_at?: string
@@ -146,6 +148,7 @@ export type Database = {
           image_url?: string | null
           name?: string
           price?: number
+          slug?: string | null
           stock?: number
           subcategory_id?: string | null
           updated_at?: string
@@ -235,6 +238,7 @@ export type Database = {
         Returns: boolean
       }
       promote_user_to_admin: { Args: { _email: string }; Returns: boolean }
+      slugify: { Args: { _text: string }; Returns: string }
     }
     Enums: {
       app_role: "admin" | "user"
