@@ -41,6 +41,13 @@ function ProductsGroup() {
   const ref = useRef<THREE.Mesh>(null);
   const texture = useTexture(productsImg);
 
+  // Mejorar calidad de la textura
+  texture.anisotropy = 16;
+  texture.minFilter = THREE.LinearMipmapLinearFilter;
+  texture.magFilter = THREE.LinearFilter;
+  texture.generateMipmaps = true;
+  (texture as any).colorSpace = THREE.SRGBColorSpace;
+
   // Aspect ratio real de la imagen (≈ 940x1180 → 0.8)
   const aspect = 0.8;
   const height = 3.4;
@@ -49,13 +56,12 @@ function ProductsGroup() {
   return (
     <mesh ref={ref} scale={[width, height, 1]}>
       <planeGeometry args={[1, 1]} />
-      <meshStandardMaterial
+      <meshBasicMaterial
         map={texture}
         transparent
         alphaTest={0.05}
         side={THREE.DoubleSide}
-        roughness={0.55}
-        metalness={0.15}
+        toneMapped={false}
       />
     </mesh>
   );
@@ -64,14 +70,9 @@ function ProductsGroup() {
 function Scene() {
   return (
     <>
-      <ambientLight intensity={0.55} />
-      <directionalLight position={[-4, 6, 5]} intensity={2.2} color="#ffffff" castShadow />
-      <pointLight position={[5, 2, 4]} intensity={1.8} color="#88ccff" />
-      <pointLight position={[0, -3, -3]} intensity={1.2} color="#4DA6FF" />
       <Suspense fallback={null}>
         <ProductsGroup />
       </Suspense>
-      <Environment preset="city" />
     </>
   );
 }
