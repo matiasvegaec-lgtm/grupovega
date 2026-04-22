@@ -209,41 +209,6 @@ function ProductDetailPage() {
               </Link>
             </motion.div>
           </div>
-
-          {/* Relacionados */}
-          {related.length > 0 && (
-            <div className="mt-20">
-              <h2 className="text-2xl font-bold text-navy-deep mb-8">
-                Otros productos en {product.category}
-              </h2>
-              <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                {related.map((p) => (
-                  <Link
-                    key={p.id}
-                    to="/productos/$productId"
-                    params={{ productId: p.id }}
-                    className="group bg-card rounded-2xl overflow-hidden shadow-card hover:shadow-elegant transition-all hover:-translate-y-2"
-                  >
-                    <div className="aspect-square overflow-hidden">
-                      <img
-                        src={p.image_url || feedImg}
-                        alt={p.name}
-                        className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
-                      />
-                    </div>
-                    <div className="p-4">
-                      <h3 className="font-bold text-navy-deep text-sm mb-1 group-hover:text-ocean transition">
-                        {p.name}
-                      </h3>
-                      <span className="text-lg font-bold text-navy-deep">
-                        ${Number(p.price).toFixed(2)}
-                      </span>
-                    </div>
-                  </Link>
-                ))}
-              </div>
-            </div>
-          )}
         </div>
       </section>
     </Layout>
