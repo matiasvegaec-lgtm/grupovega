@@ -5,7 +5,7 @@ import * as THREE from "three";
 import productsImg from "@/assets/hero-products-group.png";
 import productMobileImg from "@/assets/hero-product-mobile.png";
 
-function ProductsGroup({ textureUrl, aspect = 1.05 }: { textureUrl: string; aspect?: number }) {
+function ProductsGroup({ textureUrl, aspect = 1.05, animated = true }: { textureUrl: string; aspect?: number; animated?: boolean }) {
   const ref = useRef<THREE.Mesh>(null);
   const texture = useTexture(textureUrl);
   texture.anisotropy = 16;
@@ -14,7 +14,7 @@ function ProductsGroup({ textureUrl, aspect = 1.05 }: { textureUrl: string; aspe
   texture.generateMipmaps = true;
 
   useFrame((state) => {
-    if (!ref.current) return;
+    if (!ref.current || !animated) return;
     const t = state.clock.elapsedTime;
     // Suave flotación + ligera inclinación 3D para sensación de volumen
     ref.current.position.y = Math.sin(t * 0.8) * 0.15;
@@ -25,15 +25,19 @@ function ProductsGroup({ textureUrl, aspect = 1.05 }: { textureUrl: string; aspe
   });
 
   return (
-    <mesh ref={ref} scale={[3.2, 3.2, 1]}>
+    <mesh
+      ref={ref}
+      scale={[3.2, 3.2, 1]}
+      rotation={animated ? [0, 0, 0] : [-0.08, -0.25, 0]}
+    >
       <planeGeometry args={[1, aspect]} />
       <meshStandardMaterial
         map={texture}
         transparent
         alphaTest={0.05}
         side={THREE.DoubleSide}
-        roughness={0.55}
-        metalness={0.15}
+        roughness={0.4}
+        metalness={0.25}
       />
     </mesh>
   );
@@ -43,18 +47,21 @@ function Scene({ isMobile }: { isMobile: boolean }) {
   return (
     <>
       {/* Luz ambiental suave */}
-      <ambientLight intensity={0.55} />
+      <ambientLight intensity={0.5} />
       {/* Luz principal cálida desde arriba-izquierda */}
-      <directionalLight position={[-4, 6, 5]} intensity={2.2} color="#ffffff" castShadow />
+      <directionalLight position={[-4, 6, 5]} intensity={2.4} color="#ffffff" castShadow />
       {/* Luz de relleno fría desde la derecha */}
-      <pointLight position={[5, 2, 4]} intensity={1.8} color="#88ccff" />
-      {/* Luz de contorno trasera */}
-      <pointLight position={[0, -3, -3]} intensity={1.2} color="#4DA6FF" />
+      <pointLight position={[5, 2, 4]} intensity={2} color="#88ccff" />
+      {/* Luz de contorno trasera para resaltar bordes */}
+      <pointLight position={[3, -2, -3]} intensity={1.6} color="#4DA6FF" />
+      {/* Luz superior tipo spot para volumen */}
+      <spotLight position={[0, 5, 3]} angle={0.5} penumbra={0.8} intensity={1.5} color="#ffffff" />
 
       <Suspense fallback={null}>
         <ProductsGroup
           textureUrl={isMobile ? productMobileImg : productsImg}
           aspect={isMobile ? 1.4 : 1.05}
+          animated={!isMobile}
         />
       </Suspense>
 
@@ -78,8 +85,9 @@ export function UnderwaterScene() {
     <div
       className="
         pointer-events-none absolute -z-0
-        bottom-20 -right-2 w-[48%] max-w-[210px] h-[30%]
+        top-24 -right-3 bottom-auto w-[44%] max-w-[190px] h-[26%]
         sm:bottom-0 sm:right-0 sm:w-[60%] sm:max-w-[460px] sm:h-[60%]
+        sm:top-auto
         md:w-[55%] md:max-w-[640px] md:h-[85%]
         lg:max-w-[760px] lg:h-[95%]
         xl:max-w-[880px]
