@@ -293,24 +293,6 @@
 }
 
 /* Replica los efectos del :hover del marquee cuando un item está centrado (mobile) */
-.marquee-item.is-centered .gradient-wave {
-  opacity: 0.4;
-  transform: scale(1.1);
-}
-.marquee-item.is-centered .border-dashed {
-  border-color: oklch(0.6 0.15 220 / 0.3);
-  transform: rotate(180deg);
-}
-.marquee-item.is-centered img {
-  transform: scale(1.25) translateY(-0.5rem) rotate(-3deg);
-}
-.marquee-item.is-centered p {
-  color: oklch(0.6 0.15 220);
-}
-.marquee-item.is-centered .destacado-label {
-  opacity: 1;
-}
-
 @keyframes spotlight-pulse {
   0%, 100% {
     transform: scale(1) translateY(0);
