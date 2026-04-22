@@ -146,24 +146,40 @@ function Index() {
       {/* CATEGORÍAS — solo icono + nombre */}
       <section className="py-20 bg-background">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center max-w-2xl mx-auto mb-12">
+          <div className="text-center max-w-2xl mx-auto mb-14">
             <p className="text-sm font-semibold uppercase tracking-widest text-ocean mb-3">Categorías</p>
-            <h2 className="text-4xl md:text-5xl font-bold text-navy-deep">Líneas de producto</h2>
+            <h2 className="text-4xl md:text-5xl font-bold text-navy-deep mb-4">Líneas de producto</h2>
+            <p className="text-muted-foreground text-lg">
+              Descubre nuestro catálogo organizado por categorías para encontrar exactamente lo que tu camaronera necesita.
+            </p>
           </div>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 max-w-3xl mx-auto justify-items-center">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 max-w-6xl mx-auto">
             {categories.map((c, i) => (
               <motion.div
                 key={c.name}
-                initial={{ opacity: 0, y: 20 }}
+                initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
-                transition={{ duration: 0.4, delay: i * 0.06 }}
-                className="group flex flex-col items-center text-center cursor-pointer"
+                transition={{ duration: 0.5, delay: i * 0.08 }}
+                className="group relative"
               >
-                <div className="w-20 h-20 rounded-full gradient-wave flex items-center justify-center shadow-glow mb-3 group-hover:scale-110 group-hover:-translate-y-1 transition-all duration-300">
-                  <c.icon className="w-9 h-9 text-white" strokeWidth={1.8} />
-                </div>
-                <span className="font-semibold text-navy-deep">{c.name}</span>
+                <Link to="/productos" className="block h-full">
+                  <div className="absolute -inset-0.5 gradient-wave rounded-2xl opacity-0 group-hover:opacity-60 blur transition duration-500" />
+                  <div className="relative h-full bg-card border border-border rounded-2xl p-6 flex flex-col items-center text-center hover:border-ocean transition-all duration-300 group-hover:-translate-y-2 group-hover:shadow-elegant overflow-hidden">
+                    {/* decorative wave bg */}
+                    <div className="absolute inset-x-0 -top-12 h-24 bg-gradient-to-b from-ocean/10 to-transparent opacity-0 group-hover:opacity-100 transition duration-500" />
+
+                    <div className="relative w-20 h-20 rounded-2xl gradient-wave flex items-center justify-center shadow-glow mb-4 group-hover:scale-110 group-hover:rotate-6 transition-all duration-500">
+                      <c.icon className="w-10 h-10 text-white" strokeWidth={1.6} />
+                    </div>
+                    <span className="font-bold text-lg text-navy-deep mb-1">{c.name}</span>
+                    <span className="text-xs font-semibold uppercase tracking-wider text-ocean mb-3">{c.count}</span>
+                    <p className="text-sm text-muted-foreground leading-relaxed flex-1">{c.desc}</p>
+                    <div className="mt-4 inline-flex items-center gap-1 text-ocean font-semibold text-sm opacity-0 group-hover:opacity-100 group-hover:gap-2 transition-all duration-300">
+                      Explorar <ArrowRight className="w-4 h-4" />
+                    </div>
+                  </div>
+                </Link>
               </motion.div>
             ))}
           </div>
