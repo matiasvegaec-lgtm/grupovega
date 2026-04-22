@@ -301,10 +301,6 @@ function AdminProductos() {
                 <label className="text-xs font-semibold text-navy-deep">Stock</label>
                 <input required type="number" min="0" value={form.stock} onChange={(e) => setForm({ ...form, stock: parseInt(e.target.value) || 0 })} className={inputCls} />
               </div>
-              <div>
-                <label className="text-xs font-semibold text-navy-deep">Orden</label>
-                <input type="number" value={form.display_order} onChange={(e) => setForm({ ...form, display_order: parseInt(e.target.value) || 0 })} className={inputCls} />
-              </div>
               <div className="sm:col-span-2">
                 <label className="text-xs font-semibold text-navy-deep">Imagen</label>
                 <div className="flex gap-3 items-start">
