@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState, FormEvent } from "react";
-import { Plus, Pencil, Trash2, Loader2, X, Upload, Eye, EyeOff } from "lucide-react";
+import { Plus, Pencil, Trash2, Loader2, X, Upload, Eye, EyeOff, Star } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 
@@ -14,6 +14,7 @@ type Product = {
   stock: number;
   active: boolean;
   display_order: number;
+  featured: boolean;
 };
 
 export const Route = createFileRoute("/admin/productos")({
@@ -22,7 +23,7 @@ export const Route = createFileRoute("/admin/productos")({
 
 const empty: Omit<Product, "id"> = {
   name: "", description: "", price: 0, category: "Alimentos",
-  image_url: "", stock: 0, active: true, display_order: 0,
+  image_url: "", stock: 0, active: true, display_order: 0, featured: false,
 };
 
 function AdminProductos() {
@@ -51,7 +52,7 @@ function AdminProductos() {
 
   const openEdit = (p: Product) => {
     setEditing(p);
-    setForm({ name: p.name, description: p.description ?? "", price: Number(p.price), category: p.category, image_url: p.image_url ?? "", stock: p.stock, active: p.active, display_order: p.display_order });
+    setForm({ name: p.name, description: p.description ?? "", price: Number(p.price), category: p.category, image_url: p.image_url ?? "", stock: p.stock, active: p.active, display_order: p.display_order, featured: p.featured });
     setShowForm(true);
   };
 
@@ -106,6 +107,12 @@ function AdminProductos() {
     const { error } = await supabase.from("products").update({ active: !p.active }).eq("id", p.id);
     if (error) toast.error(error.message);
     else await load();
+  };
+
+  const toggleFeatured = async (p: Product) => {
+    const { error } = await supabase.from("products").update({ featured: !p.featured }).eq("id", p.id);
+    if (error) toast.error(error.message);
+    else { toast.success(p.featured ? "Quitado de destacados" : "Marcado como destacado"); await load(); }
   };
 
   const inputCls = "w-full px-3 py-2 rounded-lg bg-background border border-border focus:border-ocean focus:outline-none text-sm";
