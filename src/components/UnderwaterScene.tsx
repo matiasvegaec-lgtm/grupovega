@@ -1,7 +1,10 @@
 import { Canvas, useFrame } from "@react-three/fiber";
-import { Float, Environment, MeshDistortMaterial } from "@react-three/drei";
+import { Float, Environment, useTexture } from "@react-three/drei";
 import { useRef, Suspense } from "react";
 import * as THREE from "three";
+import exiaImg from "@/assets/hero-exia.png";
+import ecofreshImg from "@/assets/hero-ecofresh.png";
+import larvivaImg from "@/assets/hero-larviva.png";
 
 function Bubble({ position, scale = 1, speed = 1 }: { position: [number, number, number]; scale?: number; speed?: number }) {
   const ref = useRef<THREE.Mesh>(null);
@@ -18,18 +21,35 @@ function Bubble({ position, scale = 1, speed = 1 }: { position: [number, number,
   );
 }
 
-function ShrimpBlob({ position, color }: { position: [number, number, number]; color: string }) {
+function ProductCard({
+  position,
+  textureUrl,
+  scale = 1.6,
+  rotationSpeed = 0.4,
+  tiltOffset = 0,
+}: {
+  position: [number, number, number];
+  textureUrl: string;
+  scale?: number;
+  rotationSpeed?: number;
+  tiltOffset?: number;
+}) {
   const ref = useRef<THREE.Mesh>(null);
+  const texture = useTexture(textureUrl);
   useFrame((state) => {
     if (!ref.current) return;
-    ref.current.rotation.y = state.clock.elapsedTime * 0.2;
-    ref.current.rotation.x = Math.sin(state.clock.elapsedTime * 0.3) * 0.2;
+    const t = state.clock.elapsedTime;
+    // rotación constante en Y (gira sobre sí mismo)
+    ref.current.rotation.y = t * rotationSpeed;
+    // ligero balanceo en X y Z para sensación 3D viva
+    ref.current.rotation.x = Math.sin(t * 0.6 + tiltOffset) * 0.25;
+    ref.current.rotation.z = Math.cos(t * 0.4 + tiltOffset) * 0.15;
   });
   return (
-    <Float speed={2} rotationIntensity={1} floatIntensity={2}>
-      <mesh ref={ref} position={position}>
-        <torusKnotGeometry args={[0.7, 0.25, 128, 16]} />
-        <MeshDistortMaterial color={color} roughness={0.2} metalness={0.4} distort={0.3} speed={2} />
+    <Float speed={1.6} rotationIntensity={0.4} floatIntensity={1.8}>
+      <mesh ref={ref} position={position} scale={scale}>
+        <planeGeometry args={[1, 1]} />
+        <meshBasicMaterial map={texture} transparent alphaTest={0.05} side={THREE.DoubleSide} toneMapped={false} />
       </mesh>
     </Float>
   );
@@ -49,9 +69,11 @@ function Scene() {
       <pointLight position={[-5, -5, 5]} intensity={2} color="#4DA6FF" />
       <pointLight position={[5, 5, -5]} intensity={1.5} color="#00C2CB" />
 
-      <ShrimpBlob position={[-2.5, 0.5, 0]} color="#4DA6FF" />
-      <ShrimpBlob position={[2.5, -0.5, -1]} color="#00C2CB" />
-      <ShrimpBlob position={[0, 1.5, -2]} color="#1E5AA8" />
+      <Suspense fallback={null}>
+        <ProductCard position={[-2.8, 0.3, 0]} textureUrl={exiaImg} rotationSpeed={0.35} tiltOffset={0} />
+        <ProductCard position={[2.8, -0.4, -1]} textureUrl={ecofreshImg} rotationSpeed={-0.45} tiltOffset={1.2} />
+        <ProductCard position={[0, 1.6, -2]} textureUrl={larvivaImg} rotationSpeed={0.5} tiltOffset={2.4} scale={1.4} />
+      </Suspense>
 
       {bubbles.map((b, i) => (
         <Bubble key={i} {...b} />
