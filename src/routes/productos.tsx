@@ -424,7 +424,7 @@ function ProductosPage() {
         </div>
       </section>
 
-      {/* PROVEEDORES — marquee */}
+      {/* Proveedores — marquee */}
       <section className="py-20 bg-foam overflow-hidden">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 mb-12">
           <div className="text-center max-w-2xl mx-auto">
