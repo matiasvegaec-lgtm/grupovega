@@ -97,7 +97,7 @@ export function UnderwaterScene() {
 
       {/* Productos en esquina inferior derecha con animación de aparición */}
       <div
-        className="pointer-events-none absolute bottom-0 right-0 -z-0 w-[42%] sm:w-[44%] md:w-[42%] max-w-[520px] h-[45%] sm:h-[60%] md:h-[80%] transition-all duration-[1400ms] ease-out"
+        className="pointer-events-none absolute bottom-0 right-0 -z-0 w-[32%] sm:w-[36%] md:w-[42%] max-w-[520px] h-[40%] sm:h-[55%] md:h-[80%] transition-all duration-[1400ms] ease-out"
         style={{
           opacity: visible ? 1 : 0,
           transform: visible ? "translate(0, 0) scale(1)" : "translate(40px, 40px) scale(0.92)",
