@@ -299,8 +299,8 @@ function ProductosPage() {
             </div>
 
             {/* Botón filtros mobile */}
-            <div className="lg:hidden flex items-center justify-between gap-3">
-              <div className="flex items-center gap-2">
+            <div className="lg:hidden flex flex-col gap-2">
+              <div className="flex items-center gap-2 flex-wrap">
                 <button
                   onClick={() => setSidebarOpen(true)}
                   className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full gradient-wave text-white text-sm font-semibold shadow-glow"
@@ -319,7 +319,7 @@ function ProductosPage() {
                   <option value="price-desc">Precio: mayor a menor</option>
                 </select>
               </div>
-              <span className="text-sm text-muted-foreground">
+              <span className="text-sm text-muted-foreground pl-1">
                 {filtered.length} resultado{filtered.length === 1 ? "" : "s"}
               </span>
             </div>
