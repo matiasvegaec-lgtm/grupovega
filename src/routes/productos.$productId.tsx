@@ -172,12 +172,12 @@ function ProductDetailPage() {
 
       <section className="py-12 bg-background">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl">
-          <div className="grid lg:grid-cols-5 gap-10 lg:gap-16 items-start">
+          <div className="grid lg:grid-cols-2 gap-10 lg:gap-12 items-stretch">
             <motion.div
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.5 }}
-              className="relative bg-white rounded-3xl overflow-hidden shadow-elegant aspect-square lg:col-span-3 border border-border"
+              className="relative bg-white rounded-3xl overflow-hidden shadow-elegant border border-border lg:sticky lg:top-24 lg:self-start aspect-square"
             >
               <img
                 src={product.image_url || feedImg}
@@ -190,7 +190,7 @@ function ProductDetailPage() {
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.5, delay: 0.1 }}
-              className="flex flex-col lg:col-span-2 lg:sticky lg:top-24"
+              className="flex flex-col"
             >
               <span className="inline-flex items-center gap-1.5 self-start px-3 py-1 rounded-md bg-ocean/10 text-ocean text-xs font-bold uppercase tracking-wider mb-3">
                 <Tag className="w-3 h-3" /> {product.category}
