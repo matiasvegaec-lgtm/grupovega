@@ -16,6 +16,9 @@ type Product = {
   display_order: number;
   featured: boolean;
   subcategory_id: string | null;
+  presentation: string | null;
+  protein_content: string | null;
+  price_card_3m: number | null;
 };
 
 type Category = { id: string; name: string };
@@ -28,6 +31,7 @@ export const Route = createFileRoute("/admin/productos")({
 const empty: Omit<Product, "id"> = {
   name: "", description: "", price: 0, category: "Alimentos",
   image_url: "", stock: 0, active: true, display_order: 0, featured: false, subcategory_id: null,
+  presentation: "", protein_content: "", price_card_3m: null,
 };
 
 function AdminProductos() {
@@ -63,7 +67,7 @@ function AdminProductos() {
 
   const openEdit = (p: Product) => {
     setEditing(p);
-    setForm({ name: p.name, description: p.description ?? "", price: Number(p.price), category: p.category, image_url: p.image_url ?? "", stock: p.stock, active: p.active, display_order: p.display_order, featured: p.featured, subcategory_id: p.subcategory_id ?? null });
+    setForm({ name: p.name, description: p.description ?? "", price: Number(p.price), category: p.category, image_url: p.image_url ?? "", stock: p.stock, active: p.active, display_order: p.display_order, featured: p.featured, subcategory_id: p.subcategory_id ?? null, presentation: p.presentation ?? "", protein_content: p.protein_content ?? "", price_card_3m: p.price_card_3m ?? null });
     setShowForm(true);
   };
 
@@ -88,7 +92,7 @@ function AdminProductos() {
     e.preventDefault();
     setSaving(true);
     try {
-      const payload = { ...form, price: Number(form.price), stock: Number(form.stock), display_order: Number(form.display_order), image_url: form.image_url || null, description: form.description || null, subcategory_id: form.subcategory_id || null };
+      const payload = { ...form, price: Number(form.price), stock: Number(form.stock), display_order: Number(form.display_order), image_url: form.image_url || null, description: form.description || null, subcategory_id: form.subcategory_id || null, presentation: form.presentation || null, protein_content: form.protein_content || null, price_card_3m: form.price_card_3m === null || form.price_card_3m === undefined || (form.price_card_3m as any) === "" ? null : Number(form.price_card_3m) };
       if (editing) {
         const { error } = await supabase.from("products").update(payload).eq("id", editing.id);
         if (error) throw error;
@@ -300,6 +304,37 @@ function AdminProductos() {
               <div>
                 <label className="text-xs font-semibold text-navy-deep">Stock</label>
                 <input required type="number" min="0" value={form.stock} onChange={(e) => setForm({ ...form, stock: parseInt(e.target.value) || 0 })} className={inputCls} />
+              </div>
+              <div>
+                <label className="text-xs font-semibold text-navy-deep">Presentación</label>
+                <input
+                  value={form.presentation ?? ""}
+                  onChange={(e) => setForm({ ...form, presentation: e.target.value })}
+                  placeholder="Ej: 25 kg, 500 g, 1 L"
+                  className={inputCls}
+                />
+              </div>
+              <div>
+                <label className="text-xs font-semibold text-navy-deep">Contenido de proteína</label>
+                <input
+                  value={form.protein_content ?? ""}
+                  onChange={(e) => setForm({ ...form, protein_content: e.target.value })}
+                  placeholder="Ej: 35%"
+                  className={inputCls}
+                />
+              </div>
+              <div className="sm:col-span-2">
+                <label className="text-xs font-semibold text-navy-deep">Precio con tarjeta a 3 meses (USD)</label>
+                <input
+                  type="number"
+                  step="0.01"
+                  min="0"
+                  value={form.price_card_3m ?? ""}
+                  onChange={(e) => setForm({ ...form, price_card_3m: e.target.value === "" ? null : parseFloat(e.target.value) })}
+                  placeholder="Opcional — total diferido a 3 cuotas"
+                  className={inputCls}
+                />
+                <p className="text-[11px] text-muted-foreground mt-1">Si lo dejas vacío no se mostrará el precio diferido.</p>
               </div>
               <div className="sm:col-span-2">
                 <label className="text-xs font-semibold text-navy-deep">Imagen</label>

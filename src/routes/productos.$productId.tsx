@@ -35,6 +35,9 @@ type Product = {
   image_url: string | null;
   stock: number;
   subcategory_id: string | null;
+  presentation: string | null;
+  protein_content: string | null;
+  price_card_3m: number | null;
 };
 
 type Subcategory = { id: string; name: string };
@@ -234,6 +237,37 @@ function ProductDetailPage() {
                 </span>
                 <span className="text-sm text-muted-foreground">precio x unidad</span>
               </div>
+
+              {/* Especificaciones rápidas */}
+              {(product.presentation || product.protein_content || product.price_card_3m) && (
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-6">
+                  {product.presentation && (
+                    <div className="rounded-xl border border-border bg-card p-3">
+                      <p className="text-[11px] uppercase tracking-wider text-muted-foreground font-semibold">Presentación</p>
+                      <p className="text-base font-bold text-navy-deep mt-0.5">{product.presentation}</p>
+                    </div>
+                  )}
+                  {product.protein_content && (
+                    <div className="rounded-xl border border-border bg-card p-3">
+                      <p className="text-[11px] uppercase tracking-wider text-muted-foreground font-semibold">Proteína</p>
+                      <p className="text-base font-bold text-navy-deep mt-0.5">{product.protein_content}</p>
+                    </div>
+                  )}
+                  {product.price_card_3m && Number(product.price_card_3m) > 0 && (
+                    <div className="rounded-xl border border-turquoise/40 bg-gradient-to-br from-turquoise/10 to-ocean/10 p-3 sm:col-span-2">
+                      <p className="text-[11px] uppercase tracking-wider text-ocean font-bold">Pago con tarjeta · 3 meses sin intereses</p>
+                      <div className="flex items-baseline gap-2 mt-0.5">
+                        <p className="text-lg font-bold text-navy-deep">
+                          3 × ${(Number(product.price_card_3m) / 3).toFixed(2)}
+                        </p>
+                        <span className="text-xs text-muted-foreground">
+                          (Total ${Number(product.price_card_3m).toFixed(2)})
+                        </span>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              )}
 
               {/* Cantidad + CTA en línea, estilo referencia */}
               <div className="flex flex-col sm:flex-row sm:items-center gap-3 mb-6">
