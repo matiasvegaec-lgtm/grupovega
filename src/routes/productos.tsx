@@ -35,7 +35,11 @@ type Product = {
   category: string;
   image_url: string | null;
   stock: number;
+  subcategory_id: string | null;
 };
+
+type Category = { id: string; name: string };
+type Subcategory = { id: string; name: string; category_id: string };
 
 const CATEGORY_META: Record<string, { icon: typeof Wheat; desc: string }> = {
   "Alimentos": { icon: Wheat, desc: "Balanceados premium" },
@@ -57,25 +61,33 @@ const SUPPLIERS = [
 
 function ProductosPage() {
   const [active, setActive] = useState("Todos");
+  const [activeSub, setActiveSub] = useState<string | null>(null);
   const [query, setQuery] = useState("");
   const [stockOnly, setStockOnly] = useState(false);
   const [maxPrice, setMaxPrice] = useState<number>(0);
   const [sort, setSort] = useState<"recent" | "price-asc" | "price-desc" | "name">("recent");
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [products, setProducts] = useState<Product[]>([]);
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [subcategories, setSubcategories] = useState<Subcategory[]>([]);
   const [loading, setLoading] = useState(true);
   const { addItem } = useCart();
 
   useEffect(() => {
     (async () => {
-      const { data, error } = await supabase
-        .from("products").select("*").eq("active", true).order("display_order").order("created_at", { ascending: false });
-      if (!error) {
-        const list = (data ?? []) as Product[];
+      const [prodRes, catRes, subRes] = await Promise.all([
+        supabase.from("products").select("*").eq("active", true).order("display_order").order("created_at", { ascending: false }),
+        supabase.from("categories").select("id,name").eq("active", true).order("display_order"),
+        supabase.from("subcategories").select("id,name,category_id").eq("active", true).order("display_order"),
+      ]);
+      if (!prodRes.error) {
+        const list = (prodRes.data ?? []) as Product[];
         setProducts(list);
         const max = list.reduce((m, p) => Math.max(m, Number(p.price) || 0), 0);
         setMaxPrice(Math.ceil(max) || 100);
       }
+      if (!catRes.error) setCategories((catRes.data ?? []) as Category[]);
+      if (!subRes.error) setSubcategories((subRes.data ?? []) as Subcategory[]);
       setLoading(false);
     })();
   }, []);
@@ -92,6 +104,7 @@ function ProductosPage() {
     .filter(
       (p) =>
         (active === "Todos" || p.category === active) &&
+        (!activeSub || p.subcategory_id === activeSub) &&
         p.name.toLowerCase().includes(query.toLowerCase()) &&
         (!stockOnly || p.stock > 0) &&
         (maxPrice === 0 || Number(p.price) <= maxPrice)
@@ -105,6 +118,7 @@ function ProductosPage() {
 
   const resetFilters = () => {
     setActive("Todos");
+    setActiveSub(null);
     setQuery("");
     setStockOnly(false);
     setMaxPrice(Math.ceil(totalMaxPrice));
@@ -134,7 +148,7 @@ function ProductosPage() {
         <label className="text-xs font-semibold uppercase tracking-widest text-ocean mb-3 block">Categorías</label>
         <div className="space-y-1">
           <button
-            onClick={() => setActive("Todos")}
+            onClick={() => { setActive("Todos"); setActiveSub(null); }}
             className={`w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-sm font-medium transition ${
               active === "Todos"
                 ? "gradient-wave text-white shadow-glow"
@@ -153,23 +167,49 @@ function ProductosPage() {
             const Icon = meta?.icon ?? Beaker;
             const count = categoryCounts[c] ?? 0;
             const isActive = active === c;
+            const catRow = categories.find((x) => x.name === c);
+            const subs = catRow ? subcategories.filter((s) => s.category_id === catRow.id) : [];
             return (
-              <button
-                key={c}
-                onClick={() => setActive(c)}
-                className={`w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-sm font-medium transition ${
-                  isActive
-                    ? "gradient-wave text-white shadow-glow"
-                    : "text-navy-deep hover:bg-foam"
-                }`}
-              >
-                <span className="flex items-center gap-2">
-                  <Icon className="w-4 h-4" /> {c}
-                </span>
-                <span className={`text-xs ${isActive ? "text-white/80" : "text-muted-foreground"}`}>
-                  {count}
-                </span>
-              </button>
+              <div key={c}>
+                <button
+                  onClick={() => { setActive(c); setActiveSub(null); }}
+                  className={`w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-sm font-medium transition ${
+                    isActive
+                      ? "gradient-wave text-white shadow-glow"
+                      : "text-navy-deep hover:bg-foam"
+                  }`}
+                >
+                  <span className="flex items-center gap-2">
+                    <Icon className="w-4 h-4" /> {c}
+                  </span>
+                  <span className={`text-xs ${isActive ? "text-white/80" : "text-muted-foreground"}`}>
+                    {count}
+                  </span>
+                </button>
+                {isActive && subs.length > 0 && (
+                  <div className="mt-1 ml-3 pl-3 border-l border-border space-y-1">
+                    <button
+                      onClick={() => setActiveSub(null)}
+                      className={`w-full text-left px-3 py-1.5 rounded-lg text-xs font-medium transition ${
+                        activeSub === null ? "bg-foam text-ocean" : "text-muted-foreground hover:bg-foam"
+                      }`}
+                    >
+                      Todas las subcategorías
+                    </button>
+                    {subs.map((s) => (
+                      <button
+                        key={s.id}
+                        onClick={() => setActiveSub(s.id)}
+                        className={`w-full text-left px-3 py-1.5 rounded-lg text-xs font-medium transition ${
+                          activeSub === s.id ? "bg-foam text-ocean" : "text-muted-foreground hover:bg-foam"
+                        }`}
+                      >
+                        {s.name}
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
             );
           })}
         </div>

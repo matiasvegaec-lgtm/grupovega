@@ -15,7 +15,11 @@ type Product = {
   active: boolean;
   display_order: number;
   featured: boolean;
+  subcategory_id: string | null;
 };
+
+type Category = { id: string; name: string };
+type Subcategory = { id: string; name: string; category_id: string };
 
 export const Route = createFileRoute("/admin/productos")({
   component: AdminProductos,
@@ -23,7 +27,7 @@ export const Route = createFileRoute("/admin/productos")({
 
 const empty: Omit<Product, "id"> = {
   name: "", description: "", price: 0, category: "Alimentos",
-  image_url: "", stock: 0, active: true, display_order: 0, featured: false,
+  image_url: "", stock: 0, active: true, display_order: 0, featured: false, subcategory_id: null,
 };
 
 function AdminProductos() {
@@ -34,13 +38,20 @@ function AdminProductos() {
   const [saving, setSaving] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [showForm, setShowForm] = useState(false);
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [subcategories, setSubcategories] = useState<Subcategory[]>([]);
 
   const load = async () => {
     setLoading(true);
-    const { data, error } = await supabase
-      .from("products").select("*").order("display_order").order("created_at", { ascending: false });
-    if (error) toast.error(error.message);
-    else setList((data ?? []) as Product[]);
+    const [prodRes, catRes, subRes] = await Promise.all([
+      supabase.from("products").select("*").order("display_order").order("created_at", { ascending: false }),
+      supabase.from("categories").select("id,name").eq("active", true).order("display_order"),
+      supabase.from("subcategories").select("id,name,category_id").eq("active", true).order("display_order"),
+    ]);
+    if (prodRes.error) toast.error(prodRes.error.message);
+    else setList((prodRes.data ?? []) as Product[]);
+    if (!catRes.error) setCategories((catRes.data ?? []) as Category[]);
+    if (!subRes.error) setSubcategories((subRes.data ?? []) as Subcategory[]);
     setLoading(false);
   };
 
@@ -52,7 +63,7 @@ function AdminProductos() {
 
   const openEdit = (p: Product) => {
     setEditing(p);
-    setForm({ name: p.name, description: p.description ?? "", price: Number(p.price), category: p.category, image_url: p.image_url ?? "", stock: p.stock, active: p.active, display_order: p.display_order, featured: p.featured });
+    setForm({ name: p.name, description: p.description ?? "", price: Number(p.price), category: p.category, image_url: p.image_url ?? "", stock: p.stock, active: p.active, display_order: p.display_order, featured: p.featured, subcategory_id: p.subcategory_id ?? null });
     setShowForm(true);
   };
 
@@ -77,7 +88,7 @@ function AdminProductos() {
     e.preventDefault();
     setSaving(true);
     try {
-      const payload = { ...form, price: Number(form.price), stock: Number(form.stock), display_order: Number(form.display_order), image_url: form.image_url || null, description: form.description || null };
+      const payload = { ...form, price: Number(form.price), stock: Number(form.stock), display_order: Number(form.display_order), image_url: form.image_url || null, description: form.description || null, subcategory_id: form.subcategory_id || null };
       if (editing) {
         const { error } = await supabase.from("products").update(payload).eq("id", editing.id);
         if (error) throw error;
@@ -200,12 +211,39 @@ function AdminProductos() {
               </div>
               <div>
                 <label className="text-xs font-semibold text-navy-deep">Categoría</label>
-                <select required value={form.category} onChange={(e) => setForm({ ...form, category: e.target.value })} className={inputCls}>
-                  <option value="Alimentos">Alimentos</option>
-                  <option value="Fertilizantes">Fertilizantes</option>
-                  <option value="Aditivos">Aditivos</option>
-                  <option value="Insumos">Insumos</option>
+                <select required value={form.category} onChange={(e) => setForm({ ...form, category: e.target.value, subcategory_id: null })} className={inputCls}>
+                  {categories.length === 0 && (
+                    <>
+                      <option value="Alimentos">Alimentos</option>
+                      <option value="Fertilizantes">Fertilizantes</option>
+                      <option value="Aditivos">Aditivos</option>
+                      <option value="Insumos">Insumos</option>
+                    </>
+                  )}
+                  {categories.map((c) => (
+                    <option key={c.id} value={c.name}>{c.name}</option>
+                  ))}
                 </select>
+              </div>
+              <div>
+                <label className="text-xs font-semibold text-navy-deep">Subcategoría</label>
+                {(() => {
+                  const parent = categories.find((c) => c.name === form.category);
+                  const subs = parent ? subcategories.filter((s) => s.category_id === parent.id) : [];
+                  return (
+                    <select
+                      value={form.subcategory_id ?? ""}
+                      onChange={(e) => setForm({ ...form, subcategory_id: e.target.value || null })}
+                      disabled={subs.length === 0}
+                      className={inputCls + (subs.length === 0 ? " opacity-50 cursor-not-allowed" : "")}
+                    >
+                      <option value="">{subs.length === 0 ? "Sin subcategorías" : "— Ninguna —"}</option>
+                      {subs.map((s) => (
+                        <option key={s.id} value={s.id}>{s.name}</option>
+                      ))}
+                    </select>
+                  );
+                })()}
               </div>
               <div>
                 <label className="text-xs font-semibold text-navy-deep">Precio (USD)</label>
