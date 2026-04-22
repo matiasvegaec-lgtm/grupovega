@@ -25,33 +25,28 @@ function ProductCard({
   position,
   textureUrl,
   scale = 1.6,
-  rotationSpeed = 0.4,
-  tiltOffset = 0,
+  driftOffset = 0,
 }: {
   position: [number, number, number];
   textureUrl: string;
   scale?: number;
-  rotationSpeed?: number;
-  tiltOffset?: number;
+  driftOffset?: number;
 }) {
   const ref = useRef<THREE.Mesh>(null);
   const texture = useTexture(textureUrl);
   useFrame((state) => {
     if (!ref.current) return;
     const t = state.clock.elapsedTime;
-    // rotación constante en Y (gira sobre sí mismo)
-    ref.current.rotation.y = t * rotationSpeed;
-    // ligero balanceo en X y Z para sensación 3D viva
-    ref.current.rotation.x = Math.sin(t * 0.6 + tiltOffset) * 0.25;
-    ref.current.rotation.z = Math.cos(t * 0.4 + tiltOffset) * 0.15;
+    // sin rotación: solo desplazamiento suave en el espacio 3D
+    ref.current.position.x = position[0] + Math.sin(t * 0.6 + driftOffset) * 0.35;
+    ref.current.position.y = position[1] + Math.cos(t * 0.5 + driftOffset) * 0.3;
+    ref.current.position.z = position[2] + Math.sin(t * 0.4 + driftOffset) * 0.4;
   });
   return (
-    <Float speed={1.6} rotationIntensity={0.4} floatIntensity={1.8}>
-      <mesh ref={ref} position={position} scale={scale}>
-        <planeGeometry args={[1, 1]} />
-        <meshBasicMaterial map={texture} transparent alphaTest={0.05} side={THREE.DoubleSide} toneMapped={false} />
-      </mesh>
-    </Float>
+    <mesh ref={ref} position={position} scale={scale}>
+      <planeGeometry args={[1, 1]} />
+      <meshBasicMaterial map={texture} transparent alphaTest={0.05} side={THREE.DoubleSide} toneMapped={false} />
+    </mesh>
   );
 }
 
@@ -70,9 +65,9 @@ function Scene() {
       <pointLight position={[5, 5, -5]} intensity={1.5} color="#00C2CB" />
 
       <Suspense fallback={null}>
-        <ProductCard position={[-2.8, 0.3, 0]} textureUrl={exiaImg} rotationSpeed={0.35} tiltOffset={0} />
-        <ProductCard position={[2.8, -0.4, -1]} textureUrl={ecofreshImg} rotationSpeed={-0.45} tiltOffset={1.2} />
-        <ProductCard position={[0, 1.6, -2]} textureUrl={larvivaImg} rotationSpeed={0.5} tiltOffset={2.4} scale={1.4} />
+        <ProductCard position={[-2.8, 0.3, 0]} textureUrl={exiaImg} driftOffset={0} />
+        <ProductCard position={[2.8, -0.4, -1]} textureUrl={ecofreshImg} driftOffset={1.8} />
+        <ProductCard position={[0, 1.6, -2]} textureUrl={larvivaImg} driftOffset={3.6} scale={1.4} />
       </Suspense>
 
       {bubbles.map((b, i) => (
