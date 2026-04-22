@@ -291,12 +291,25 @@ function ProductosPage() {
 
             {/* Botón filtros mobile */}
             <div className="lg:hidden flex items-center justify-between gap-3">
-              <button
-                onClick={() => setSidebarOpen(true)}
-                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full gradient-wave text-white text-sm font-semibold shadow-glow"
-              >
-                <Search className="w-4 h-4" /> Filtros
-              </button>
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={() => setSidebarOpen(true)}
+                  className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full gradient-wave text-white text-sm font-semibold shadow-glow"
+                >
+                  <Search className="w-4 h-4" /> Filtros
+                </button>
+                <select
+                  value={sort}
+                  onChange={(e) => setSort(e.target.value as typeof sort)}
+                  className="px-4 py-2.5 rounded-full border border-border bg-card text-navy-deep text-sm font-semibold focus:border-ocean focus:outline-none focus:ring-2 focus:ring-ocean/20 transition"
+                  aria-label="Ordenar productos"
+                >
+                  <option value="recent">Relevancia</option>
+                  <option value="name">Nombre A–Z</option>
+                  <option value="price-asc">Precio: menor a mayor</option>
+                  <option value="price-desc">Precio: mayor a menor</option>
+                </select>
+              </div>
               <span className="text-sm text-muted-foreground">
                 {filtered.length} resultado{filtered.length === 1 ? "" : "s"}
               </span>
