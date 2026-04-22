@@ -272,7 +272,7 @@ function ProductDetailPage() {
                   <Link
                     key={p.id}
                     to="/productos/$productId"
-                    params={{ productId: p.id }}
+                    params={{ productId: p.slug || p.id }}
                     className="group bg-card rounded-2xl overflow-hidden shadow-card hover:shadow-elegant transition-all hover:-translate-y-2"
                   >
                     <div className="aspect-square overflow-hidden">
