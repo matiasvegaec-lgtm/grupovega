@@ -267,7 +267,8 @@ function ProductDetailPage() {
               <h2 className="text-2xl font-bold text-navy-deep mb-8">
                 Otros productos en {product.category}
               </h2>
-              <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+              {/* Mobile: caja con scroll vertical y 2 columnas. Desktop: grilla normal */}
+              <div className="grid grid-cols-2 gap-4 max-h-[70vh] overflow-y-auto pr-1 sm:max-h-none sm:overflow-visible sm:gap-6 lg:grid-cols-4">
                 {related.map((p) => (
                   <Link
                     key={p.id}
