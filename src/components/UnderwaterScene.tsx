@@ -81,13 +81,13 @@ export function UnderwaterScene() {
     return () => mql.removeEventListener("change", update);
   }, []);
 
+  if (isMobile) return null;
+
   return (
     <div
       className="
         pointer-events-none absolute -z-0
-        top-24 -right-3 bottom-auto w-[44%] max-w-[190px] h-[26%]
-        sm:bottom-0 sm:right-0 sm:w-[60%] sm:max-w-[460px] sm:h-[60%]
-        sm:top-auto
+        bottom-0 right-0 w-[60%] max-w-[460px] h-[60%]
         md:w-[55%] md:max-w-[640px] md:h-[85%]
         lg:max-w-[760px] lg:h-[95%]
         xl:max-w-[880px]
