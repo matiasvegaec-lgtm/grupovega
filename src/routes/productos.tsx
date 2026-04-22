@@ -415,12 +415,6 @@ function ProductosPage() {
                         >
                           <ShoppingCart className="w-4 h-4" /> Agregar al carrito
                         </button>
-                        <button
-                          onClick={() => setQuickView(p)}
-                          className="lg:hidden mt-2 w-full inline-flex items-center justify-center gap-2 px-4 py-2 rounded-full border border-border text-navy-deep text-xs font-semibold hover:border-ocean hover:text-ocean transition"
-                        >
-                          <Eye className="w-4 h-4" /> Vista rápida
-                        </button>
                       </div>
                     </motion.div>
                   ))}
