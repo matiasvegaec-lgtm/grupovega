@@ -35,7 +35,11 @@ type Product = {
   category: string;
   image_url: string | null;
   stock: number;
+  subcategory_id: string | null;
 };
+
+type Category = { id: string; name: string };
+type Subcategory = { id: string; name: string; category_id: string };
 
 const CATEGORY_META: Record<string, { icon: typeof Wheat; desc: string }> = {
   "Alimentos": { icon: Wheat, desc: "Balanceados premium" },
