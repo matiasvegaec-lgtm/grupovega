@@ -73,16 +73,49 @@ function AdminProductos() {
 
   const handleUpload = async (file: File) => {
     setUploading(true);
+    const toastId = toast.loading("Procesando imagen con IA (fondo blanco + cuadrado)…");
     try {
-      const ext = file.name.split(".").pop();
-      const path = `${crypto.randomUUID()}.${ext}`;
-      const { error: upErr } = await supabase.storage.from("product-images").upload(path, file);
+      // 1. Convertir archivo a base64
+      const base64: string = await new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => {
+          const result = reader.result as string;
+          resolve(result.split(",")[1]);
+        };
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
+      });
+
+      // 2. Llamar edge function para limpiar el fondo y centrar
+      let finalBlob: Blob;
+      let finalExt = "png";
+      try {
+        const { data: aiData, error: aiErr } = await supabase.functions.invoke("process-product-image", {
+          body: { imageBase64: base64, mimeType: file.type || "image/png" },
+        });
+        if (aiErr) throw aiErr;
+        if (!aiData?.imageDataUrl) throw new Error("Sin respuesta de IA");
+
+        const res = await fetch(aiData.imageDataUrl);
+        finalBlob = await res.blob();
+      } catch (aiErr: any) {
+        // Fallback: si la IA falla, subimos el archivo original
+        toast.warning("La IA falló, se subirá la imagen original.", { id: toastId });
+        finalBlob = file;
+        finalExt = file.name.split(".").pop() || "png";
+      }
+
+      // 3. Subir a storage
+      const path = `${crypto.randomUUID()}.${finalExt}`;
+      const { error: upErr } = await supabase.storage
+        .from("product-images")
+        .upload(path, finalBlob, { contentType: finalBlob.type || "image/png" });
       if (upErr) throw upErr;
       const { data } = supabase.storage.from("product-images").getPublicUrl(path);
       setForm((f) => ({ ...f, image_url: data.publicUrl }));
-      toast.success("Imagen subida");
+      toast.success("Imagen lista", { id: toastId });
     } catch (e: any) {
-      toast.error(e.message);
+      toast.error(e.message, { id: toastId });
     } finally {
       setUploading(false);
     }
@@ -374,6 +407,7 @@ function AdminProductos() {
                       {uploading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Upload className="w-4 h-4" />} Subir archivo
                       <input type="file" accept="image/*" className="hidden" onChange={(e) => e.target.files?.[0] && handleUpload(e.target.files[0])} />
                     </label>
+                    <p className="text-[11px] text-muted-foreground mt-1.5">✨ Al subir, la IA quita el fondo y centra el producto en cuadrado para que el catálogo se vea uniforme.</p>
                   </div>
                 </div>
               </div>
