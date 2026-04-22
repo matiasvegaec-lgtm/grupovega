@@ -14,6 +14,7 @@ import provBlueweight from "@/assets/proveedor-blueweight.png";
 import provLacolina from "@/assets/proveedor-lacolina.png";
 import provLarviva from "@/assets/proveedor-larviva.png";
 import provBiomar from "@/assets/proveedor-biomar.png";
+import paymentMethods from "@/assets/payment-methods.png";
 
 const SUPPLIERS = [
   { name: "NLProinsu", img: provNlproinsu },
@@ -281,6 +282,14 @@ function ProductDetailPage() {
                     <p className="italic">Sin descripción disponible.</p>
                   )}
                 </div>
+              </div>
+
+              <div className="mb-3 rounded-xl bg-white border border-border p-3 flex items-center justify-center">
+                <img
+                  src={paymentMethods}
+                  alt="Métodos de pago aceptados: Visa, Diners Club, Mastercard, Discover, American Express, Alia"
+                  className="h-8 w-auto object-contain"
+                />
               </div>
 
               <div className="bg-foam rounded-2xl p-5 mb-6">

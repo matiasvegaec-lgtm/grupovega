@@ -3,7 +3,6 @@ import { Mail, Phone, MapPin, Facebook, Instagram, Linkedin } from "lucide-react
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import logoGrupoVega from "@/assets/logo-grupo-vega.png";
-import paymentMethods from "@/assets/payment-methods.png";
 
 export function Footer() {
   const [categories, setCategories] = useState<{ id: string; name: string }[]>([]);
@@ -62,13 +61,6 @@ export function Footer() {
 
           <div>
             <h4 className="font-semibold mb-4 text-turquoise">Contacto</h4>
-            <div className="mb-4 rounded-lg bg-white/95 p-2 inline-block">
-              <img
-                src={paymentMethods}
-                alt="Métodos de pago aceptados: Visa, Diners Club, Mastercard, Discover, American Express, Alia"
-                className="h-7 w-auto object-contain"
-              />
-            </div>
             <ul className="space-y-3 text-sm text-white/70">
               <li className="flex items-start gap-2"><MapPin className="w-4 h-4 mt-0.5 text-turquoise" /> Pedernales, Manabí — Ecuador</li>
               <li className="flex items-center gap-2"><Phone className="w-4 h-4 text-turquoise" /> +593 99 773 8026</li>
