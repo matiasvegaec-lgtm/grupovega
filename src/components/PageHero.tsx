@@ -25,8 +25,8 @@ export function PageHero({
           {description && <p className="text-lg md:text-xl text-white/80 leading-relaxed">{description}</p>}
         </motion.div>
       </div>
-      <div className="absolute bottom-0 left-0 right-0">
-        <svg viewBox="0 0 1440 80" className="w-full h-auto" preserveAspectRatio="none">
+      <div className="absolute -bottom-px left-0 right-0 leading-[0]">
+        <svg viewBox="0 0 1440 80" className="block w-full h-auto" preserveAspectRatio="none">
           <path d="M0,40L80,45C160,50,320,60,480,55C640,50,800,30,960,25C1120,20,1280,30,1360,35L1440,40L1440,80L0,80Z" style={{ fill: "var(--background)" }} />
         </svg>
       </div>
