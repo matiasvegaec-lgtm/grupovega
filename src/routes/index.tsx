@@ -73,9 +73,13 @@ function Index() {
       });
   }, []);
 
-  // Duplicamos el array para crear loop infinito sin saltos
-  const carouselItems = [...featured, ...featured];
-  const supplierItems = [...supplierLogos, ...supplierLogos];
+  // Repetimos el array suficientes veces para garantizar loop infinito sin saltos
+  // incluso cuando hay pocos productos destacados
+  const minItems = 12;
+  const featuredRepeats = Math.max(2, Math.ceil(minItems / Math.max(featured.length, 1)));
+  const carouselItems = Array.from({ length: featuredRepeats }, () => featured).flat();
+  const supplierRepeats = Math.max(2, Math.ceil(minItems / supplierLogos.length));
+  const supplierItems = Array.from({ length: supplierRepeats }, () => supplierLogos).flat();
 
   return (
     <Layout>
