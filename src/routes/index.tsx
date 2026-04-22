@@ -65,7 +65,6 @@ function Index() {
   const mobileAutoplay = useRef(
     Autoplay({ delay: 2200, stopOnInteraction: false, stopOnMouseEnter: false })
   );
-  const marqueeRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     supabase
@@ -84,50 +83,6 @@ function Index() {
         }
       });
   }, []);
-
-  // Resaltar la tarjeta más cercana al centro de la pantalla (solo mobile)
-  useEffect(() => {
-    if (typeof window === "undefined") return;
-    const isMobile = window.matchMedia("(max-width: 767px)").matches;
-    if (!isMobile) return;
-
-    let raf = 0;
-    let lastTick = 0;
-    let lastClosest: HTMLElement | null = null;
-    const tick = () => {
-      // Throttle a ~10fps: suficiente para detectar el centro sin saturar el hilo principal
-      const now = performance.now();
-      if (now - lastTick < 100) {
-        raf = requestAnimationFrame(tick);
-        return;
-      }
-      lastTick = now;
-      const container = marqueeRef.current;
-      if (container) {
-        const items = container.querySelectorAll<HTMLElement>("[data-marquee-item]");
-        const centerX = window.innerWidth / 2;
-        let closest: HTMLElement | null = null;
-        let minDist = Infinity;
-        items.forEach((el) => {
-          const r = el.getBoundingClientRect();
-          if (r.right < 0 || r.left > window.innerWidth) return;
-          const dist = Math.abs(r.left + r.width / 2 - centerX);
-          if (dist < minDist) {
-            minDist = dist;
-            closest = el;
-          }
-        });
-        if (closest !== lastClosest) {
-          if (lastClosest) lastClosest.classList.remove("is-centered");
-          if (closest) (closest as HTMLElement).classList.add("is-centered");
-          lastClosest = closest;
-        }
-      }
-      raf = requestAnimationFrame(tick);
-    };
-    raf = requestAnimationFrame(tick);
-    return () => cancelAnimationFrame(raf);
-  }, [featured]);
 
   // Repetimos el array suficientes veces para garantizar loop infinito sin saltos
   // incluso cuando hay pocos productos destacados
