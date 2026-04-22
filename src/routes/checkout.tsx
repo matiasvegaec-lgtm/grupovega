@@ -165,6 +165,7 @@ function CheckoutPage() {
           subtotal,
           total: subtotal,
           status,
+          user_id: user?.id ?? null,
         })
         .select("order_number")
         .single();
