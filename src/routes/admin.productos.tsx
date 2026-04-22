@@ -16,6 +16,9 @@ type Product = {
   display_order: number;
   featured: boolean;
   subcategory_id: string | null;
+  presentation: string | null;
+  protein_content: string | null;
+  price_card_3m: number | null;
 };
 
 type Category = { id: string; name: string };
@@ -28,6 +31,7 @@ export const Route = createFileRoute("/admin/productos")({
 const empty: Omit<Product, "id"> = {
   name: "", description: "", price: 0, category: "Alimentos",
   image_url: "", stock: 0, active: true, display_order: 0, featured: false, subcategory_id: null,
+  presentation: "", protein_content: "", price_card_3m: null,
 };
 
 function AdminProductos() {
