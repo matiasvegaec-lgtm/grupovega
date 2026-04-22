@@ -6,6 +6,8 @@ import { supabase } from "@/integrations/supabase/client";
 import { Layout } from "@/components/Layout";
 import { UnderwaterScene } from "@/components/UnderwaterScene";
 import { Carousel, CarouselContent, CarouselItem } from "@/components/ui/carousel";
+import Autoplay from "embla-carousel-autoplay";
+import { useRef } from "react";
 import heroImg from "@/assets/hero-shrimp-farm.jpg";
 import pBalanceado from "@/assets/p-balanceado.png";
 import pAceite from "@/assets/p-aceite.png";
