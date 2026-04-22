@@ -62,6 +62,9 @@ const supplierLogos = [
 
 function Index() {
   const [featured, setFeatured] = useState<FeaturedItem[]>(featuredFallback);
+  const mobileAutoplay = useRef(
+    Autoplay({ delay: 2200, stopOnInteraction: false, stopOnMouseEnter: false })
+  );
 
   useEffect(() => {
     supabase
