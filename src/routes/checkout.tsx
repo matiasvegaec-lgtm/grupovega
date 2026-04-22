@@ -135,6 +135,9 @@ function CheckoutPage() {
       toast.error("Tu carrito está vacío");
       return;
     }
+    // Validar todos los pasos antes de enviar
+    if (!validateStep(0)) { setStep(0); return; }
+    if (!validateStep(1)) { setStep(1); return; }
     if (method === "card") {
       toast.info("El pago con tarjeta estará disponible muy pronto. Elige otro método.");
       return;
