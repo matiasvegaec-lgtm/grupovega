@@ -182,15 +182,17 @@ function ProductDetailPage() {
             >
               <p className="text-sm font-semibold uppercase tracking-widest text-ocean mb-3">
                 {product.category}
-                {subcategoryName && (
-                  <span className="text-muted-foreground normal-case tracking-normal font-medium">
-                    {" / "}{subcategoryName}
-                  </span>
-                )}
               </p>
-              <h1 className="text-4xl md:text-5xl font-bold text-navy-deep mb-4 leading-tight">
+              <h1 className="text-4xl md:text-5xl font-bold text-navy-deep mb-3 leading-tight">
                 {product.name}
               </h1>
+              {subcategoryName && (
+                <div className="mb-5">
+                  <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-foam border border-border text-xs font-semibold text-ocean">
+                    <Tag className="w-3 h-3" /> {subcategoryName}
+                  </span>
+                </div>
+              )}
 
               <div className="flex items-baseline gap-4 mb-6">
                 <span className="text-4xl font-bold text-navy-deep">
@@ -205,6 +207,9 @@ function ProductDetailPage() {
                 )}
               </div>
 
+              <h2 className="text-sm font-bold uppercase tracking-widest text-navy-deep mb-2">
+                Descripción
+              </h2>
               <div className="prose prose-sm max-w-none text-muted-foreground mb-8 leading-relaxed">
                 {product.description ? (
                   <p className="whitespace-pre-line">{product.description}</p>
