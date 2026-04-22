@@ -15,7 +15,11 @@ type Product = {
   active: boolean;
   display_order: number;
   featured: boolean;
+  subcategory_id: string | null;
 };
+
+type Category = { id: string; name: string };
+type Subcategory = { id: string; name: string; category_id: string };
 
 export const Route = createFileRoute("/admin/productos")({
   component: AdminProductos,
@@ -23,7 +27,7 @@ export const Route = createFileRoute("/admin/productos")({
 
 const empty: Omit<Product, "id"> = {
   name: "", description: "", price: 0, category: "Alimentos",
-  image_url: "", stock: 0, active: true, display_order: 0, featured: false,
+  image_url: "", stock: 0, active: true, display_order: 0, featured: false, subcategory_id: null,
 };
 
 function AdminProductos() {
@@ -34,13 +38,20 @@ function AdminProductos() {
   const [saving, setSaving] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [showForm, setShowForm] = useState(false);
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [subcategories, setSubcategories] = useState<Subcategory[]>([]);
 
   const load = async () => {
     setLoading(true);
-    const { data, error } = await supabase
-      .from("products").select("*").order("display_order").order("created_at", { ascending: false });
-    if (error) toast.error(error.message);
-    else setList((data ?? []) as Product[]);
+    const [prodRes, catRes, subRes] = await Promise.all([
+      supabase.from("products").select("*").order("display_order").order("created_at", { ascending: false }),
+      supabase.from("categories").select("id,name").eq("active", true).order("display_order"),
+      supabase.from("subcategories").select("id,name,category_id").eq("active", true).order("display_order"),
+    ]);
+    if (prodRes.error) toast.error(prodRes.error.message);
+    else setList((prodRes.data ?? []) as Product[]);
+    if (!catRes.error) setCategories((catRes.data ?? []) as Category[]);
+    if (!subRes.error) setSubcategories((subRes.data ?? []) as Subcategory[]);
     setLoading(false);
   };
 
@@ -52,7 +63,7 @@ function AdminProductos() {
 
   const openEdit = (p: Product) => {
     setEditing(p);
-    setForm({ name: p.name, description: p.description ?? "", price: Number(p.price), category: p.category, image_url: p.image_url ?? "", stock: p.stock, active: p.active, display_order: p.display_order, featured: p.featured });
+    setForm({ name: p.name, description: p.description ?? "", price: Number(p.price), category: p.category, image_url: p.image_url ?? "", stock: p.stock, active: p.active, display_order: p.display_order, featured: p.featured, subcategory_id: p.subcategory_id ?? null });
     setShowForm(true);
   };
 
