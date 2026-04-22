@@ -436,11 +436,14 @@ function CheckoutPage() {
               </label>
               <button
                 type="submit"
-                disabled={submitting || method === "card"}
+                disabled={submitting || method === "card" || step !== STEPS.length - 1}
                 className="mt-6 w-full inline-flex items-center justify-center gap-2 px-6 py-3 rounded-full gradient-wave text-white font-semibold shadow-glow hover:scale-[1.02] transition-transform disabled:opacity-60 disabled:cursor-not-allowed"
+                title={step !== STEPS.length - 1 ? "Completa los pasos anteriores" : ""}
               >
                 {submitting ? (
                   <><Loader2 className="w-4 h-4 animate-spin" /> Procesando...</>
+                ) : step !== STEPS.length - 1 ? (
+                  <><Lock className="w-4 h-4" /> Completa los pasos</>
                 ) : method === "transfer" ? (
                   <><Send className="w-4 h-4" /> Confirmar y enviar comprobante</>
                 ) : method === "cash" ? (
