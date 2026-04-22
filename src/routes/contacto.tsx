@@ -8,7 +8,7 @@ import { PageHero } from "@/components/PageHero";
 export const Route = createFileRoute("/contacto")({
   head: () => ({
     meta: [
-      { title: "Contacto — AquaMar" },
+      { title: "Contacto — Grupo Vega" },
       { name: "description", content: "Habla con nuestro equipo de Grupo Vega. Estamos en Manta, Ecuador." },
       { property: "og:title", content: "Contacto Grupo Vega" },
       { property: "og:description", content: "Estamos cerca de tu camaronera." },

@@ -44,7 +44,7 @@ export function AdminLayout() {
   return (
     <div className="min-h-screen bg-background flex">
       <aside className="w-60 bg-card border-r border-border p-4 flex flex-col">
-        <Link to="/" className="font-bold text-navy-deep text-lg mb-8 px-2">AquaMar Admin</Link>
+        <Link to="/" className="font-bold text-navy-deep text-lg mb-8 px-2">Grupo Vega Admin</Link>
         <nav className="space-y-1 flex-1">
           {links.map((l) => {
             const Icon = l.icon;

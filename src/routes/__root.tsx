@@ -31,14 +31,14 @@ export const Route = createRootRoute({
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "AquaMar — Soluciones Integrales para Camaroneras" },
+      { title: "Grupo Vega — Soluciones Integrales para Camaroneras" },
       { name: "description", content: "Insumos, alimento balanceado, asesoría técnica y tecnología para camaroneras de Ecuador y Latinoamérica." },
-      { name: "author", content: "AquaMar" },
-      { property: "og:title", content: "AquaMar — Industria Camaronera" },
+      { name: "author", content: "Grupo Vega" },
+      { property: "og:title", content: "Grupo Vega — Industria Camaronera" },
       { property: "og:description", content: "Soluciones integrales para acuicultura de camarón." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
-      { name: "twitter:site", content: "@AquaMar" },
+      { name: "twitter:site", content: "@GrupoVega" },
     ],
     links: [
       {

@@ -14,9 +14,9 @@ import pVitamina from "@/assets/p-vitamina.png";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "AquaMar — Insumos para Camaroneras del Ecuador" },
+      { title: "Grupo Vega — Insumos para Camaroneras del Ecuador" },
       { name: "description", content: "Alimentos, aceites y aditivos para la industria camaronera. Encuentra nuestro punto de venta en Ecuador." },
-      { property: "og:title", content: "AquaMar — Industria Camaronera" },
+      { property: "og:title", content: "Grupo Vega — Industria Camaronera" },
       { property: "og:description", content: "Insumos y equipos para camaroneras del Ecuador." },
     ],
   }),
