@@ -65,7 +65,6 @@ function Index() {
   const mobileAutoplay = useRef(
     Autoplay({ delay: 2200, stopOnInteraction: false, stopOnMouseEnter: false })
   );
-  const marqueeRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     supabase
@@ -84,50 +83,6 @@ function Index() {
         }
       });
   }, []);
-
-  // Resaltar la tarjeta más cercana al centro de la pantalla (solo mobile)
-  useEffect(() => {
-    if (typeof window === "undefined") return;
-    const isMobile = window.matchMedia("(max-width: 767px)").matches;
-    if (!isMobile) return;
-
-    let raf = 0;
-    let lastTick = 0;
-    let lastClosest: HTMLElement | null = null;
-    const tick = () => {
-      // Throttle a ~10fps: suficiente para detectar el centro sin saturar el hilo principal
-      const now = performance.now();
-      if (now - lastTick < 100) {
-        raf = requestAnimationFrame(tick);
-        return;
-      }
-      lastTick = now;
-      const container = marqueeRef.current;
-      if (container) {
-        const items = container.querySelectorAll<HTMLElement>("[data-marquee-item]");
-        const centerX = window.innerWidth / 2;
-        let closest: HTMLElement | null = null;
-        let minDist = Infinity;
-        items.forEach((el) => {
-          const r = el.getBoundingClientRect();
-          if (r.right < 0 || r.left > window.innerWidth) return;
-          const dist = Math.abs(r.left + r.width / 2 - centerX);
-          if (dist < minDist) {
-            minDist = dist;
-            closest = el;
-          }
-        });
-        if (closest !== lastClosest) {
-          if (lastClosest) lastClosest.classList.remove("is-centered");
-          if (closest) (closest as HTMLElement).classList.add("is-centered");
-          lastClosest = closest;
-        }
-      }
-      raf = requestAnimationFrame(tick);
-    };
-    raf = requestAnimationFrame(tick);
-    return () => cancelAnimationFrame(raf);
-  }, [featured]);
 
   // Repetimos el array suficientes veces para garantizar loop infinito sin saltos
   // incluso cuando hay pocos productos destacados
@@ -292,7 +247,6 @@ function Index() {
             <div className="pointer-events-none absolute left-0 top-0 bottom-0 w-12 md:w-24 z-10 bg-gradient-to-r from-foam to-transparent" />
             <div className="pointer-events-none absolute right-0 top-0 bottom-0 w-12 md:w-24 z-10 bg-gradient-to-l from-foam to-transparent" />
             <div
-              ref={marqueeRef}
               className="flex gap-12 w-max animate-marquee hover:[animation-play-state:paused]"
             >
               {carouselItems.map((p, i) => (
@@ -300,7 +254,6 @@ function Index() {
                   key={`${p.name}-${i}`}
                   to="/productos/$productId"
                   params={{ productId: p.slug || p.id }}
-                  data-marquee-item
                   className="marquee-item group flex flex-col items-center w-56 shrink-0 cursor-pointer"
                 >
                   <div className="relative w-56 h-56 flex items-center justify-center">
