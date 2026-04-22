@@ -307,15 +307,13 @@ function Index() {
                     {/* Glow y borde punteado solo en desktop (en mobile se eliminan) */}
                     <div className="hidden md:block absolute inset-4 rounded-full gradient-wave opacity-0 group-hover:opacity-40 blur-2xl transition-all duration-700 group-hover:scale-110" />
                     <div className="hidden md:block absolute inset-0 rounded-full border-2 border-dashed border-ocean/0 group-hover:border-ocean/30 group-hover:rotate-180 transition-all duration-1000" />
-                    {/* Recorte circular en mobile (esconde el margen cuadrado del PNG); en desktop sin recorte para conservar el comportamiento original */}
-                    <div className="relative w-44 h-44 md:w-48 md:h-48 rounded-full md:rounded-none overflow-hidden md:overflow-visible flex items-center justify-center">
-                      <img
-                        src={p.img}
-                        alt={p.name}
-                        loading="lazy"
-                        className="h-full w-full object-contain scale-[1.22] md:scale-100 group-hover:scale-[1.38] md:group-hover:scale-125 group-hover:-translate-y-2 group-hover:-rotate-3 transition-all duration-500 md:drop-shadow-2xl"
-                      />
-                    </div>
+                    {/* Imagen sin recorte: queda por encima del círculo y puede crecer libremente */}
+                    <img
+                      src={p.img}
+                      alt={p.name}
+                      loading="lazy"
+                      className="relative z-10 w-40 h-40 md:w-44 md:h-44 object-contain group-hover:scale-110 group-hover:-translate-y-2 group-hover:-rotate-3 transition-all duration-500 drop-shadow-xl md:drop-shadow-2xl"
+                    />
                   </div>
                   <p className="mt-4 font-semibold text-navy-deep text-center group-hover:text-ocean transition-colors">{p.name}</p>
                   <span className="destacado-label text-xs text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity duration-300 mt-1">Destacado ⭐</span>
