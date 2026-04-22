@@ -78,19 +78,19 @@ function AdminUsuarios() {
   };
 
   return (
-    <div className="p-8">
+    <div className="p-4 md:p-8">
       <div className="mb-6">
-        <h1 className="text-2xl font-bold text-navy-deep">Usuarios y roles</h1>
-        <p className="text-sm text-muted-foreground">Gestiona quién puede acceder al panel.</p>
+        <h1 className="text-xl md:text-2xl font-bold text-navy-deep">Usuarios y roles</h1>
+        <p className="text-xs md:text-sm text-muted-foreground">Gestiona quién puede acceder al panel.</p>
       </div>
 
-      <div className="bg-card rounded-2xl p-6 shadow-card mb-6">
+      <div className="bg-card rounded-2xl p-4 md:p-6 shadow-card mb-6">
         <h2 className="font-bold text-navy-deep mb-3 flex items-center gap-2"><UserPlus className="w-5 h-5 text-ocean" /> Invitar admin por correo</h2>
         <p className="text-xs text-muted-foreground mb-3">
           Paso 1: pídele al invitado que cree su cuenta en <code className="bg-foam px-1 rounded">/auth</code>.<br />
           Paso 2: ingresa su correo aquí para promoverlo a administrador.
         </p>
-        <form onSubmit={(e) => { e.preventDefault(); if (inviteEmail) promoteByEmail(inviteEmail); }} className="flex gap-2">
+        <form onSubmit={(e) => { e.preventDefault(); if (inviteEmail) promoteByEmail(inviteEmail); }} className="flex flex-col sm:flex-row gap-2">
           <input type="email" required value={inviteEmail} onChange={(e) => setInviteEmail(e.target.value)} placeholder="correo@ejemplo.com" className="flex-1 px-3 py-2 rounded-lg bg-background border border-border focus:border-ocean focus:outline-none text-sm" />
           <button disabled={inviting} type="submit" className="px-4 py-2 rounded-lg gradient-wave text-white text-sm font-semibold inline-flex items-center gap-2 disabled:opacity-60">
             {inviting ? <Loader2 className="w-4 h-4 animate-spin" /> : <Mail className="w-4 h-4" />} Promover
@@ -106,7 +106,7 @@ function AdminUsuarios() {
         {loading ? (
           <div className="p-12 text-center"><Loader2 className="w-6 h-6 animate-spin mx-auto text-ocean" /></div>
         ) : (
-          <table className="w-full text-sm">
+          <div className="overflow-x-auto"><table className="w-full text-sm min-w-[420px]">
             <thead className="bg-foam">
               <tr>
                 <th className="text-left p-3">User ID</th>
@@ -127,7 +127,7 @@ function AdminUsuarios() {
                 </tr>
               ))}
             </tbody>
-          </table>
+          </table></div>
         )}
       </div>
     </div>

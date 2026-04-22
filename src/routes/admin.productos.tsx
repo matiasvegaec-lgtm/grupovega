@@ -129,16 +129,21 @@ function AdminProductos() {
   const inputCls = "w-full px-3 py-2 rounded-lg bg-background border border-border focus:border-ocean focus:outline-none text-sm";
 
   return (
-    <div className="p-8">
-      <div className="flex justify-between items-center mb-6">
-        <div>
-          <h1 className="text-2xl font-bold text-navy-deep">Productos</h1>
-          <p className="text-sm text-muted-foreground">Gestiona el catálogo de tu tienda.</p>
+    <div className="p-4 md:p-8 pb-24 md:pb-8">
+      <div className="flex justify-between items-start md:items-center mb-6 gap-3">
+        <div className="min-w-0">
+          <h1 className="text-xl md:text-2xl font-bold text-navy-deep">Productos</h1>
+          <p className="text-xs md:text-sm text-muted-foreground">Gestiona el catálogo de tu tienda.</p>
         </div>
-        <button onClick={openNew} className="inline-flex items-center gap-2 px-4 py-2.5 rounded-full gradient-wave text-white font-semibold shadow-glow">
+        <button onClick={openNew} className="hidden md:inline-flex items-center gap-2 px-4 py-2.5 rounded-full gradient-wave text-white font-semibold shadow-glow">
           <Plus className="w-4 h-4" /> Nuevo producto
         </button>
       </div>
+
+      {/* FAB nuevo producto en mobile */}
+      <button onClick={openNew} className="md:hidden fixed bottom-6 right-6 z-20 w-14 h-14 rounded-full gradient-wave text-white shadow-glow flex items-center justify-center" aria-label="Nuevo producto">
+        <Plus className="w-6 h-6" />
+      </button>
 
       {loading ? (
         <div className="text-center py-20"><Loader2 className="w-8 h-8 animate-spin mx-auto text-ocean" /></div>
@@ -148,7 +153,49 @@ function AdminProductos() {
           <button onClick={openNew} className="px-6 py-2.5 rounded-full gradient-wave text-white font-semibold">Crear el primero</button>
         </div>
       ) : (
-        <div className="bg-card rounded-2xl overflow-hidden shadow-card">
+        <>
+        {/* Mobile: cards */}
+        <div className="md:hidden space-y-3">
+          {list.map((p) => (
+            <div key={p.id} className="bg-card rounded-2xl shadow-card p-3 flex gap-3">
+              {p.image_url ? (
+                <img src={p.image_url} alt={p.name} className="w-20 h-20 rounded-xl object-cover shrink-0" />
+              ) : (
+                <div className="w-20 h-20 rounded-xl bg-foam shrink-0" />
+              )}
+              <div className="flex-1 min-w-0">
+                <div className="flex items-start gap-2">
+                  <p className="font-semibold text-navy-deep truncate flex-1">{p.name}</p>
+                  <button onClick={() => toggleFeatured(p)} className={`shrink-0 p-1 -mt-1 rounded ${p.featured ? "text-yellow-500" : "text-gray-300"}`}>
+                    <Star className={`w-4 h-4 ${p.featured ? "fill-current" : ""}`} />
+                  </button>
+                </div>
+                <p className="text-xs text-muted-foreground truncate">{p.category}</p>
+                <div className="flex items-center gap-2 mt-1.5 text-xs">
+                  <span className="font-bold text-navy-deep">${Number(p.price).toFixed(2)}</span>
+                  <span className="text-muted-foreground">· stock {p.stock}</span>
+                  <span className={`ml-auto px-2 py-0.5 rounded-full font-semibold ${p.active ? "bg-green-100 text-green-700" : "bg-gray-100 text-gray-600"}`}>
+                    {p.active ? "Activo" : "Oculto"}
+                  </span>
+                </div>
+                <div className="flex gap-1.5 mt-2">
+                  <button onClick={() => openEdit(p)} className="flex-1 inline-flex items-center justify-center gap-1 px-2 py-1.5 rounded-lg bg-foam text-ocean text-xs font-semibold">
+                    <Pencil className="w-3.5 h-3.5" /> Editar
+                  </button>
+                  <button onClick={() => toggleActive(p)} className="px-2 py-1.5 rounded-lg bg-foam text-navy-deep">
+                    {p.active ? <EyeOff className="w-3.5 h-3.5" /> : <Eye className="w-3.5 h-3.5" />}
+                  </button>
+                  <button onClick={() => handleDelete(p)} className="px-2 py-1.5 rounded-lg bg-destructive/10 text-destructive">
+                    <Trash2 className="w-3.5 h-3.5" />
+                  </button>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* Desktop: tabla */}
+        <div className="hidden md:block bg-card rounded-2xl overflow-hidden shadow-card">
           <table className="w-full text-sm">
             <thead className="bg-foam text-navy-deep">
               <tr>
@@ -191,11 +238,12 @@ function AdminProductos() {
             </tbody>
           </table>
         </div>
+        </>
       )}
 
       {showForm && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4" onClick={() => setShowForm(false)}>
-          <form onSubmit={handleSave} onClick={(e) => e.stopPropagation()} className="bg-card rounded-2xl p-6 max-w-2xl w-full max-h-[90vh] overflow-auto shadow-elegant">
+        <div className="fixed inset-0 bg-black/50 flex items-end md:items-center justify-center z-50 md:p-4" onClick={() => setShowForm(false)}>
+          <form onSubmit={handleSave} onClick={(e) => e.stopPropagation()} className="bg-card rounded-t-2xl md:rounded-2xl p-4 md:p-6 max-w-2xl w-full max-h-[92vh] md:max-h-[90vh] overflow-auto shadow-elegant">
             <div className="flex justify-between items-center mb-4">
               <h2 className="text-xl font-bold text-navy-deep">{editing ? "Editar producto" : "Nuevo producto"}</h2>
               <button type="button" onClick={() => setShowForm(false)}><X className="w-5 h-5" /></button>
