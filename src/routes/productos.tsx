@@ -148,7 +148,7 @@ function ProductosPage() {
         <label className="text-xs font-semibold uppercase tracking-widest text-ocean mb-3 block">Categorías</label>
         <div className="space-y-1">
           <button
-            onClick={() => setActive("Todos")}
+            onClick={() => { setActive("Todos"); setActiveSub(null); }}
             className={`w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-sm font-medium transition ${
               active === "Todos"
                 ? "gradient-wave text-white shadow-glow"
@@ -167,23 +167,49 @@ function ProductosPage() {
             const Icon = meta?.icon ?? Beaker;
             const count = categoryCounts[c] ?? 0;
             const isActive = active === c;
+            const catRow = categories.find((x) => x.name === c);
+            const subs = catRow ? subcategories.filter((s) => s.category_id === catRow.id) : [];
             return (
-              <button
-                key={c}
-                onClick={() => setActive(c)}
-                className={`w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-sm font-medium transition ${
-                  isActive
-                    ? "gradient-wave text-white shadow-glow"
-                    : "text-navy-deep hover:bg-foam"
-                }`}
-              >
-                <span className="flex items-center gap-2">
-                  <Icon className="w-4 h-4" /> {c}
-                </span>
-                <span className={`text-xs ${isActive ? "text-white/80" : "text-muted-foreground"}`}>
-                  {count}
-                </span>
-              </button>
+              <div key={c}>
+                <button
+                  onClick={() => { setActive(c); setActiveSub(null); }}
+                  className={`w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-sm font-medium transition ${
+                    isActive
+                      ? "gradient-wave text-white shadow-glow"
+                      : "text-navy-deep hover:bg-foam"
+                  }`}
+                >
+                  <span className="flex items-center gap-2">
+                    <Icon className="w-4 h-4" /> {c}
+                  </span>
+                  <span className={`text-xs ${isActive ? "text-white/80" : "text-muted-foreground"}`}>
+                    {count}
+                  </span>
+                </button>
+                {isActive && subs.length > 0 && (
+                  <div className="mt-1 ml-3 pl-3 border-l border-border space-y-1">
+                    <button
+                      onClick={() => setActiveSub(null)}
+                      className={`w-full text-left px-3 py-1.5 rounded-lg text-xs font-medium transition ${
+                        activeSub === null ? "bg-foam text-ocean" : "text-muted-foreground hover:bg-foam"
+                      }`}
+                    >
+                      Todas las subcategorías
+                    </button>
+                    {subs.map((s) => (
+                      <button
+                        key={s.id}
+                        onClick={() => setActiveSub(s.id)}
+                        className={`w-full text-left px-3 py-1.5 rounded-lg text-xs font-medium transition ${
+                          activeSub === s.id ? "bg-foam text-ocean" : "text-muted-foreground hover:bg-foam"
+                        }`}
+                      >
+                        {s.name}
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
             );
           })}
         </div>
