@@ -92,36 +92,39 @@ function Index() {
           <div className="absolute inset-0 gradient-deep opacity-70" />
         </div>
         {/* Grupo de productos en esquina inferior derecha */}
-        <div className="group hidden md:flex absolute bottom-24 right-6 lg:right-16 z-[5] w-[360px] lg:w-[440px] h-[260px] lg:h-[300px] items-end justify-center gap-3 lg:gap-4 pointer-events-auto">
-          {/* halo glow contenido */}
-          <div className="absolute inset-x-4 bottom-4 h-32 rounded-full bg-turquoise/25 blur-2xl opacity-60 group-hover:opacity-90 transition-opacity duration-700 pointer-events-none" />
-          <div className="absolute inset-x-12 bottom-2 h-16 rounded-full bg-ocean/40 blur-xl opacity-50 group-hover:opacity-80 transition-opacity duration-700 pointer-events-none" />
+        <div className="group hidden lg:flex absolute bottom-32 right-8 xl:right-20 z-[5] w-[420px] xl:w-[480px] h-[280px] items-end justify-end pointer-events-auto">
+          {/* halo glow contenido bajo los productos */}
+          <div className="absolute inset-x-6 bottom-2 h-20 rounded-[50%] bg-turquoise/30 blur-2xl opacity-70 group-hover:opacity-95 transition-opacity duration-700 pointer-events-none" />
+          <div className="absolute inset-x-16 bottom-0 h-10 rounded-[50%] bg-black/40 blur-xl opacity-60 pointer-events-none" />
 
-          {/* Exia — izquierda */}
-          <img
-            src={heroExia}
-            alt="Alimento balanceado Exia Prime"
-            className="relative h-[85%] w-auto object-contain animate-float drop-shadow-2xl transition-all duration-500 ease-out hover:scale-110 hover:-translate-y-3 hover:z-30 cursor-pointer"
-            style={{ filter: "drop-shadow(0 15px 20px rgba(0,0,0,0.5))" }}
-          />
-          {/* Larviva — centro (adelantado) */}
-          <img
-            src={heroLarviva}
-            alt="Larviva PL 300"
-            className="relative h-[95%] w-auto object-contain animate-float-slow drop-shadow-2xl transition-all duration-500 ease-out hover:scale-110 hover:-translate-y-4 hover:z-30 cursor-pointer z-10"
-            style={{ filter: "drop-shadow(0 18px 22px rgba(0,0,0,0.55))", animationDelay: "0.8s" }}
-          />
-          {/* Ecofresh — derecha */}
-          <img
-            src={heroEcofresh}
-            alt="Probiótico Ecofresh"
-            className="relative h-[85%] w-auto object-contain animate-float drop-shadow-2xl transition-all duration-500 ease-out hover:scale-110 hover:-translate-y-3 hover:z-30 cursor-pointer"
-            style={{ filter: "drop-shadow(0 15px 20px rgba(0,0,0,0.5))", animationDelay: "1.6s" }}
-          />
+          {/* Contenedor flex: alineados por base, juntos */}
+          <div className="relative flex items-end justify-center -space-x-6 xl:-space-x-8">
+            {/* Exia — izquierda, alto */}
+            <img
+              src={heroExia}
+              alt="Alimento balanceado Exia Prime"
+              className="relative h-[260px] xl:h-[280px] w-auto object-contain object-bottom animate-float drop-shadow-2xl transition-all duration-500 ease-out hover:scale-110 hover:-translate-y-3 hover:z-30 cursor-pointer"
+              style={{ filter: "drop-shadow(0 12px 16px rgba(0,0,0,0.5))" }}
+            />
+            {/* Larviva — centro, mediano (adelantado) */}
+            <img
+              src={heroLarviva}
+              alt="Larviva PL 300"
+              className="relative h-[200px] xl:h-[220px] w-auto object-contain object-bottom animate-float-slow drop-shadow-2xl transition-all duration-500 ease-out hover:scale-110 hover:-translate-y-4 hover:z-30 cursor-pointer z-10"
+              style={{ filter: "drop-shadow(0 14px 18px rgba(0,0,0,0.55))", animationDelay: "0.8s" }}
+            />
+            {/* Ecofresh — derecha, alto */}
+            <img
+              src={heroEcofresh}
+              alt="Probiótico Ecofresh"
+              className="relative h-[240px] xl:h-[260px] w-auto object-contain object-bottom animate-float drop-shadow-2xl transition-all duration-500 ease-out hover:scale-110 hover:-translate-y-3 hover:z-30 cursor-pointer"
+              style={{ filter: "drop-shadow(0 12px 16px rgba(0,0,0,0.5))", animationDelay: "1.6s" }}
+            />
+          </div>
 
           {/* destellos */}
-          <span className="absolute top-2 left-1/4 w-2 h-2 rounded-full bg-turquoise animate-pulse pointer-events-none" />
-          <span className="absolute top-8 right-1/4 w-1.5 h-1.5 rounded-full bg-white/80 animate-pulse pointer-events-none" style={{ animationDelay: "0.7s" }} />
+          <span className="absolute top-4 left-1/3 w-2 h-2 rounded-full bg-turquoise animate-pulse pointer-events-none" />
+          <span className="absolute top-10 right-1/4 w-1.5 h-1.5 rounded-full bg-white/80 animate-pulse pointer-events-none" style={{ animationDelay: "0.7s" }} />
         </div>
 
         <div className="relative z-10 container mx-auto px-4 sm:px-6 lg:px-8 pt-24 pb-16">
