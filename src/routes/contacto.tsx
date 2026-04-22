@@ -94,7 +94,7 @@ function ContactoPage() {
               <div className="bg-card rounded-3xl p-8 shadow-card">
                 <h3 className="text-2xl font-bold text-navy-deep mb-6">Información de contacto</h3>
                 <div className="space-y-4">
-                  <div className="flex gap-3"><Mail className="w-5 h-5 text-ocean shrink-0 mt-0.5" /><span className="text-muted-foreground">grupovega.ec@gmail.com</span></div>
+                  <div className="flex gap-3"><Mail className="w-5 h-5 text-ocean shrink-0 mt-0.5" /><span className="text-muted-foreground">grupovega.ec@outlook.com</span></div>
                   <div className="flex gap-3"><Phone className="w-5 h-5 text-ocean shrink-0 mt-0.5" /><span className="text-muted-foreground">+593 99 773 8026</span></div>
                   <div className="flex gap-3"><MapPin className="w-5 h-5 text-ocean shrink-0 mt-0.5" /><span className="text-muted-foreground">Pedernales, Manabí — Ecuador</span></div>
                 </div>
