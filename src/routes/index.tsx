@@ -258,6 +258,7 @@ function Index() {
                 <span className="text-xs text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity duration-300 mt-1">Destacado ⭐</span>
               </div>
             ))}
+            </div>
           </div>
         </div>
 
