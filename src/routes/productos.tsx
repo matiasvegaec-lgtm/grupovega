@@ -71,7 +71,6 @@ function ProductosPage() {
   const [categories, setCategories] = useState<Category[]>([]);
   const [subcategories, setSubcategories] = useState<Subcategory[]>([]);
   const [loading, setLoading] = useState(true);
-  const [quickView, setQuickView] = useState<Product | null>(null);
   const { addItem } = useCart();
 
   useEffect(() => {
