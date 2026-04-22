@@ -284,7 +284,7 @@ function ProductDetailPage() {
                 </div>
               </div>
 
-              <div className="mb-3 rounded-xl bg-white border border-border p-3 flex items-center justify-center">
+              <div className="mb-3 border border-border p-3 items-center justify-center flex flex-row text-left text-slate-900 bg-slate-50 mx-0 px-0 py-[10px] gap-[23px] font-medium rounded-full shadow-md">
                 <img
                   src={paymentMethods}
                   alt="Métodos de pago aceptados: Visa, Diners Club, Mastercard, Discover, American Express, Alia"
