@@ -4,13 +4,32 @@ export function PageHero({
   eyebrow,
   title,
   description,
+  backgroundImage,
 }: {
   eyebrow: string;
   title: string;
   description?: string;
+  backgroundImage?: string;
 }) {
   return (
     <section className="relative pt-32 pb-20 gradient-hero text-white overflow-hidden">
+      {backgroundImage && (
+        <>
+          <div
+            className="absolute inset-0 bg-cover bg-center"
+            style={{ backgroundImage: `url(${backgroundImage})` }}
+            aria-hidden="true"
+          />
+          <div
+            className="absolute inset-0"
+            style={{
+              background:
+                "linear-gradient(135deg, color-mix(in oklab, var(--primary) 78%, transparent) 0%, color-mix(in oklab, var(--primary) 55%, transparent) 100%)",
+            }}
+            aria-hidden="true"
+          />
+        </>
+      )}
       <div className="absolute inset-0 opacity-30" style={{ background: "var(--gradient-glow)" }} />
       <div className="absolute top-20 right-10 w-72 h-72 gradient-wave rounded-full blur-3xl opacity-30 animate-float-slow" />
       <div className="relative container mx-auto px-4 sm:px-6 lg:px-8">
