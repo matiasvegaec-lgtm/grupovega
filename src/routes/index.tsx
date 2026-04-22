@@ -58,6 +58,14 @@ const supplierLogos = [
 
 function Index() {
   const [featured, setFeatured] = useState<{ name: string; img: string }[]>(featuredFallback);
+  const scrollerRef = useRef<HTMLDivElement>(null);
+
+  const scrollByAmount = (dir: 1 | -1) => {
+    const el = scrollerRef.current;
+    if (!el) return;
+    const amount = el.clientWidth * 0.8;
+    el.scrollBy({ left: dir * amount, behavior: "smooth" });
+  };
 
   useEffect(() => {
     supabase
