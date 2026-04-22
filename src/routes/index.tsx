@@ -117,7 +117,7 @@ function Index() {
             <img
               src={heroEcofresh}
               alt="Probiótico Ecofresh"
-              className="relative h-[240px] xl:h-[260px] w-auto object-contain object-bottom animate-float drop-shadow-2xl transition-all duration-500 ease-out hover:scale-110 hover:-translate-y-3 hover:z-30 cursor-pointer"
+              className="relative h-[240px] xl:h-[260px] w-auto object-contain object-bottom animate-float drop-shadow-2xl transition-all duration-500 ease-out hover:scale-110 hover:-translate-y-3 hover:z-30 cursor-pointer mx-0 py-[20px]"
               style={{ filter: "drop-shadow(0 12px 16px rgba(0,0,0,0.5))", animationDelay: "1.6s" }}
             />
           </div>
