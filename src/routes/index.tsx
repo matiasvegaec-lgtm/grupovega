@@ -291,6 +291,7 @@ function Index() {
             <div className="pointer-events-none absolute left-0 top-0 bottom-0 w-12 md:w-24 z-10 bg-gradient-to-r from-foam to-transparent" />
             <div className="pointer-events-none absolute right-0 top-0 bottom-0 w-12 md:w-24 z-10 bg-gradient-to-l from-foam to-transparent" />
             <div
+              ref={marqueeRef}
               className="flex gap-12 w-max animate-marquee hover:[animation-play-state:paused]"
             >
               {carouselItems.map((p, i) => (
