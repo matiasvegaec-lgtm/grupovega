@@ -243,7 +243,7 @@ function Index() {
           <div className="pointer-events-none absolute left-0 top-0 bottom-0 w-24 z-10 bg-gradient-to-r from-foam to-transparent" />
           <div className="pointer-events-none absolute right-0 top-0 bottom-0 w-24 z-10 bg-gradient-to-l from-foam to-transparent" />
 
-          {/* Flechas: solo desktop. Pausan el carrusel y permiten desplazar manualmente */}
+          {/* Flechas: solo desktop */}
           <button
             type="button"
             aria-label="Anterior"
@@ -261,16 +261,34 @@ function Index() {
             <ArrowRight className="w-5 h-5" />
           </button>
 
-          <div ref={scrollerRef} className="overflow-x-auto" style={{ scrollbarWidth: "none" }}>
-          <div
-            className="flex gap-12 animate-marquee w-max hover:[animation-play-state:paused]"
-          >
+          {/* MÓVIL: marquee infinito */}
+          <div className="md:hidden flex gap-12 animate-marquee w-max">
             {carouselItems.map((p, i) => (
-              <div key={`${p.name}-${i}`} className="group flex flex-col items-center w-56 shrink-0 cursor-pointer">
+              <div key={`m-${p.name}-${i}`} className="group flex flex-col items-center w-56 shrink-0">
                 <div className="relative w-56 h-56 flex items-center justify-center">
-                  {/* halo glow */}
+                  <img
+                    src={p.img}
+                    alt={p.name}
+                    loading="lazy"
+                    className="relative max-h-full max-w-full object-contain drop-shadow-2xl"
+                    style={{ filter: "drop-shadow(0 20px 30px oklch(0.22 0.1 258 / 0.25))" }}
+                  />
+                </div>
+                <p className="mt-4 font-semibold text-navy-deep text-center">{p.name}</p>
+              </div>
+            ))}
+          </div>
+
+          {/* DESKTOP: scroll manual con flechas, se detiene al final */}
+          <div
+            ref={scrollerRef}
+            className="hidden md:flex gap-12 overflow-x-auto scroll-smooth px-20 pb-4"
+            style={{ scrollbarWidth: "none" }}
+          >
+            {featured.map((p, i) => (
+              <div key={`d-${p.name}-${i}`} className="group flex flex-col items-center w-56 shrink-0 cursor-pointer">
+                <div className="relative w-56 h-56 flex items-center justify-center">
                   <div className="absolute inset-4 rounded-full gradient-wave opacity-0 group-hover:opacity-40 blur-2xl transition-all duration-700 group-hover:scale-110" />
-                  {/* anillo decorativo */}
                   <div className="absolute inset-0 rounded-full border-2 border-dashed border-ocean/0 group-hover:border-ocean/30 group-hover:rotate-180 transition-all duration-1000" />
                   <img
                     src={p.img}
@@ -284,7 +302,6 @@ function Index() {
                 <span className="text-xs text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity duration-300 mt-1">Destacado ⭐</span>
               </div>
             ))}
-          </div>
           </div>
         </div>
 
