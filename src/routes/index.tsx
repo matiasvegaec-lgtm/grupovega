@@ -261,8 +261,8 @@ function Index() {
             <ArrowRight className="w-5 h-5" />
           </button>
 
+          <div ref={scrollerRef} className="overflow-x-auto" style={{ scrollbarWidth: "none" }}>
           <div
-            ref={scrollerRef}
             className="flex gap-12 animate-marquee w-max hover:[animation-play-state:paused]"
           >
             {carouselItems.map((p, i) => (
@@ -284,6 +284,7 @@ function Index() {
                 <span className="text-xs text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity duration-300 mt-1">Destacado ⭐</span>
               </div>
             ))}
+          </div>
           </div>
         </div>
 
