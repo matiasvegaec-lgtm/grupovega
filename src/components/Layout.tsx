@@ -10,7 +10,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
       <main className="flex-1">{children}</main>
       <Footer />
       <WhatsAppFloat />
-      <Toaster richColors position="top-right" />
+      <Toaster richColors position="bottom-right" duration={1500} />
     </div>
   );
 }
