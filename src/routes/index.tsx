@@ -10,6 +10,12 @@ import pAditivo from "@/assets/p-aditivo.png";
 import pLarva from "@/assets/p-larva.png";
 import pFertilizante from "@/assets/p-fertilizante.png";
 import pVitamina from "@/assets/p-vitamina.png";
+import provNlproinsu from "@/assets/proveedor-nlproinsu.png";
+import provNaturalstar from "@/assets/proveedor-naturalstar.png";
+import provBlueweight from "@/assets/proveedor-blueweight.png";
+import provLacolina from "@/assets/proveedor-lacolina.png";
+import provLarviva from "@/assets/proveedor-larviva.png";
+import provBiomar from "@/assets/proveedor-biomar.png";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -43,10 +49,19 @@ const suppliers = [
   "Cargill", "Skretting", "BioMar", "Nutreco", "INVE", "Zeigler", "Alltech", "Nicovita",
 ];
 
+const supplierLogos = [
+  { name: "NLProinsu", img: provNlproinsu },
+  { name: "NaturalStar", img: provNaturalstar },
+  { name: "Blueweight", img: provBlueweight },
+  { name: "La Colina", img: provLacolina },
+  { name: "Larviva", img: provLarviva },
+  { name: "BioMar", img: provBiomar },
+];
+
 function Index() {
   // Duplicamos el array para crear loop infinito sin saltos
   const carouselItems = [...featured, ...featured];
-  const supplierItems = [...suppliers, ...suppliers];
+  const supplierItems = [...supplierLogos, ...supplierLogos];
 
   return (
     <Layout>
