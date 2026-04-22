@@ -241,13 +241,13 @@ function Index() {
           <div className="pointer-events-none absolute left-0 top-0 bottom-0 w-24 z-10 bg-gradient-to-r from-foam to-transparent" />
           <div className="pointer-events-none absolute right-0 top-0 bottom-0 w-24 z-10 bg-gradient-to-l from-foam to-transparent" />
 
-          <div className="flex gap-12 animate-marquee w-max hover:[animation-play-state:paused]">
+          <div className="flex gap-12 w-max animate-marquee md:hover:[animation-play-state:paused] max-md:animate-none max-md:w-auto max-md:overflow-x-auto max-md:flex-nowrap max-md:px-4 max-md:snap-x max-md:snap-mandatory">
             {carouselItems.map((p, i) => (
               <Link
                 key={`${p.name}-${i}`}
                 to="/productos/$productId"
                 params={{ productId: p.slug || p.id }}
-                className="group flex flex-col items-center w-56 shrink-0 cursor-pointer"
+                className="group flex flex-col items-center w-56 shrink-0 cursor-pointer max-md:snap-center"
               >
                 <div className="relative w-56 h-56 flex items-center justify-center">
                   {/* halo glow */}
