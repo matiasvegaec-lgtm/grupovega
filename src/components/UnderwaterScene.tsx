@@ -1,5 +1,5 @@
 import { Canvas, useFrame } from "@react-three/fiber";
-import { Environment, useTexture } from "@react-three/drei";
+import { useTexture } from "@react-three/drei";
 import { useRef, Suspense, useState, useEffect } from "react";
 import * as THREE from "three";
 import productsImg from "@/assets/hero-products-group.png";
@@ -41,6 +41,13 @@ function ProductsGroup() {
   const ref = useRef<THREE.Mesh>(null);
   const texture = useTexture(productsImg);
 
+  // Mejorar calidad de la textura
+  texture.anisotropy = 16;
+  texture.minFilter = THREE.LinearMipmapLinearFilter;
+  texture.magFilter = THREE.LinearFilter;
+  texture.generateMipmaps = true;
+  (texture as any).colorSpace = THREE.SRGBColorSpace;
+
   // Aspect ratio real de la imagen (≈ 940x1180 → 0.8)
   const aspect = 0.8;
   const height = 3.4;
@@ -49,13 +56,12 @@ function ProductsGroup() {
   return (
     <mesh ref={ref} scale={[width, height, 1]}>
       <planeGeometry args={[1, 1]} />
-      <meshStandardMaterial
+      <meshBasicMaterial
         map={texture}
         transparent
         alphaTest={0.05}
         side={THREE.DoubleSide}
-        roughness={0.55}
-        metalness={0.15}
+        toneMapped={false}
       />
     </mesh>
   );
@@ -64,14 +70,9 @@ function ProductsGroup() {
 function Scene() {
   return (
     <>
-      <ambientLight intensity={0.55} />
-      <directionalLight position={[-4, 6, 5]} intensity={2.2} color="#ffffff" castShadow />
-      <pointLight position={[5, 2, 4]} intensity={1.8} color="#88ccff" />
-      <pointLight position={[0, -3, -3]} intensity={1.2} color="#4DA6FF" />
       <Suspense fallback={null}>
         <ProductsGroup />
       </Suspense>
-      <Environment preset="city" />
     </>
   );
 }
@@ -96,7 +97,7 @@ export function UnderwaterScene() {
 
       {/* Productos en esquina inferior derecha con animación de aparición */}
       <div
-        className="pointer-events-none absolute bottom-0 right-0 -z-0 w-[40%] max-w-[460px] h-[70%] md:h-[80%] transition-all duration-[1400ms] ease-out"
+        className="pointer-events-none absolute bottom-0 right-0 -z-0 w-[60%] sm:w-[50%] md:w-[42%] max-w-[520px] h-[55%] sm:h-[65%] md:h-[80%] transition-all duration-[1400ms] ease-out"
         style={{
           opacity: visible ? 1 : 0,
           transform: visible ? "translate(0, 0) scale(1)" : "translate(40px, 40px) scale(0.92)",
@@ -122,8 +123,8 @@ export function UnderwaterScene() {
         />
         <Canvas
           camera={{ position: [0, 0, 4.2], fov: 45 }}
-          dpr={[1, 2]}
-          gl={{ alpha: true, antialias: true }}
+          dpr={[1.5, 3]}
+          gl={{ alpha: true, antialias: true, premultipliedAlpha: false }}
           style={{ background: "transparent" }}
         >
           <Suspense fallback={null}>
