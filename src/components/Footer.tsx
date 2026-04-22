@@ -30,10 +30,7 @@ export function Footer() {
               alt="Grupo Vega"
               className="h-14 w-auto object-contain mb-4"
             />
-            <p className="text-white/70 text-sm leading-relaxed">
-              Soluciones integrales para la industria camaronera del Ecuador. Innovación, calidad y sostenibilidad desde 1998.
-            </p>
-            <div className="mt-5 group relative inline-block">
+            <div className="mt-2 group relative inline-block">
               <div className="absolute -inset-1 rounded-2xl bg-gradient-to-r from-turquoise/40 via-white/20 to-turquoise/40 opacity-60 blur-md group-hover:opacity-100 transition-opacity duration-500" />
               <div className="relative rounded-xl bg-white/95 backdrop-blur px-3 py-2 shadow-lg ring-1 ring-white/30 transition-transform duration-500 group-hover:-translate-y-0.5 overflow-hidden">
                 <div className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-1000 bg-gradient-to-r from-transparent via-white/60 to-transparent" />
