@@ -21,7 +21,7 @@ export const Route = createFileRoute("/admin/productos")({
 });
 
 const empty: Omit<Product, "id"> = {
-  name: "", description: "", price: 0, category: "Alimento",
+  name: "", description: "", price: 0, category: "Alimentos",
   image_url: "", stock: 0, active: true, display_order: 0,
 };
 
@@ -187,7 +187,12 @@ function AdminProductos() {
               </div>
               <div>
                 <label className="text-xs font-semibold text-navy-deep">Categoría</label>
-                <input required value={form.category} onChange={(e) => setForm({ ...form, category: e.target.value })} className={inputCls} />
+                <select required value={form.category} onChange={(e) => setForm({ ...form, category: e.target.value })} className={inputCls}>
+                  <option value="Alimentos">Alimentos</option>
+                  <option value="Fertilizantes">Fertilizantes</option>
+                  <option value="Aditivos">Aditivos</option>
+                  <option value="Insumos">Insumos</option>
+                </select>
               </div>
               <div>
                 <label className="text-xs font-semibold text-navy-deep">Precio (USD)</label>

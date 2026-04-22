@@ -9,7 +9,7 @@ export function AdminLayout() {
   const location = useLocation();
 
   useEffect(() => {
-    if (!loading && !user) navigate({ to: "/auth" });
+    if (!loading && !user) navigate({ to: "/auth", search: { redirect: "/admin" } });
   }, [loading, user, navigate]);
 
   if (loading) {
@@ -27,7 +27,7 @@ export function AdminLayout() {
           <ShieldAlert className="w-12 h-12 mx-auto text-destructive mb-4" />
           <h1 className="text-2xl font-bold text-navy-deep mb-2">Acceso restringido</h1>
           <p className="text-muted-foreground mb-6">Tu cuenta no tiene permisos de administrador.</p>
-          <button onClick={async () => { await signOut(); navigate({ to: "/auth" }); }} className="px-6 py-3 rounded-full gradient-wave text-white font-semibold">Cerrar sesión</button>
+          <button onClick={async () => { await signOut(); navigate({ to: "/auth", search: { redirect: "/" } }); }} className="px-6 py-3 rounded-full gradient-wave text-white font-semibold">Cerrar sesión</button>
         </div>
       </div>
     );
@@ -58,7 +58,7 @@ export function AdminLayout() {
         </nav>
         <div className="border-t border-border pt-4 space-y-2">
           <p className="text-xs text-muted-foreground px-2 truncate">{user.email}</p>
-          <button onClick={async () => { await signOut(); navigate({ to: "/auth" }); }} className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm text-muted-foreground hover:bg-foam transition">
+          <button onClick={async () => { await signOut(); navigate({ to: "/auth", search: { redirect: "/" } }); }} className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm text-muted-foreground hover:bg-foam transition">
             <LogOut className="w-4 h-4" /> Cerrar sesión
           </button>
         </div>
