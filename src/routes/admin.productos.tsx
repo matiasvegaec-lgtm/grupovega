@@ -236,6 +236,10 @@ function AdminProductos() {
                 <input type="checkbox" checked={form.active} onChange={(e) => setForm({ ...form, active: e.target.checked })} />
                 <span>Activo (visible en la tienda)</span>
               </label>
+              <label className="sm:col-span-2 flex items-center gap-2 text-sm">
+                <input type="checkbox" checked={form.featured} onChange={(e) => setForm({ ...form, featured: e.target.checked })} />
+                <span>Destacado (aparece en la página principal)</span>
+              </label>
             </div>
             <div className="flex gap-3 justify-end mt-6">
               <button type="button" onClick={() => setShowForm(false)} className="px-4 py-2 rounded-lg border border-border text-sm font-semibold">Cancelar</button>
