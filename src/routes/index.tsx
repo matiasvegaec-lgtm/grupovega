@@ -298,19 +298,19 @@ function Index() {
               {carouselItems.map((p, i) => (
                 <motion.div
                   key={`${p.name}-${i}`}
-                  whileHover={{ scale: 1.15, rotate: -2 }}
+                  whileHover={{ scale: 1.1, rotate: -2 }}
                   transition={{ type: "spring", stiffness: 300 }}
-                  className="shrink-0"
+                  data-marquee-item
+                  className="marquee-item relative shrink-0 w-56 group"
                 >
                   <Link
                     to="/productos/$productId"
                     params={{ productId: p.slug || p.id }}
-                    data-marquee-item
-                    className="marquee-item group flex flex-col items-center w-56 cursor-pointer"
+                    className="flex flex-col items-center cursor-pointer"
                   >
+                    {/* Glow tipo proveedores */}
+                    <div className="absolute inset-x-0 top-0 h-56 gradient-wave rounded-3xl opacity-0 group-hover:opacity-100 blur-xl transition duration-500" />
                     <div className="relative w-56 h-56 flex items-center justify-center">
-                      {/* Glow de luces tipo proveedores */}
-                      <div className="absolute inset-4 rounded-full gradient-wave opacity-0 group-hover:opacity-100 blur-2xl transition duration-500" />
                       <img
                         src={p.img}
                         alt={p.name}
@@ -319,8 +319,8 @@ function Index() {
                         style={{ filter: "drop-shadow(0 20px 30px oklch(0.22 0.1 258 / 0.25))" }}
                       />
                     </div>
-                    <p className="mt-4 font-semibold text-navy-deep text-center group-hover:text-ocean transition-colors">{p.name}</p>
-                    <span className="destacado-label text-xs text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity duration-300 mt-1">Destacado ⭐</span>
+                    <p className="relative mt-4 font-semibold text-navy-deep text-center group-hover:text-ocean transition-colors">{p.name}</p>
+                    <span className="destacado-label relative text-xs text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity duration-300 mt-1">Destacado ⭐</span>
                   </Link>
                 </motion.div>
               ))}
