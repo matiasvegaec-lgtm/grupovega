@@ -1,5 +1,5 @@
 import { Canvas, useFrame } from "@react-three/fiber";
-import { Environment, useTexture } from "@react-three/drei";
+import { useTexture } from "@react-three/drei";
 import { useRef, Suspense, useState, useEffect } from "react";
 import * as THREE from "three";
 import productsImg from "@/assets/hero-products-group.png";
@@ -97,7 +97,7 @@ export function UnderwaterScene() {
 
       {/* Productos en esquina inferior derecha con animación de aparición */}
       <div
-        className="pointer-events-none absolute bottom-0 right-0 -z-0 w-[40%] max-w-[460px] h-[70%] md:h-[80%] transition-all duration-[1400ms] ease-out"
+        className="pointer-events-none absolute bottom-0 right-0 -z-0 w-[60%] sm:w-[50%] md:w-[42%] max-w-[520px] h-[55%] sm:h-[65%] md:h-[80%] transition-all duration-[1400ms] ease-out"
         style={{
           opacity: visible ? 1 : 0,
           transform: visible ? "translate(0, 0) scale(1)" : "translate(40px, 40px) scale(0.92)",
@@ -123,8 +123,8 @@ export function UnderwaterScene() {
         />
         <Canvas
           camera={{ position: [0, 0, 4.2], fov: 45 }}
-          dpr={[1, 2]}
-          gl={{ alpha: true, antialias: true }}
+          dpr={[1.5, 3]}
+          gl={{ alpha: true, antialias: true, premultipliedAlpha: false }}
           style={{ background: "transparent" }}
         >
           <Suspense fallback={null}>
