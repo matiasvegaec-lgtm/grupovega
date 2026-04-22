@@ -292,7 +292,7 @@ function Index() {
                   </div>
                   <div>
                     <div className="text-white/60 text-xs uppercase tracking-widest font-semibold">Email</div>
-                    <div className="text-lg">grupovega.ec@gmail.com</div>
+                    <div className="text-lg">grupovega.ec@outlook.com</div>
                   </div>
                 </li>
                 <li className="flex gap-4">
