@@ -1,21 +1,10 @@
-const PHONE = "593997738026";
-const MESSAGE = "Hola Grupo Vega, me gustaría más información.";
+const WHATSAPP_URL =
+  "https://wa.me/593997738026?text=Hola%20GrupoVega%20%F0%9F%91%8B,%20tengo%20una%20consulta%20%E2%9D%93";
 
 export function WhatsAppFloat() {
-  const handleClick = (e: React.MouseEvent) => {
-    e.preventDefault();
-    const text = encodeURIComponent(MESSAGE);
-    const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
-    const url = isMobile
-      ? `whatsapp://send?phone=${PHONE}&text=${text}`
-      : `https://web.whatsapp.com/send?phone=${PHONE}&text=${text}`;
-    window.open(url, "_blank", "noopener,noreferrer");
-  };
-
   return (
     <a
-      href={`https://web.whatsapp.com/send?phone=${PHONE}&text=${encodeURIComponent(MESSAGE)}`}
-      onClick={handleClick}
+      href={WHATSAPP_URL}
       target="_blank"
       rel="noreferrer"
       className="fixed bottom-6 right-6 z-40 w-16 h-16 rounded-full bg-[#25D366] hover:bg-[#1ebe57] text-white flex items-center justify-center shadow-elegant hover:scale-110 transition-transform animate-float"
