@@ -132,14 +132,14 @@ export function Header() {
                 <DropdownMenuSeparator />
                 {user ? (
                   <DropdownMenuItem asChild className="rounded-lg cursor-pointer">
-                    <Link to="/auth" className="flex items-center gap-2.5 px-3 py-2">
+                    <Link to="/auth" search={{ redirect: undefined }} className="flex items-center gap-2.5 px-3 py-2">
                       <UserCircle className="w-4 h-4 text-ocean" />
                       <span>Mi cuenta</span>
                     </Link>
                   </DropdownMenuItem>
                 ) : (
                   <DropdownMenuItem asChild className="rounded-lg cursor-pointer">
-                    <Link to="/auth" className="flex items-center gap-2.5 px-3 py-2">
+                    <Link to="/auth" search={{ redirect: undefined }} className="flex items-center gap-2.5 px-3 py-2">
                       <LogIn className="w-4 h-4 text-ocean" />
                       <span>Iniciar sesión / Registrarse</span>
                     </Link>
@@ -268,7 +268,7 @@ export function Header() {
               </Link>
             ))}
             <div className="my-2 h-px bg-border" />
-            <Link to="/auth" onClick={() => setOpen(false)} className="px-4 py-3 rounded-lg text-navy-deep hover:bg-foam font-medium flex items-center gap-2">
+            <Link to="/auth" search={{ redirect: undefined }} onClick={() => setOpen(false)} className="px-4 py-3 rounded-lg text-navy-deep hover:bg-foam font-medium flex items-center gap-2">
               <UserCircle className="w-4 h-4" /> Mi cuenta
             </Link>
             <Link to="/mis-pedidos" onClick={() => setOpen(false)} className="px-4 py-3 rounded-lg text-navy-deep hover:bg-foam font-medium flex items-center gap-2">
