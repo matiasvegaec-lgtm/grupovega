@@ -1,10 +1,11 @@
 import { createFileRoute, Link, Outlet, useLocation } from "@tanstack/react-router";
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { Search, ShoppingCart, Loader2, Wheat, Sprout, FlaskConical, Beaker, Pill, Droplet, Layers, X } from "lucide-react";
+import { Search, ShoppingCart, Loader2, Wheat, Sprout, FlaskConical, Beaker, Pill, Droplet, Layers, X, Heart } from "lucide-react";
 import { Layout } from "@/components/Layout";
 import { PageHero } from "@/components/PageHero";
 import { useCart } from "@/contexts/CartContext";
+import { useFavorites } from "@/contexts/FavoritesContext";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import feedImg from "@/assets/product-feed.jpg";
@@ -74,6 +75,7 @@ function ProductosPage() {
   const [subcategories, setSubcategories] = useState<Subcategory[]>([]);
   const [loading, setLoading] = useState(true);
   const { addItem } = useCart();
+  const { toggle: toggleFav, isFavorite } = useFavorites();
 
   useEffect(() => {
     (async () => {
@@ -370,18 +372,48 @@ function ProductosPage() {
                       <Link
                         to="/productos/$productId"
                         params={{ productId: p.slug || p.id }}
-                        className="block w-full aspect-square overflow-hidden relative text-left"
+                        className="block w-full h-48 sm:h-52 overflow-hidden relative text-left bg-white"
                       >
                         <img
                           src={p.image_url || feedImg}
                           alt={p.name}
                           loading="lazy"
-                          className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+                          className="w-full h-full object-contain p-3 group-hover:scale-110 transition-transform duration-700"
                         />
-                        <span className="absolute top-3 left-3 px-3 py-1 rounded-full glass text-white text-xs font-semibold">
+                        <span className="absolute top-3 left-3 px-3 py-1 rounded-full bg-orange-500 text-white text-xs font-semibold shadow-md">
                           {p.category}
                         </span>
                       </Link>
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          e.stopPropagation();
+                          toggleFav({
+                            id: p.id,
+                            name: p.name,
+                            price: Number(p.price),
+                            category: p.category,
+                            img: p.image_url || feedImg,
+                            slug: p.slug,
+                          });
+                          toast.success(
+                            isFavorite(p.id)
+                              ? `${p.name} quitado de favoritos`
+                              : `${p.name} agregado a favoritos`,
+                          );
+                        }}
+                        aria-label="Favorito"
+                        className="absolute top-3 right-3 w-9 h-9 rounded-full bg-white/95 backdrop-blur flex items-center justify-center shadow-md hover:scale-110 transition"
+                      >
+                        <Heart
+                          className={`w-4 h-4 transition ${
+                            isFavorite(p.id)
+                              ? "fill-orange-500 text-orange-500"
+                              : "text-navy-deep"
+                          }`}
+                        />
+                      </button>
                       <div className="p-5 flex flex-col flex-1">
                         <Link
                           to="/productos/$productId"
