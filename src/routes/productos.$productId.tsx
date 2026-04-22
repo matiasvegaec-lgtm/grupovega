@@ -33,7 +33,6 @@ function ProductDetailPage() {
   const navigate = useNavigate();
   const { addItem } = useCart();
   const [product, setProduct] = useState<Product | null>(null);
-  const [related, setRelated] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [qty, setQty] = useState(1);
 
@@ -49,16 +48,6 @@ function ProductDetailPage() {
       if (!alive) return;
       const prod = (data ?? null) as Product | null;
       setProduct(prod);
-      if (prod) {
-        const { data: rel } = await supabase
-          .from("products")
-          .select("*")
-          .eq("active", true)
-          .eq("category", prod.category)
-          .neq("id", prod.id)
-          .limit(4);
-        if (alive) setRelated((rel ?? []) as Product[]);
-      }
       setLoading(false);
     })();
     return () => {
