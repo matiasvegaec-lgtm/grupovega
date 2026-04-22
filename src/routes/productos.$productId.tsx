@@ -1,7 +1,7 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
-import { ArrowLeft, ArrowRight, ChevronLeft, ChevronRight, ShoppingCart, Loader2, Check, Package, Tag } from "lucide-react";
+import { ArrowLeft, ChevronLeft, ChevronRight, ShoppingCart, Loader2, Check, Package, Tag } from "lucide-react";
 import useEmblaCarousel from "embla-carousel-react";
 import { Layout } from "@/components/Layout";
 import { useCart } from "@/contexts/CartContext";
