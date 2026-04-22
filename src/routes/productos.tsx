@@ -367,7 +367,7 @@ function ProductosPage() {
                       whileInView={{ opacity: 1, y: 0 }}
                       viewport={{ once: true }}
                       transition={{ duration: 0.4, delay: (i % 6) * 0.05 }}
-                      className="group bg-card rounded-2xl overflow-hidden shadow-card hover:shadow-elegant transition-all hover:-translate-y-2 flex flex-col"
+                      className="group relative bg-card rounded-2xl overflow-hidden shadow-card hover:shadow-elegant transition-all hover:-translate-y-2 flex flex-col"
                     >
                       <Link
                         to="/productos/$productId"
