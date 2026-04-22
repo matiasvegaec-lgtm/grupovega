@@ -144,7 +144,7 @@ function ProductDetailPage() {
 
   return (
     <Layout>
-      <section className="bg-foam py-8">
+      <section className="bg-foam pt-28 md:pt-32 pb-8">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <button
             onClick={() => navigate({ to: "/productos" })}
