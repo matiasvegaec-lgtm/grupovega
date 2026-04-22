@@ -104,6 +104,7 @@ function ProductosPage() {
     .filter(
       (p) =>
         (active === "Todos" || p.category === active) &&
+        (!activeSub || p.subcategory_id === activeSub) &&
         p.name.toLowerCase().includes(query.toLowerCase()) &&
         (!stockOnly || p.stock > 0) &&
         (maxPrice === 0 || Number(p.price) <= maxPrice)
@@ -117,6 +118,7 @@ function ProductosPage() {
 
   const resetFilters = () => {
     setActive("Todos");
+    setActiveSub(null);
     setQuery("");
     setStockOnly(false);
     setMaxPrice(Math.ceil(totalMaxPrice));
