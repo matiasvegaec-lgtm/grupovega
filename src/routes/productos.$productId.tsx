@@ -283,6 +283,14 @@ function ProductDetailPage() {
                 </div>
               </div>
 
+              <div className="mb-3 rounded-xl bg-white border border-border p-3 flex items-center justify-center">
+                <img
+                  src="/src/assets/payment-methods.png"
+                  alt="Métodos de pago aceptados: Visa, Diners Club, Mastercard, Discover, American Express, Alia"
+                  className="h-8 w-auto object-contain"
+                />
+              </div>
+
               <div className="bg-foam rounded-2xl p-5 mb-6">
                 <div className="flex items-center gap-3">
                   <Package className="w-5 h-5 text-ocean shrink-0" />
