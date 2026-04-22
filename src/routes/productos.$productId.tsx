@@ -8,6 +8,21 @@ import { useCart } from "@/contexts/CartContext";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import feedImg from "@/assets/product-feed.jpg";
+import provNlproinsu from "@/assets/proveedor-nlproinsu.png";
+import provNaturalstar from "@/assets/proveedor-naturalstar.png";
+import provBlueweight from "@/assets/proveedor-blueweight.png";
+import provLacolina from "@/assets/proveedor-lacolina.png";
+import provLarviva from "@/assets/proveedor-larviva.png";
+import provBiomar from "@/assets/proveedor-biomar.png";
+
+const SUPPLIERS = [
+  { name: "NLProinsu", img: provNlproinsu },
+  { name: "NaturalStar", img: provNaturalstar },
+  { name: "Blueweight", img: provBlueweight },
+  { name: "La Colina", img: provLacolina },
+  { name: "Larviva", img: provLarviva },
+  { name: "BioMar", img: provBiomar },
+];
 
 type Product = {
   id: string;
