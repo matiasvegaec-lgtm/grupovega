@@ -238,6 +238,7 @@ export function Header() {
             </button>
             <Link
               to="/auth"
+              search={{ redirect: undefined }}
               aria-label="Mi cuenta"
               className={`p-2 rounded-md ${scrolled ? "text-navy-deep" : "text-white"}`}
             >
