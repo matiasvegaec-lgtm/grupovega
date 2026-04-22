@@ -8,6 +8,10 @@ import productMobileImg from "@/assets/hero-product-mobile.png";
 function ProductsGroup({ textureUrl, aspect = 1.05 }: { textureUrl: string; aspect?: number }) {
   const ref = useRef<THREE.Mesh>(null);
   const texture = useTexture(textureUrl);
+  texture.anisotropy = 16;
+  texture.minFilter = THREE.LinearMipmapLinearFilter;
+  texture.magFilter = THREE.LinearFilter;
+  texture.generateMipmaps = true;
 
   useFrame((state) => {
     if (!ref.current) return;
