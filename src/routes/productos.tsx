@@ -15,6 +15,7 @@ import provBlueweight from "@/assets/proveedor-blueweight.png";
 import provLacolina from "@/assets/proveedor-lacolina.png";
 import provLarviva from "@/assets/proveedor-larviva.png";
 import provBiomar from "@/assets/proveedor-biomar.png";
+import productosHero from "@/assets/productos-hero.jpeg";
 
 export const Route = createFileRoute("/productos")({
   head: () => ({
@@ -284,6 +285,7 @@ function ProductosPage() {
         eyebrow="Catálogo"
         title="Productos para cada fase del cultivo"
         description="Más de 60 productos especializados para optimizar la productividad de tu camaronera."
+        backgroundImage={productosHero}
       />
 
       <section className="py-16 bg-background">
