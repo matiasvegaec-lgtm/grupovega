@@ -88,7 +88,7 @@ function AdminProductos() {
     e.preventDefault();
     setSaving(true);
     try {
-      const payload = { ...form, price: Number(form.price), stock: Number(form.stock), display_order: Number(form.display_order), image_url: form.image_url || null, description: form.description || null };
+      const payload = { ...form, price: Number(form.price), stock: Number(form.stock), display_order: Number(form.display_order), image_url: form.image_url || null, description: form.description || null, subcategory_id: form.subcategory_id || null };
       if (editing) {
         const { error } = await supabase.from("products").update(payload).eq("id", editing.id);
         if (error) throw error;
