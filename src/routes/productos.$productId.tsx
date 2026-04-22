@@ -8,6 +8,21 @@ import { useCart } from "@/contexts/CartContext";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import feedImg from "@/assets/product-feed.jpg";
+import provNlproinsu from "@/assets/proveedor-nlproinsu.png";
+import provNaturalstar from "@/assets/proveedor-naturalstar.png";
+import provBlueweight from "@/assets/proveedor-blueweight.png";
+import provLacolina from "@/assets/proveedor-lacolina.png";
+import provLarviva from "@/assets/proveedor-larviva.png";
+import provBiomar from "@/assets/proveedor-biomar.png";
+
+const SUPPLIERS = [
+  { name: "NLProinsu", img: provNlproinsu },
+  { name: "NaturalStar", img: provNaturalstar },
+  { name: "Blueweight", img: provBlueweight },
+  { name: "La Colina", img: provLacolina },
+  { name: "Larviva", img: provLarviva },
+  { name: "BioMar", img: provBiomar },
+];
 
 type Product = {
   id: string;
@@ -415,6 +430,41 @@ function ProductDetailPage() {
               </div>
             </div>
           )}
+        </div>
+      </section>
+
+      {/* Proveedores — marquee */}
+      <section className="py-20 bg-foam overflow-hidden">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8 mb-12">
+          <div className="text-center max-w-2xl mx-auto">
+            <p className="text-sm font-semibold uppercase tracking-widest text-ocean mb-3">Proveedores</p>
+            <h2 className="text-4xl md:text-5xl font-bold text-navy-deep">Marcas que distribuimos</h2>
+            <p className="text-muted-foreground mt-4">
+              Trabajamos con los líderes mundiales en nutrición y sanidad acuícola.
+            </p>
+          </div>
+        </div>
+        <div className="relative">
+          <div className="pointer-events-none absolute left-0 top-0 bottom-0 w-32 z-10 bg-gradient-to-r from-foam to-transparent" />
+          <div className="pointer-events-none absolute right-0 top-0 bottom-0 w-32 z-10 bg-gradient-to-l from-foam to-transparent" />
+          <div className="flex gap-6 animate-marquee-slow w-max hover:[animation-play-state:paused]">
+            {[...SUPPLIERS, ...SUPPLIERS, ...SUPPLIERS].map((s, i) => (
+              <div
+                key={`${s.name}-${i}`}
+                className="relative shrink-0 w-56 h-28 group"
+              >
+                <div className="absolute inset-0 gradient-wave rounded-2xl opacity-0 group-hover:opacity-100 blur-xl transition duration-500" />
+                <div className="relative w-full h-full bg-white border border-border rounded-2xl flex items-center justify-center p-4 group-hover:border-ocean group-hover:shadow-elegant transition-all duration-300 overflow-hidden">
+                  <img
+                    src={s.img}
+                    alt={s.name}
+                    loading="lazy"
+                    className="max-h-full max-w-full object-contain group-hover:scale-105 transition-transform duration-300"
+                  />
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
       </section>
     </Layout>
