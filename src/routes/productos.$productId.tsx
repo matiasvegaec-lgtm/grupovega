@@ -43,7 +43,7 @@ function ProductDetailPage() {
 
   useEffect(() => {
     let alive = true;
-    window.scrollTo({ top: 0, behavior: "instant" as ScrollBehavior });
+    if (typeof window !== "undefined") window.scrollTo(0, 0);
     (async () => {
       setLoading(true);
       const { data } = await supabase
