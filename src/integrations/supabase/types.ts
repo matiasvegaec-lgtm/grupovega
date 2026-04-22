@@ -145,7 +145,10 @@ export type Database = {
           id: string
           image_url: string | null
           name: string
+          presentation: string | null
           price: number
+          price_card_3m: number | null
+          protein_content: string | null
           slug: string | null
           stock: number
           subcategory_id: string | null
@@ -161,7 +164,10 @@ export type Database = {
           id?: string
           image_url?: string | null
           name: string
+          presentation?: string | null
           price?: number
+          price_card_3m?: number | null
+          protein_content?: string | null
           slug?: string | null
           stock?: number
           subcategory_id?: string | null
@@ -177,7 +183,10 @@ export type Database = {
           id?: string
           image_url?: string | null
           name?: string
+          presentation?: string | null
           price?: number
+          price_card_3m?: number | null
+          protein_content?: string | null
           slug?: string | null
           stock?: number
           subcategory_id?: string | null
