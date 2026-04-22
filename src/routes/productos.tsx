@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { Search, ShoppingCart, Loader2, Wheat, Sprout, FlaskConical, Beaker, Pill, Droplet, Layers, X, Eye } from "lucide-react";
+import { Search, ShoppingCart, Loader2, Wheat, Sprout, FlaskConical, Beaker, Pill, Droplet, Layers, X } from "lucide-react";
 import { Layout } from "@/components/Layout";
 import { PageHero } from "@/components/PageHero";
 import { useCart } from "@/contexts/CartContext";
@@ -363,10 +363,10 @@ function ProductosPage() {
                       transition={{ duration: 0.4, delay: (i % 6) * 0.05 }}
                       className="group bg-card rounded-2xl overflow-hidden shadow-card hover:shadow-elegant transition-all hover:-translate-y-2 flex flex-col"
                     >
-                      <Link
-                        to="/productos/$productId"
-                        params={{ productId: p.id }}
-                        className="block aspect-square overflow-hidden relative"
+                      <button
+                        type="button"
+                        onClick={() => setQuickView(p)}
+                        className="block w-full aspect-square overflow-hidden relative text-left"
                       >
                         <img
                           src={p.image_url || feedImg}
@@ -377,15 +377,15 @@ function ProductosPage() {
                         <span className="absolute top-3 left-3 px-3 py-1 rounded-full glass text-white text-xs font-semibold">
                           {p.category}
                         </span>
-                      </Link>
+                      </button>
                       <div className="p-5 flex flex-col flex-1">
-                        <Link
-                          to="/productos/$productId"
-                          params={{ productId: p.id }}
-                          className="font-bold text-navy-deep mb-1 hover:text-ocean transition"
+                        <button
+                          type="button"
+                          onClick={() => setQuickView(p)}
+                          className="text-left font-bold text-navy-deep mb-1 hover:text-ocean transition"
                         >
                           {p.name}
-                        </Link>
+                        </button>
                         <p className="text-muted-foreground text-sm mb-4 line-clamp-2 flex-1">
                           {p.description}
                         </p>
@@ -415,12 +415,6 @@ function ProductosPage() {
                         >
                           <ShoppingCart className="w-4 h-4" /> Agregar al carrito
                         </button>
-                        <button
-                          onClick={() => setQuickView(p)}
-                          className="lg:hidden mt-2 w-full inline-flex items-center justify-center gap-2 px-4 py-2 rounded-full border border-border text-navy-deep text-xs font-semibold hover:border-ocean hover:text-ocean transition"
-                        >
-                          <Eye className="w-4 h-4" /> Vista rápida
-                        </button>
                       </div>
                     </motion.div>
                   ))}
@@ -433,12 +427,12 @@ function ProductosPage() {
 
       {/* Modal Vista Rápida (mobile) */}
       {quickView && (
-        <div className="fixed inset-0 z-50 lg:hidden flex items-end sm:items-center justify-center">
+        <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center">
           <div
             className="absolute inset-0 bg-black/60"
             onClick={() => setQuickView(null)}
           />
-          <div className="relative w-full sm:max-w-md bg-background rounded-t-3xl sm:rounded-3xl max-h-[90vh] overflow-y-auto shadow-elegant animate-slide-in-right">
+          <div className="relative w-full sm:max-w-lg bg-background rounded-t-3xl sm:rounded-3xl max-h-[90vh] overflow-y-auto shadow-elegant animate-slide-in-right">
             <button
               onClick={() => setQuickView(null)}
               className="absolute top-3 right-3 z-10 p-2 rounded-full bg-white/90 hover:bg-white shadow-card"
@@ -454,17 +448,35 @@ function ProductosPage() {
               />
             </div>
             <div className="p-6 space-y-4">
-              <span className="inline-block px-3 py-1 rounded-full bg-foam text-ocean text-xs font-semibold">
-                {quickView.category}
-              </span>
+              <div className="flex flex-wrap gap-2">
+                <span className="inline-block px-3 py-1 rounded-full bg-foam text-ocean text-xs font-semibold">
+                  {quickView.category}
+                </span>
+                {quickView.subcategory_id && (
+                  <span className="inline-block px-3 py-1 rounded-full bg-foam text-ocean text-xs font-semibold">
+                    {subcategories.find((s) => s.id === quickView.subcategory_id)?.name}
+                  </span>
+                )}
+              </div>
               <h3 className="text-2xl font-bold text-navy-deep">{quickView.name}</h3>
-              <p className="text-muted-foreground text-sm">{quickView.description}</p>
+              {quickView.description ? (
+                <div>
+                  <h4 className="text-xs font-semibold uppercase tracking-widest text-ocean mb-2">Descripción</h4>
+                  <p className="text-muted-foreground text-sm whitespace-pre-line leading-relaxed">
+                    {quickView.description}
+                  </p>
+                </div>
+              ) : (
+                <p className="text-muted-foreground text-sm italic">Sin descripción disponible.</p>
+              )}
               <div className="flex items-center justify-between">
                 <span className="text-3xl font-bold text-navy-deep">
                   ${Number(quickView.price).toFixed(2)}
                 </span>
                 {quickView.stock > 0 ? (
-                  <span className="text-sm text-green-700 font-semibold">En stock</span>
+                  <span className="text-sm text-green-700 font-semibold">
+                    En stock ({quickView.stock} disponibles)
+                  </span>
                 ) : (
                   <span className="text-sm text-muted-foreground">Agotado</span>
                 )}
