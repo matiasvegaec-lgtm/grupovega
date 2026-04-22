@@ -230,13 +230,12 @@ function Index() {
           </div>
         </div>
 
-        <div className="relative w-full group/carousel">
+        <div className="relative w-full">
           {/* fade laterales */}
           <div className="pointer-events-none absolute left-0 top-0 bottom-0 w-24 z-10 bg-gradient-to-r from-foam to-transparent" />
           <div className="pointer-events-none absolute right-0 top-0 bottom-0 w-24 z-10 bg-gradient-to-l from-foam to-transparent" />
 
-          <div className="overflow-x-auto overflow-y-hidden">
-            <div className="flex gap-12 animate-marquee w-max hover:[animation-play-state:paused] group-hover/carousel:[animation-play-state:paused]">
+          <div className="flex gap-12 animate-marquee w-max hover:[animation-play-state:paused]">
             {carouselItems.map((p, i) => (
               <div key={`${p.name}-${i}`} className="group flex flex-col items-center w-56 shrink-0 cursor-pointer">
                 <div className="relative w-56 h-56 flex items-center justify-center">
@@ -256,7 +255,6 @@ function Index() {
                 <span className="text-xs text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity duration-300 mt-1">Destacado ⭐</span>
               </div>
             ))}
-            </div>
           </div>
         </div>
 
