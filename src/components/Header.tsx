@@ -1,11 +1,9 @@
 import { Link } from "@tanstack/react-router";
 import { useState, useEffect } from "react";
-import { Menu, X, ShoppingCart, Heart, Mail, Package } from "lucide-react";
+import { Menu, X, ShoppingCart } from "lucide-react";
 import logoGrupoVega from "@/assets/logo-grupo-vega.png";
 import { useCart } from "@/contexts/CartContext";
 import { CartDrawer } from "@/components/CartDrawer";
-import { useFavorites } from "@/contexts/FavoritesContext";
-import { PromoSubscribeDialog } from "@/components/PromoSubscribeDialog";
 
 const links = [
   { to: "/", label: "Inicio" },
@@ -17,9 +15,7 @@ export function Header() {
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [cartOpen, setCartOpen] = useState(false);
-  const [promoOpen, setPromoOpen] = useState(false);
   const { count } = useCart();
-  const { count: favCount } = useFavorites();
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 20);
@@ -66,39 +62,6 @@ export function Header() {
           </nav>
 
           <div className="hidden lg:flex items-center gap-1">
-            <Link
-              to="/favoritos"
-              aria-label="Mis favoritos"
-              className={`relative inline-flex items-center justify-center w-10 h-10 rounded-full transition-colors ${
-                scrolled ? "text-navy-deep hover:bg-foam" : "text-white hover:bg-white/10"
-              }`}
-            >
-              <Heart className="w-5 h-5" />
-              {favCount > 0 && (
-                <span className="absolute -top-1 -right-1 bg-orange-500 text-white text-[10px] font-bold rounded-full min-w-[18px] h-[18px] px-1 flex items-center justify-center">
-                  {favCount}
-                </span>
-              )}
-            </Link>
-            <Link
-              to="/mis-pedidos"
-              aria-label="Mis pedidos"
-              className={`inline-flex items-center justify-center w-10 h-10 rounded-full transition-colors ${
-                scrolled ? "text-navy-deep hover:bg-foam" : "text-white hover:bg-white/10"
-              }`}
-            >
-              <Package className="w-5 h-5" />
-            </Link>
-            <button
-              type="button"
-              onClick={() => setPromoOpen(true)}
-              aria-label="Recibir promociones"
-              className={`inline-flex items-center justify-center w-10 h-10 rounded-full transition-colors ${
-                scrolled ? "text-navy-deep hover:bg-foam" : "text-white hover:bg-white/10"
-              }`}
-            >
-              <Mail className="w-5 h-5" />
-            </button>
             <button
               type="button"
               onClick={() => setCartOpen(true)}
@@ -123,18 +86,6 @@ export function Header() {
           </div>
 
           <div className="flex items-center gap-2 lg:hidden">
-            <Link
-              to="/favoritos"
-              aria-label="Favoritos"
-              className={`relative p-2 rounded-md ${scrolled ? "text-navy-deep" : "text-white"}`}
-            >
-              <Heart className="w-5 h-5" />
-              {favCount > 0 && (
-                <span className="absolute top-0 right-0 bg-orange-500 text-white text-[10px] font-bold rounded-full min-w-[18px] h-[18px] px-1 flex items-center justify-center">
-                  {favCount}
-                </span>
-              )}
-            </Link>
             <button
               type="button"
               onClick={() => setCartOpen(true)}
@@ -173,27 +124,6 @@ export function Header() {
               </Link>
             ))}
             <Link
-              to="/favoritos"
-              onClick={() => setOpen(false)}
-              className="px-4 py-3 rounded-lg text-navy-deep hover:bg-foam font-medium flex items-center gap-2"
-            >
-              <Heart className="w-4 h-4" /> Mis favoritos
-            </Link>
-            <Link
-              to="/mis-pedidos"
-              onClick={() => setOpen(false)}
-              className="px-4 py-3 rounded-lg text-navy-deep hover:bg-foam font-medium flex items-center gap-2"
-            >
-              <Package className="w-4 h-4" /> Mis pedidos
-            </Link>
-            <button
-              type="button"
-              onClick={() => { setOpen(false); setPromoOpen(true); }}
-              className="text-left px-4 py-3 rounded-lg text-navy-deep hover:bg-foam font-medium flex items-center gap-2"
-            >
-              <Mail className="w-4 h-4" /> Recibir promociones
-            </button>
-            <Link
               to="/contacto"
               onClick={() => setOpen(false)}
               className="mt-2 px-4 py-3 rounded-lg gradient-wave text-white font-semibold text-center"
@@ -204,7 +134,6 @@ export function Header() {
         </div>
       )}
       <CartDrawer open={cartOpen} onOpenChange={setCartOpen} />
-      <PromoSubscribeDialog open={promoOpen} onOpenChange={setPromoOpen} />
     </header>
   );
 }
