@@ -118,16 +118,20 @@ function AdminCategorias() {
   }
 
   return (
-    <div className="p-8">
-      <div className="flex items-center justify-between mb-6">
-        <div>
-          <h1 className="text-2xl font-bold text-navy-deep">Categorías</h1>
-          <p className="text-sm text-muted-foreground">Gestiona categorías y subcategorías</p>
+    <div className="p-4 md:p-8 pb-24 md:pb-8">
+      <div className="flex items-start md:items-center justify-between mb-6 gap-3">
+        <div className="min-w-0">
+          <h1 className="text-xl md:text-2xl font-bold text-navy-deep">Categorías</h1>
+          <p className="text-xs md:text-sm text-muted-foreground">Gestiona categorías y subcategorías</p>
         </div>
-        <button onClick={openNewCat} className="inline-flex items-center gap-2 px-4 py-2.5 rounded-full gradient-wave text-white text-sm font-semibold shadow-glow">
+        <button onClick={openNewCat} className="hidden md:inline-flex items-center gap-2 px-4 py-2.5 rounded-full gradient-wave text-white text-sm font-semibold shadow-glow">
           <Plus className="w-4 h-4" /> Nueva categoría
         </button>
       </div>
+
+      <button onClick={openNewCat} className="md:hidden fixed bottom-6 right-6 z-20 w-14 h-14 rounded-full gradient-wave text-white shadow-glow flex items-center justify-center" aria-label="Nueva categoría">
+        <Plus className="w-6 h-6" />
+      </button>
 
       {loading ? (
         <div className="text-center py-20"><Loader2 className="w-8 h-8 animate-spin mx-auto text-ocean" /></div>
@@ -140,17 +144,17 @@ function AdminCategorias() {
             const isOpen = expanded[c.id] ?? true;
             return (
               <div key={c.id} className="bg-card border border-border rounded-2xl overflow-hidden">
-                <div className="flex items-center justify-between p-4">
-                  <button onClick={() => setExpanded((e) => ({ ...e, [c.id]: !isOpen }))} className="flex items-center gap-3 flex-1 text-left">
+                <div className="flex items-center justify-between gap-2 p-3 md:p-4">
+                  <button onClick={() => setExpanded((e) => ({ ...e, [c.id]: !isOpen }))} className="flex items-center gap-3 flex-1 min-w-0 text-left">
                     {isOpen ? <ChevronDown className="w-4 h-4" /> : <ChevronRight className="w-4 h-4" />}
-                    <div>
-                      <p className="font-semibold text-navy-deep">{c.name}</p>
-                      <p className="text-xs text-muted-foreground">{subs.length} subcategoría{subs.length === 1 ? "" : "s"} · orden {c.display_order} · {c.active ? "activa" : "inactiva"}</p>
+                    <div className="min-w-0">
+                      <p className="font-semibold text-navy-deep truncate">{c.name}</p>
+                      <p className="text-xs text-muted-foreground truncate">{subs.length} sub · #{c.display_order} · {c.active ? "activa" : "inactiva"}</p>
                     </div>
                   </button>
-                  <div className="flex items-center gap-2">
-                    <button onClick={() => openNewSub(c.id)} className="px-3 py-1.5 rounded-lg text-xs font-semibold bg-foam text-ocean hover:bg-ocean hover:text-white transition inline-flex items-center gap-1">
-                      <Plus className="w-3 h-3" /> Subcategoría
+                  <div className="flex items-center gap-1 shrink-0">
+                    <button onClick={() => openNewSub(c.id)} title="Añadir subcategoría" className="px-2 md:px-3 py-1.5 rounded-lg text-xs font-semibold bg-foam text-ocean hover:bg-ocean hover:text-white transition inline-flex items-center gap-1">
+                      <Plus className="w-3 h-3" /> <span className="hidden sm:inline">Subcat.</span>
                     </button>
                     <button onClick={() => openEditCat(c)} className="p-2 rounded-lg hover:bg-foam"><Edit2 className="w-4 h-4 text-ocean" /></button>
                     <button onClick={() => deleteCategory(c)} className="p-2 rounded-lg hover:bg-destructive/10"><Trash2 className="w-4 h-4 text-destructive" /></button>
@@ -159,12 +163,12 @@ function AdminCategorias() {
                 {isOpen && subs.length > 0 && (
                   <div className="border-t border-border bg-foam/30 divide-y divide-border">
                     {subs.map((s) => (
-                      <div key={s.id} className="flex items-center justify-between px-4 py-2.5 pl-12">
-                        <div>
-                          <p className="text-sm font-medium text-navy-deep">{s.name}</p>
-                          <p className="text-xs text-muted-foreground">orden {s.display_order} · {s.active ? "activa" : "inactiva"}</p>
+                      <div key={s.id} className="flex items-center justify-between gap-2 px-3 md:px-4 py-2.5 pl-8 md:pl-12">
+                        <div className="min-w-0">
+                          <p className="text-sm font-medium text-navy-deep truncate">{s.name}</p>
+                          <p className="text-xs text-muted-foreground">#{s.display_order} · {s.active ? "activa" : "inactiva"}</p>
                         </div>
-                        <div className="flex items-center gap-1">
+                        <div className="flex items-center gap-1 shrink-0">
                           <button onClick={() => openEditSub(s)} className="p-2 rounded-lg hover:bg-background"><Edit2 className="w-4 h-4 text-ocean" /></button>
                           <button onClick={() => deleteSubcategory(s)} className="p-2 rounded-lg hover:bg-destructive/10"><Trash2 className="w-4 h-4 text-destructive" /></button>
                         </div>
@@ -179,8 +183,8 @@ function AdminCategorias() {
       )}
 
       {catModal.open && (
-        <div className="fixed inset-0 z-50 bg-black/50 flex items-center justify-center p-4" onClick={() => setCatModal({ open: false, editing: null })}>
-          <form onSubmit={saveCategory} onClick={(e) => e.stopPropagation()} className="bg-background rounded-2xl p-6 w-full max-w-md space-y-4">
+        <div className="fixed inset-0 z-50 bg-black/50 flex items-end md:items-center justify-center md:p-4" onClick={() => setCatModal({ open: false, editing: null })}>
+          <form onSubmit={saveCategory} onClick={(e) => e.stopPropagation()} className="bg-background rounded-t-2xl md:rounded-2xl p-5 md:p-6 w-full max-w-md space-y-4">
             <div className="flex items-center justify-between">
               <h2 className="text-lg font-bold text-navy-deep">{catModal.editing ? "Editar" : "Nueva"} categoría</h2>
               <button type="button" onClick={() => setCatModal({ open: false, editing: null })}><X className="w-5 h-5" /></button>
@@ -202,8 +206,8 @@ function AdminCategorias() {
       )}
 
       {subModal.open && (
-        <div className="fixed inset-0 z-50 bg-black/50 flex items-center justify-center p-4" onClick={() => setSubModal({ open: false, editing: null, categoryId: null })}>
-          <form onSubmit={saveSubcategory} onClick={(e) => e.stopPropagation()} className="bg-background rounded-2xl p-6 w-full max-w-md space-y-4">
+        <div className="fixed inset-0 z-50 bg-black/50 flex items-end md:items-center justify-center md:p-4" onClick={() => setSubModal({ open: false, editing: null, categoryId: null })}>
+          <form onSubmit={saveSubcategory} onClick={(e) => e.stopPropagation()} className="bg-background rounded-t-2xl md:rounded-2xl p-5 md:p-6 w-full max-w-md space-y-4">
             <div className="flex items-center justify-between">
               <h2 className="text-lg font-bold text-navy-deep">{subModal.editing ? "Editar" : "Nueva"} subcategoría</h2>
               <button type="button" onClick={() => setSubModal({ open: false, editing: null, categoryId: null })}><X className="w-5 h-5" /></button>
