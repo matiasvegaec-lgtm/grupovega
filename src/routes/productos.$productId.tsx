@@ -33,7 +33,6 @@ function ProductDetailPage() {
   const navigate = useNavigate();
   const { addItem } = useCart();
   const [product, setProduct] = useState<Product | null>(null);
-  const [related, setRelated] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [qty, setQty] = useState(1);
 
@@ -49,16 +48,6 @@ function ProductDetailPage() {
       if (!alive) return;
       const prod = (data ?? null) as Product | null;
       setProduct(prod);
-      if (prod) {
-        const { data: rel } = await supabase
-          .from("products")
-          .select("*")
-          .eq("active", true)
-          .eq("category", prod.category)
-          .neq("id", prod.id)
-          .limit(4);
-        if (alive) setRelated((rel ?? []) as Product[]);
-      }
       setLoading(false);
     })();
     return () => {
@@ -220,41 +209,6 @@ function ProductDetailPage() {
               </Link>
             </motion.div>
           </div>
-
-          {/* Relacionados */}
-          {related.length > 0 && (
-            <div className="mt-20">
-              <h2 className="text-2xl font-bold text-navy-deep mb-8">
-                Otros productos en {product.category}
-              </h2>
-              <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                {related.map((p) => (
-                  <Link
-                    key={p.id}
-                    to="/productos/$productId"
-                    params={{ productId: p.id }}
-                    className="group bg-card rounded-2xl overflow-hidden shadow-card hover:shadow-elegant transition-all hover:-translate-y-2"
-                  >
-                    <div className="aspect-square overflow-hidden">
-                      <img
-                        src={p.image_url || feedImg}
-                        alt={p.name}
-                        className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
-                      />
-                    </div>
-                    <div className="p-4">
-                      <h3 className="font-bold text-navy-deep text-sm mb-1 group-hover:text-ocean transition">
-                        {p.name}
-                      </h3>
-                      <span className="text-lg font-bold text-navy-deep">
-                        ${Number(p.price).toFixed(2)}
-                      </span>
-                    </div>
-                  </Link>
-                ))}
-              </div>
-            </div>
-          )}
         </div>
       </section>
     </Layout>
