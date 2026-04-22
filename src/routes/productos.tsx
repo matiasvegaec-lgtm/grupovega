@@ -363,9 +363,9 @@ function ProductosPage() {
                       transition={{ duration: 0.4, delay: (i % 6) * 0.05 }}
                       className="group bg-card rounded-2xl overflow-hidden shadow-card hover:shadow-elegant transition-all hover:-translate-y-2 flex flex-col"
                     >
-                      <button
-                        type="button"
-                        onClick={() => setQuickView(p)}
+                      <Link
+                        to="/productos/$productId"
+                        params={{ productId: p.id }}
                         className="block w-full aspect-square overflow-hidden relative text-left"
                       >
                         <img
@@ -377,15 +377,15 @@ function ProductosPage() {
                         <span className="absolute top-3 left-3 px-3 py-1 rounded-full glass text-white text-xs font-semibold">
                           {p.category}
                         </span>
-                      </button>
+                      </Link>
                       <div className="p-5 flex flex-col flex-1">
-                        <button
-                          type="button"
-                          onClick={() => setQuickView(p)}
+                        <Link
+                          to="/productos/$productId"
+                          params={{ productId: p.id }}
                           className="text-left font-bold text-navy-deep mb-1 hover:text-ocean transition"
                         >
                           {p.name}
-                        </button>
+                        </Link>
                         <p className="text-muted-foreground text-sm mb-4 line-clamp-2 flex-1">
                           {p.description}
                         </p>
