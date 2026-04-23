@@ -1,8 +1,9 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState, FormEvent } from "react";
-import { Plus, Pencil, Trash2, Loader2, X, Upload, Eye, EyeOff, Star } from "lucide-react";
+import { Plus, Pencil, Trash2, Loader2, X, Upload, Eye, EyeOff, Star, Crop } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { ImageAdjuster } from "@/components/ImageAdjuster";
 
 type Product = {
   id: string;
@@ -44,6 +45,7 @@ function AdminProductos() {
   const [showForm, setShowForm] = useState(false);
   const [categories, setCategories] = useState<Category[]>([]);
   const [subcategories, setSubcategories] = useState<Subcategory[]>([]);
+  const [adjusterSrc, setAdjusterSrc] = useState<string | null>(null);
 
   const load = async () => {
     setLoading(true);
@@ -69,6 +71,16 @@ function AdminProductos() {
     setEditing(p);
     setForm({ name: p.name, description: p.description ?? "", price: Number(p.price), category: p.category, image_url: p.image_url ?? "", stock: p.stock, active: p.active, display_order: p.display_order, featured: p.featured, subcategory_id: p.subcategory_id ?? null, presentation: p.presentation ?? "", protein_content: p.protein_content ?? "", price_card_3m: p.price_card_3m ?? null });
     setShowForm(true);
+  };
+
+  const uploadBlob = async (blob: Blob, ext = "png") => {
+    const path = `${crypto.randomUUID()}.${ext}`;
+    const { error: upErr } = await supabase.storage
+      .from("product-images")
+      .upload(path, blob, { contentType: blob.type || "image/png" });
+    if (upErr) throw upErr;
+    const { data } = supabase.storage.from("product-images").getPublicUrl(path);
+    return data.publicUrl;
   };
 
   const handleUpload = async (file: File) => {
@@ -106,13 +118,8 @@ function AdminProductos() {
       }
 
       // 3. Subir a storage
-      const path = `${crypto.randomUUID()}.${finalExt}`;
-      const { error: upErr } = await supabase.storage
-        .from("product-images")
-        .upload(path, finalBlob, { contentType: finalBlob.type || "image/png" });
-      if (upErr) throw upErr;
-      const { data } = supabase.storage.from("product-images").getPublicUrl(path);
-      setForm((f) => ({ ...f, image_url: data.publicUrl }));
+      const url = await uploadBlob(finalBlob, finalExt);
+      setForm((f) => ({ ...f, image_url: url }));
       toast.success("Imagen lista", { id: toastId });
     } catch (e: any) {
       toast.error(e.message, { id: toastId });
@@ -403,11 +410,35 @@ function AdminProductos() {
                   {form.image_url && <img src={form.image_url} alt="" className="w-20 h-20 rounded-lg object-cover" />}
                   <div className="flex-1">
                     <input value={form.image_url ?? ""} onChange={(e) => setForm({ ...form, image_url: e.target.value })} placeholder="URL de la imagen" className={inputCls + " mb-2"} />
-                    <label className="inline-flex items-center gap-2 px-3 py-2 rounded-lg border border-border cursor-pointer hover:bg-foam text-xs font-semibold text-navy-deep">
-                      {uploading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Upload className="w-4 h-4" />} Subir archivo
-                      <input type="file" accept="image/*" className="hidden" onChange={(e) => e.target.files?.[0] && handleUpload(e.target.files[0])} />
-                    </label>
-                    <p className="text-[11px] text-muted-foreground mt-1.5">✨ Al subir, la IA quita el fondo y centra el producto en cuadrado para que el catálogo se vea uniforme.</p>
+                    <div className="flex flex-wrap gap-2">
+                      <label className="inline-flex items-center gap-2 px-3 py-2 rounded-lg border border-border cursor-pointer hover:bg-foam text-xs font-semibold text-navy-deep">
+                        {uploading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Upload className="w-4 h-4" />} Subir con IA
+                        <input type="file" accept="image/*" className="hidden" onChange={(e) => { const f = e.target.files?.[0]; if (f) handleUpload(f); e.currentTarget.value = ""; }} />
+                      </label>
+                      <label className="inline-flex items-center gap-2 px-3 py-2 rounded-lg border border-border cursor-pointer hover:bg-foam text-xs font-semibold text-navy-deep">
+                        <Crop className="w-4 h-4" /> Ajustar manualmente
+                        <input
+                          type="file"
+                          accept="image/*"
+                          className="hidden"
+                          onChange={(e) => {
+                            const f = e.target.files?.[0];
+                            if (f) setAdjusterSrc(URL.createObjectURL(f));
+                            e.currentTarget.value = "";
+                          }}
+                        />
+                      </label>
+                      {form.image_url && (
+                        <button
+                          type="button"
+                          onClick={() => setAdjusterSrc(form.image_url!)}
+                          className="inline-flex items-center gap-2 px-3 py-2 rounded-lg border border-border hover:bg-foam text-xs font-semibold text-navy-deep"
+                        >
+                          <Crop className="w-4 h-4" /> Reajustar actual
+                        </button>
+                      )}
+                    </div>
+                    <p className="text-[11px] text-muted-foreground mt-1.5">✨ <b>Subir con IA</b>: quita el fondo y centra automáticamente. <b>Ajustar manualmente</b>: tú controlas zoom, encuadre y posición sobre fondo blanco.</p>
                   </div>
                 </div>
               </div>
@@ -428,6 +459,27 @@ function AdminProductos() {
             </div>
           </form>
         </div>
+      )}
+
+      {adjusterSrc && (
+        <ImageAdjuster
+          src={adjusterSrc}
+          onCancel={() => setAdjusterSrc(null)}
+          onConfirm={async (blob) => {
+            const toastId = toast.loading("Subiendo imagen ajustada…");
+            try {
+              setUploading(true);
+              const url = await uploadBlob(blob, "png");
+              setForm((f) => ({ ...f, image_url: url }));
+              toast.success("Imagen actualizada", { id: toastId });
+              setAdjusterSrc(null);
+            } catch (e: any) {
+              toast.error(e.message, { id: toastId });
+            } finally {
+              setUploading(false);
+            }
+          }}
+        />
       )}
     </div>
   );
