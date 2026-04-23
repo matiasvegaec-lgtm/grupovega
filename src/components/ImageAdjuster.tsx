@@ -19,6 +19,7 @@ type Props = {
 export function ImageAdjuster({ src, outputSize = 1000, backgroundColor = "#FFFFFF", onCancel, onConfirm }: Props) {
   const containerRef = useRef<HTMLDivElement>(null);
   const imgRef = useRef<HTMLImageElement | null>(null);
+  const objectUrlRef = useRef<string | null>(null);
   const [imgLoaded, setImgLoaded] = useState(false);
   const [naturalSize, setNaturalSize] = useState({ w: 0, h: 0 });
   const [scale, setScale] = useState(1); // multiplicador sobre el "fit"
@@ -44,6 +45,7 @@ export function ImageAdjuster({ src, outputSize = 1000, backgroundColor = "#FFFF
   };
 
   useEffect(() => {
+    setImgLoaded(false);
     const img = new Image();
     img.crossOrigin = "anonymous";
     img.onload = () => {
@@ -62,6 +64,13 @@ export function ImageAdjuster({ src, outputSize = 1000, backgroundColor = "#FFFF
       img2.src = src;
     };
     img.src = src;
+
+    return () => {
+      if (objectUrlRef.current) {
+        URL.revokeObjectURL(objectUrlRef.current);
+        objectUrlRef.current = null;
+      }
+    };
   }, [src]);
 
   // Pointer handlers (mouse + touch unificados)
@@ -113,6 +122,10 @@ export function ImageAdjuster({ src, outputSize = 1000, backgroundColor = "#FFFF
       const blob: Blob = await new Promise((resolve, reject) => {
         canvas.toBlob((b) => (b ? resolve(b) : reject(new Error("No se pudo generar la imagen"))), "image/png", 0.95);
       });
+      const previewUrl = URL.createObjectURL(blob);
+      objectUrlRef.current = previewUrl;
+      imgRef.current = null;
+      setImgLoaded(false);
       await onConfirm(blob);
     } finally {
       setSaving(false);

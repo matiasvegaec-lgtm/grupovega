@@ -35,6 +35,28 @@ const empty: Omit<Product, "id"> = {
   presentation: "", protein_content: "", price_card_3m: null,
 };
 
+const PRESENTATION_UNITS = ["kg", "g"] as const;
+type PresentationUnit = (typeof PRESENTATION_UNITS)[number];
+
+const getPresentationParts = (presentation: string | null | undefined) => {
+  const value = presentation?.trim() ?? "";
+  const match = value.match(/^([\d.]+)\s*(kg|g)$/i);
+
+  if (match) {
+    return {
+      amount: match[1],
+      unit: match[2].toLowerCase() as PresentationUnit,
+    };
+  }
+
+  return {
+    amount: value.replace(/[^0-9.]/g, ""),
+    unit: /(^|\s)g$/i.test(value) && !/kg/i.test(value) ? "g" as PresentationUnit : "kg" as PresentationUnit,
+  };
+};
+
+const formatPresentation = (amount: string, unit: PresentationUnit) => (amount === "" ? "" : `${amount} ${unit}`);
+
 function AdminProductos() {
   const [list, setList] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
@@ -171,6 +193,7 @@ function AdminProductos() {
   };
 
   const inputCls = "w-full px-3 py-2 rounded-lg bg-background border border-border focus:border-ocean focus:outline-none text-sm";
+  const presentationParts = getPresentationParts(form.presentation);
 
   return (
     <div className="p-4 md:p-8 pb-24 md:pb-8">
@@ -353,20 +376,29 @@ function AdminProductos() {
               </div>
               <div>
                 <label className="text-xs font-semibold text-navy-deep">Presentación</label>
-                <div className="relative">
+                <div className="flex gap-2">
                   <input
                     type="number"
                     step="0.01"
                     min="0"
-                    value={(form.presentation ?? "").replace(/[^0-9.]/g, "")}
+                    value={presentationParts.amount}
                     onChange={(e) => {
-                      const num = e.target.value;
-                      setForm({ ...form, presentation: num === "" ? "" : `${num} kg` });
+                      setForm({ ...form, presentation: formatPresentation(e.target.value, presentationParts.unit) });
                     }}
                     placeholder="25"
-                    className={inputCls + " pr-12"}
+                    className={inputCls}
                   />
-                  <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs font-semibold text-muted-foreground pointer-events-none">kg</span>
+                  <select
+                    value={presentationParts.unit}
+                    onChange={(e) => {
+                      setForm({ ...form, presentation: formatPresentation(presentationParts.amount, e.target.value as PresentationUnit) });
+                    }}
+                    className={inputCls + " w-24 shrink-0"}
+                  >
+                    {PRESENTATION_UNITS.map((unit) => (
+                      <option key={unit} value={unit}>{unit}</option>
+                    ))}
+                  </select>
                 </div>
               </div>
               <div>
@@ -412,21 +444,8 @@ function AdminProductos() {
                     <input value={form.image_url ?? ""} onChange={(e) => setForm({ ...form, image_url: e.target.value })} placeholder="URL de la imagen" className={inputCls + " mb-2"} />
                     <div className="flex flex-wrap gap-2">
                       <label className="inline-flex items-center gap-2 px-3 py-2 rounded-lg border border-border cursor-pointer hover:bg-foam text-xs font-semibold text-navy-deep">
-                        {uploading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Upload className="w-4 h-4" />} Subir con IA
+                        {uploading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Upload className="w-4 h-4" />} Subir imagen
                         <input type="file" accept="image/*" className="hidden" onChange={(e) => { const f = e.target.files?.[0]; if (f) handleUpload(f); e.currentTarget.value = ""; }} />
-                      </label>
-                      <label className="inline-flex items-center gap-2 px-3 py-2 rounded-lg border border-border cursor-pointer hover:bg-foam text-xs font-semibold text-navy-deep">
-                        <Crop className="w-4 h-4" /> Ajustar manualmente
-                        <input
-                          type="file"
-                          accept="image/*"
-                          className="hidden"
-                          onChange={(e) => {
-                            const f = e.target.files?.[0];
-                            if (f) setAdjusterSrc(URL.createObjectURL(f));
-                            e.currentTarget.value = "";
-                          }}
-                        />
                       </label>
                       {form.image_url && (
                         <button
@@ -438,7 +457,7 @@ function AdminProductos() {
                         </button>
                       )}
                     </div>
-                    <p className="text-[11px] text-muted-foreground mt-1.5">✨ <b>Subir con IA</b>: quita el fondo y centra automáticamente. <b>Ajustar manualmente</b>: tú controlas zoom, encuadre y posición sobre fondo blanco.</p>
+                    <p className="text-[11px] text-muted-foreground mt-1.5">La imagen se procesa automáticamente al subirla y luego puedes reajustarla si necesitas moverla o acercarla.</p>
                   </div>
                 </div>
               </div>
