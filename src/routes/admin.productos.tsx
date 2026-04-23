@@ -45,6 +45,7 @@ function AdminProductos() {
   const [showForm, setShowForm] = useState(false);
   const [categories, setCategories] = useState<Category[]>([]);
   const [subcategories, setSubcategories] = useState<Subcategory[]>([]);
+  const [adjusterSrc, setAdjusterSrc] = useState<string | null>(null);
 
   const load = async () => {
     setLoading(true);
