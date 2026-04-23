@@ -364,13 +364,13 @@ function AdminProductos() {
                 <label className="text-xs font-semibold text-navy-deep">Precio (USD)</label>
                 <div className="relative">
                   <span className="absolute left-3 top-1/2 -translate-y-1/2 text-sm font-semibold text-muted-foreground pointer-events-none">$</span>
-                  <input required type="number" step="0.01" min="0" value={form.price === 0 ? "" : form.price} placeholder="0.00" onChange={(e) => setForm({ ...form, price: e.target.value === "" ? 0 : parseFloat(e.target.value) || 0 })} className={inputCls + " pl-7"} />
+                  <input required type="number" step="0.01" min="0" value={form.price === 0 ? "" : form.price} placeholder="0.00" onFocus={(e) => e.target.select()} onChange={(e) => setForm({ ...form, price: e.target.value === "" ? 0 : parseFloat(e.target.value) || 0 })} className={inputCls + " pl-7"} />
                 </div>
               </div>
               <div>
                 <label className="text-xs font-semibold text-navy-deep">Stock</label>
                 <div className="relative">
-                  <input required type="number" min="0" value={form.stock === 0 ? "" : form.stock} placeholder="0" onChange={(e) => setForm({ ...form, stock: e.target.value === "" ? 0 : parseInt(e.target.value) || 0 })} className={inputCls + " pr-12"} />
+                  <input required type="number" min="0" value={form.stock === 0 ? "" : form.stock} placeholder="0" onFocus={(e) => e.target.select()} onChange={(e) => setForm({ ...form, stock: e.target.value === "" ? 0 : parseInt(e.target.value) || 0 })} className={inputCls + " pr-12"} />
                   <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs font-semibold text-muted-foreground pointer-events-none">uds</span>
                 </div>
               </div>
