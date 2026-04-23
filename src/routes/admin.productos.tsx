@@ -83,22 +83,6 @@ function AdminProductos() {
     return data.publicUrl;
   };
 
-  /** Subir directo sin pasar por IA (útil cuando el usuario quiere ajustar manualmente luego) */
-  const handleRawUpload = async (file: File) => {
-    setUploading(true);
-    const toastId = toast.loading("Subiendo imagen…");
-    try {
-      const ext = file.name.split(".").pop() || "png";
-      const url = await uploadBlob(file, ext);
-      setForm((f) => ({ ...f, image_url: url }));
-      toast.success("Imagen subida", { id: toastId });
-    } catch (e: any) {
-      toast.error(e.message, { id: toastId });
-    } finally {
-      setUploading(false);
-    }
-  };
-
   const handleUpload = async (file: File) => {
     setUploading(true);
     const toastId = toast.loading("Procesando imagen con IA (fondo blanco + cuadrado)…");
