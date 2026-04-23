@@ -426,11 +426,35 @@ function AdminProductos() {
                   {form.image_url && <img src={form.image_url} alt="" className="w-20 h-20 rounded-lg object-cover" />}
                   <div className="flex-1">
                     <input value={form.image_url ?? ""} onChange={(e) => setForm({ ...form, image_url: e.target.value })} placeholder="URL de la imagen" className={inputCls + " mb-2"} />
-                    <label className="inline-flex items-center gap-2 px-3 py-2 rounded-lg border border-border cursor-pointer hover:bg-foam text-xs font-semibold text-navy-deep">
-                      {uploading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Upload className="w-4 h-4" />} Subir archivo
-                      <input type="file" accept="image/*" className="hidden" onChange={(e) => e.target.files?.[0] && handleUpload(e.target.files[0])} />
-                    </label>
-                    <p className="text-[11px] text-muted-foreground mt-1.5">✨ Al subir, la IA quita el fondo y centra el producto en cuadrado para que el catálogo se vea uniforme.</p>
+                    <div className="flex flex-wrap gap-2">
+                      <label className="inline-flex items-center gap-2 px-3 py-2 rounded-lg border border-border cursor-pointer hover:bg-foam text-xs font-semibold text-navy-deep">
+                        {uploading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Upload className="w-4 h-4" />} Subir con IA
+                        <input type="file" accept="image/*" className="hidden" onChange={(e) => { const f = e.target.files?.[0]; if (f) handleUpload(f); e.currentTarget.value = ""; }} />
+                      </label>
+                      <label className="inline-flex items-center gap-2 px-3 py-2 rounded-lg border border-border cursor-pointer hover:bg-foam text-xs font-semibold text-navy-deep">
+                        <Crop className="w-4 h-4" /> Ajustar manualmente
+                        <input
+                          type="file"
+                          accept="image/*"
+                          className="hidden"
+                          onChange={(e) => {
+                            const f = e.target.files?.[0];
+                            if (f) setAdjusterSrc(URL.createObjectURL(f));
+                            e.currentTarget.value = "";
+                          }}
+                        />
+                      </label>
+                      {form.image_url && (
+                        <button
+                          type="button"
+                          onClick={() => setAdjusterSrc(form.image_url!)}
+                          className="inline-flex items-center gap-2 px-3 py-2 rounded-lg border border-border hover:bg-foam text-xs font-semibold text-navy-deep"
+                        >
+                          <Crop className="w-4 h-4" /> Reajustar actual
+                        </button>
+                      )}
+                    </div>
+                    <p className="text-[11px] text-muted-foreground mt-1.5">✨ <b>Subir con IA</b>: quita el fondo y centra automáticamente. <b>Ajustar manualmente</b>: tú controlas zoom, encuadre y posición sobre fondo blanco.</p>
                   </div>
                 </div>
               </div>
