@@ -476,6 +476,27 @@ function AdminProductos() {
           </form>
         </div>
       )}
+
+      {adjusterSrc && (
+        <ImageAdjuster
+          src={adjusterSrc}
+          onCancel={() => setAdjusterSrc(null)}
+          onConfirm={async (blob) => {
+            const toastId = toast.loading("Subiendo imagen ajustada…");
+            try {
+              setUploading(true);
+              const url = await uploadBlob(blob, "png");
+              setForm((f) => ({ ...f, image_url: url }));
+              toast.success("Imagen actualizada", { id: toastId });
+              setAdjusterSrc(null);
+            } catch (e: any) {
+              toast.error(e.message, { id: toastId });
+            } finally {
+              setUploading(false);
+            }
+          }}
+        />
+      )}
     </div>
   );
 }
