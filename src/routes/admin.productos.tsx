@@ -364,19 +364,19 @@ function AdminProductos() {
                 <label className="text-xs font-semibold text-navy-deep">Precio (USD)</label>
                 <div className="relative">
                   <span className="absolute left-3 top-1/2 -translate-y-1/2 text-sm font-semibold text-muted-foreground pointer-events-none">$</span>
-                  <input required type="number" step="0.01" min="0" value={form.price} onChange={(e) => setForm({ ...form, price: parseFloat(e.target.value) || 0 })} className={inputCls + " pl-7"} />
+                  <input required type="number" step="0.01" min="0" value={form.price === 0 ? "" : form.price} placeholder="0.00" onFocus={(e) => e.target.select()} onChange={(e) => setForm({ ...form, price: e.target.value === "" ? 0 : parseFloat(e.target.value) || 0 })} className={inputCls + " pl-7"} />
                 </div>
               </div>
               <div>
                 <label className="text-xs font-semibold text-navy-deep">Stock</label>
                 <div className="relative">
-                  <input required type="number" min="0" value={form.stock} onChange={(e) => setForm({ ...form, stock: parseInt(e.target.value) || 0 })} className={inputCls + " pr-12"} />
+                  <input required type="number" min="0" value={form.stock === 0 ? "" : form.stock} placeholder="0" onFocus={(e) => e.target.select()} onChange={(e) => setForm({ ...form, stock: e.target.value === "" ? 0 : parseInt(e.target.value) || 0 })} className={inputCls + " pr-12"} />
                   <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs font-semibold text-muted-foreground pointer-events-none">uds</span>
                 </div>
               </div>
               <div>
                 <label className="text-xs font-semibold text-navy-deep">Presentación</label>
-                <div className="flex gap-2">
+                <div className="relative">
                   <input
                     type="number"
                     step="0.01"
@@ -386,14 +386,14 @@ function AdminProductos() {
                       setForm({ ...form, presentation: formatPresentation(e.target.value, presentationParts.unit) });
                     }}
                     placeholder="25"
-                    className={inputCls}
+                    className={inputCls + " pr-16"}
                   />
                   <select
                     value={presentationParts.unit}
                     onChange={(e) => {
                       setForm({ ...form, presentation: formatPresentation(presentationParts.amount, e.target.value as PresentationUnit) });
                     }}
-                    className={inputCls + " w-24 shrink-0"}
+                    className="absolute right-1 top-1/2 -translate-y-1/2 h-7 px-1.5 pr-5 text-xs font-semibold text-navy-deep bg-foam border border-border rounded-md focus:outline-none focus:border-ocean cursor-pointer"
                   >
                     {PRESENTATION_UNITS.map((unit) => (
                       <option key={unit} value={unit}>{unit}</option>
@@ -432,6 +432,7 @@ function AdminProductos() {
                     onChange={(e) => setForm({ ...form, price_card_3m: e.target.value === "" ? null : parseFloat(e.target.value) })}
                     placeholder="Opcional — total diferido a 3 cuotas"
                     className={inputCls + " pl-7"}
+                    onFocus={(e) => e.target.select()}
                   />
                 </div>
                 <p className="text-[11px] text-muted-foreground mt-1">Si lo dejas vacío no se mostrará el precio diferido.</p>
