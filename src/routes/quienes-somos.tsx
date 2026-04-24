@@ -21,11 +21,11 @@ export const Route = createFileRoute("/quienes-somos")({
 type CompanyImage = { id: string; image_url: string; caption: string | null };
 
 const stats = [
-  { value: "30+", label: "AÑOS DE EXPERIENCIA" },
-  { value: "500+", label: "CLIENTES ATENDIDOS" },
-  { value: "1,200+", label: "HECTÁREAS ASESORADAS" },
+  { value: "5000+", label: "​VENTAS" },
   { value: "50+", label: "PRODUCTOS" },
-  { value: "24/7", label: "SOPORTE TÉCNICO" },
+  { value: "1,200+", label: "HECTÁREAS ASESORADAS" },
+  { value: "30+", label: "​CLIENTES POTENCIALES" },
+  { value: "​", label: "​" },
 ];
 
 const highlights = [
@@ -85,8 +85,8 @@ function QuienesSomosPage() {
             <p className="text-xs font-semibold uppercase tracking-[0.25em] text-ocean mb-4">
               ¿Por qué elegirnos?
             </p>
-            <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold leading-tight mb-4">
-              Más de 30 años en la industria camaronera
+            <h2 className="text-3xl md:text-4xl lg:text-5xl leading-tight mb-4 font-extralight">
+              Compromiso de empresa
             </h2>
             <div className="w-16 h-1 rounded-full bg-ocean mb-6" />
             <p className="text-base md:text-lg text-muted-foreground leading-relaxed mb-8">
@@ -264,7 +264,7 @@ function QuienesSomosPage() {
                 transition={{ duration: 0.4, delay: i * 0.08 }}
               >
                 <div className="text-4xl md:text-5xl font-bold mb-1">{s.value}</div>
-                <div className="text-[11px] md:text-xs font-semibold tracking-widest opacity-90">{s.label}</div>
+                <div className="text-[11px] md:text-xs font-semibold tracking-widest opacity-90 text-justify">{s.label}</div>
               </motion.div>
             ))}
           </div>
