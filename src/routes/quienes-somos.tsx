@@ -21,8 +21,8 @@ export const Route = createFileRoute("/quienes-somos")({
 type CompanyImage = { id: string; image_url: string; caption: string | null };
 
 const stats = [
-  { value: "5000+", label: "​VENTAS" },
-  { value: "50+", label: "PRODUCTOS" },
+   { value: "5000+", label: "​VENTAS EN PRODUCTOS" },
+   { value: "50+", label: "PRODUCTOS Y MARCAS" },
   { value: "1,200+", label: "HECTÁREAS ASESORADAS" },
   { value: "30+", label: "​CLIENTES POTENCIALES" },
 ];
