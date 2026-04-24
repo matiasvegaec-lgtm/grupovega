@@ -9,6 +9,7 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as QuienesSomosRouteImport } from './routes/quienes-somos'
 import { Route as ProductosRouteImport } from './routes/productos'
 import { Route as NotificacionesRouteImport } from './routes/notificaciones'
 import { Route as MisPedidosRouteImport } from './routes/mis-pedidos'
@@ -24,9 +25,15 @@ import { Route as PedidoOrderNumberRouteImport } from './routes/pedido.$orderNum
 import { Route as AdminUsuariosRouteImport } from './routes/admin.usuarios'
 import { Route as AdminProductosRouteImport } from './routes/admin.productos'
 import { Route as AdminPedidosRouteImport } from './routes/admin.pedidos'
+import { Route as AdminGaleriaRouteImport } from './routes/admin.galeria'
 import { Route as AdminClientesRouteImport } from './routes/admin.clientes'
 import { Route as AdminCategoriasRouteImport } from './routes/admin.categorias'
 
+const QuienesSomosRoute = QuienesSomosRouteImport.update({
+  id: '/quienes-somos',
+  path: '/quienes-somos',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ProductosRoute = ProductosRouteImport.update({
   id: '/productos',
   path: '/productos',
@@ -102,6 +109,11 @@ const AdminPedidosRoute = AdminPedidosRouteImport.update({
   path: '/pedidos',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminGaleriaRoute = AdminGaleriaRouteImport.update({
+  id: '/galeria',
+  path: '/galeria',
+  getParentRoute: () => AdminRoute,
+} as any)
 const AdminClientesRoute = AdminClientesRouteImport.update({
   id: '/clientes',
   path: '/clientes',
@@ -124,8 +136,10 @@ export interface FileRoutesByFullPath {
   '/mis-pedidos': typeof MisPedidosRoute
   '/notificaciones': typeof NotificacionesRoute
   '/productos': typeof ProductosRouteWithChildren
+  '/quienes-somos': typeof QuienesSomosRoute
   '/admin/categorias': typeof AdminCategoriasRoute
   '/admin/clientes': typeof AdminClientesRoute
+  '/admin/galeria': typeof AdminGaleriaRoute
   '/admin/pedidos': typeof AdminPedidosRoute
   '/admin/productos': typeof AdminProductosRoute
   '/admin/usuarios': typeof AdminUsuariosRoute
@@ -143,8 +157,10 @@ export interface FileRoutesByTo {
   '/mis-pedidos': typeof MisPedidosRoute
   '/notificaciones': typeof NotificacionesRoute
   '/productos': typeof ProductosRouteWithChildren
+  '/quienes-somos': typeof QuienesSomosRoute
   '/admin/categorias': typeof AdminCategoriasRoute
   '/admin/clientes': typeof AdminClientesRoute
+  '/admin/galeria': typeof AdminGaleriaRoute
   '/admin/pedidos': typeof AdminPedidosRoute
   '/admin/productos': typeof AdminProductosRoute
   '/admin/usuarios': typeof AdminUsuariosRoute
@@ -163,8 +179,10 @@ export interface FileRoutesById {
   '/mis-pedidos': typeof MisPedidosRoute
   '/notificaciones': typeof NotificacionesRoute
   '/productos': typeof ProductosRouteWithChildren
+  '/quienes-somos': typeof QuienesSomosRoute
   '/admin/categorias': typeof AdminCategoriasRoute
   '/admin/clientes': typeof AdminClientesRoute
+  '/admin/galeria': typeof AdminGaleriaRoute
   '/admin/pedidos': typeof AdminPedidosRoute
   '/admin/productos': typeof AdminProductosRoute
   '/admin/usuarios': typeof AdminUsuariosRoute
@@ -184,8 +202,10 @@ export interface FileRouteTypes {
     | '/mis-pedidos'
     | '/notificaciones'
     | '/productos'
+    | '/quienes-somos'
     | '/admin/categorias'
     | '/admin/clientes'
+    | '/admin/galeria'
     | '/admin/pedidos'
     | '/admin/productos'
     | '/admin/usuarios'
@@ -203,8 +223,10 @@ export interface FileRouteTypes {
     | '/mis-pedidos'
     | '/notificaciones'
     | '/productos'
+    | '/quienes-somos'
     | '/admin/categorias'
     | '/admin/clientes'
+    | '/admin/galeria'
     | '/admin/pedidos'
     | '/admin/productos'
     | '/admin/usuarios'
@@ -222,8 +244,10 @@ export interface FileRouteTypes {
     | '/mis-pedidos'
     | '/notificaciones'
     | '/productos'
+    | '/quienes-somos'
     | '/admin/categorias'
     | '/admin/clientes'
+    | '/admin/galeria'
     | '/admin/pedidos'
     | '/admin/productos'
     | '/admin/usuarios'
@@ -242,11 +266,19 @@ export interface RootRouteChildren {
   MisPedidosRoute: typeof MisPedidosRoute
   NotificacionesRoute: typeof NotificacionesRoute
   ProductosRoute: typeof ProductosRouteWithChildren
+  QuienesSomosRoute: typeof QuienesSomosRoute
   PedidoOrderNumberRoute: typeof PedidoOrderNumberRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/quienes-somos': {
+      id: '/quienes-somos'
+      path: '/quienes-somos'
+      fullPath: '/quienes-somos'
+      preLoaderRoute: typeof QuienesSomosRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/productos': {
       id: '/productos'
       path: '/productos'
@@ -352,6 +384,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminPedidosRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/admin/galeria': {
+      id: '/admin/galeria'
+      path: '/galeria'
+      fullPath: '/admin/galeria'
+      preLoaderRoute: typeof AdminGaleriaRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/admin/clientes': {
       id: '/admin/clientes'
       path: '/clientes'
@@ -372,6 +411,7 @@ declare module '@tanstack/react-router' {
 interface AdminRouteChildren {
   AdminCategoriasRoute: typeof AdminCategoriasRoute
   AdminClientesRoute: typeof AdminClientesRoute
+  AdminGaleriaRoute: typeof AdminGaleriaRoute
   AdminPedidosRoute: typeof AdminPedidosRoute
   AdminProductosRoute: typeof AdminProductosRoute
   AdminUsuariosRoute: typeof AdminUsuariosRoute
@@ -380,6 +420,7 @@ interface AdminRouteChildren {
 const AdminRouteChildren: AdminRouteChildren = {
   AdminCategoriasRoute: AdminCategoriasRoute,
   AdminClientesRoute: AdminClientesRoute,
+  AdminGaleriaRoute: AdminGaleriaRoute,
   AdminPedidosRoute: AdminPedidosRoute,
   AdminProductosRoute: AdminProductosRoute,
   AdminUsuariosRoute: AdminUsuariosRoute,
@@ -410,6 +451,7 @@ const rootRouteChildren: RootRouteChildren = {
   MisPedidosRoute: MisPedidosRoute,
   NotificacionesRoute: NotificacionesRoute,
   ProductosRoute: ProductosRouteWithChildren,
+  QuienesSomosRoute: QuienesSomosRoute,
   PedidoOrderNumberRoute: PedidoOrderNumberRoute,
 }
 export const routeTree = rootRouteImport
