@@ -72,8 +72,7 @@ function QuienesSomosPage() {
       />
 
       {/* Sección "¿Por qué elegirnos?" — info izquierda + imagen rotativa derecha */}
-      <section className="py-20 bg-ocean/95 relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-ocean via-ocean to-navy-deep opacity-95" />
+      <section className="py-20 bg-background relative overflow-hidden">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative grid lg:grid-cols-2 gap-12 items-center">
           {/* Columna info */}
           <motion.div
@@ -81,16 +80,16 @@ function QuienesSomosPage() {
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6 }}
-            className="text-white"
+            className="text-navy-deep"
           >
-            <p className="text-xs font-semibold uppercase tracking-[0.25em] text-turquoise mb-4">
+            <p className="text-xs font-semibold uppercase tracking-[0.25em] text-ocean mb-4">
               ¿Por qué elegirnos?
             </p>
             <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold leading-tight mb-4">
               Más de 30 años en la industria camaronera
             </h2>
-            <div className="w-16 h-1 rounded-full bg-turquoise mb-6" />
-            <p className="text-base md:text-lg text-white/85 leading-relaxed mb-8">
+            <div className="w-16 h-1 rounded-full bg-ocean mb-6" />
+            <p className="text-base md:text-lg text-muted-foreground leading-relaxed mb-8">
               Estamos comprometidos en entregar a los acuicultores y a la industria
               productos y herramientas que faciliten los procesos de producción y
               garanticen resultados eficientes.
@@ -108,12 +107,12 @@ function QuienesSomosPage() {
                     transition={{ duration: 0.4, delay: 0.15 + i * 0.08 }}
                     className="flex gap-3"
                   >
-                    <div className="flex-shrink-0 w-11 h-11 rounded-xl border border-white/30 flex items-center justify-center bg-white/5 backdrop-blur-sm">
-                      <Icon className="w-5 h-5 text-turquoise" />
+                    <div className="flex-shrink-0 w-11 h-11 rounded-xl border border-border flex items-center justify-center bg-foam">
+                      <Icon className="w-5 h-5 text-ocean" />
                     </div>
                     <div>
-                      <h3 className="font-semibold text-white text-sm md:text-base mb-1">{h.title}</h3>
-                      <p className="text-xs md:text-sm text-white/70 leading-relaxed">{h.text}</p>
+                      <h3 className="font-semibold text-navy-deep text-sm md:text-base mb-1">{h.title}</h3>
+                      <p className="text-xs md:text-sm text-muted-foreground leading-relaxed">{h.text}</p>
                     </div>
                   </motion.div>
                 );
@@ -129,7 +128,7 @@ function QuienesSomosPage() {
             transition={{ duration: 0.6 }}
             className="relative"
           >
-            <div className="relative aspect-[4/5] md:aspect-[4/4] rounded-3xl overflow-hidden shadow-elegant ring-1 ring-white/20 bg-navy-deep/40">
+            <div className="relative aspect-[4/5] md:aspect-[4/4] rounded-3xl overflow-hidden shadow-elegant ring-1 ring-border bg-foam">
               {activeImage ? (
                 <AnimatePresence mode="wait">
                   <motion.img
@@ -144,10 +143,10 @@ function QuienesSomosPage() {
                   />
                 </AnimatePresence>
               ) : (
-                <div className="absolute inset-0 flex items-center justify-center text-white/60 text-sm border-2 border-dashed border-white/20 m-4 rounded-2xl">
+                <div className="absolute inset-0 flex items-center justify-center text-muted-foreground text-sm border-2 border-dashed border-border m-4 rounded-2xl">
                   <div className="text-center px-6">
                     <p>Sube imágenes desde el panel administrativo</p>
-                    <p className="text-xs mt-2 text-white/40">(Galería)</p>
+                    <p className="text-xs mt-2 opacity-60">(Galería)</p>
                   </div>
                 </div>
               )}
@@ -168,7 +167,7 @@ function QuienesSomosPage() {
                     onClick={() => setActiveIdx(idx)}
                     aria-label={`Ver imagen ${idx + 1}`}
                     className={`h-1.5 rounded-full transition-all duration-300 ${
-                      idx === activeIdx ? "w-8 bg-turquoise" : "w-1.5 bg-white/30 hover:bg-white/50"
+                      idx === activeIdx ? "w-8 bg-ocean" : "w-1.5 bg-border hover:bg-muted-foreground/40"
                     }`}
                   />
                 ))}
