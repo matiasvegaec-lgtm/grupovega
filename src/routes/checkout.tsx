@@ -460,7 +460,7 @@ function CheckoutPage() {
               </label>
               <button
                 type="submit"
-                disabled={submitting || method === "card" || step !== STEPS.length - 1}
+                disabled={submitting || step !== STEPS.length - 1}
                 className="mt-6 w-full inline-flex items-center justify-center gap-2 px-6 py-3 rounded-full gradient-wave text-white font-semibold shadow-glow hover:scale-[1.02] transition-transform disabled:opacity-60 disabled:cursor-not-allowed"
                 title={step !== STEPS.length - 1 ? "Completa los pasos anteriores" : ""}
               >
@@ -472,6 +472,10 @@ function CheckoutPage() {
                   <><Send className="w-4 h-4" /> Confirmar y enviar comprobante</>
                 ) : method === "cash" ? (
                   <><Banknote className="w-4 h-4" /> Confirmar pedido</>
+                ) : method === "card" ? (
+                  <><CreditCard className="w-4 h-4" /> Confirmar y recibir link de pago</>
+                ) : method === "quote" ? (
+                  <><FileText className="w-4 h-4" /> Generar cotización</>
                 ) : (
                   <><Lock className="w-4 h-4" /> Próximamente</>
                 )}
