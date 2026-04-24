@@ -9,6 +9,7 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as QuienesSomosRouteImport } from './routes/quienes-somos'
 import { Route as ProductosRouteImport } from './routes/productos'
 import { Route as NotificacionesRouteImport } from './routes/notificaciones'
 import { Route as MisPedidosRouteImport } from './routes/mis-pedidos'
@@ -27,6 +28,11 @@ import { Route as AdminPedidosRouteImport } from './routes/admin.pedidos'
 import { Route as AdminClientesRouteImport } from './routes/admin.clientes'
 import { Route as AdminCategoriasRouteImport } from './routes/admin.categorias'
 
+const QuienesSomosRoute = QuienesSomosRouteImport.update({
+  id: '/quienes-somos',
+  path: '/quienes-somos',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ProductosRoute = ProductosRouteImport.update({
   id: '/productos',
   path: '/productos',
@@ -124,6 +130,7 @@ export interface FileRoutesByFullPath {
   '/mis-pedidos': typeof MisPedidosRoute
   '/notificaciones': typeof NotificacionesRoute
   '/productos': typeof ProductosRouteWithChildren
+  '/quienes-somos': typeof QuienesSomosRoute
   '/admin/categorias': typeof AdminCategoriasRoute
   '/admin/clientes': typeof AdminClientesRoute
   '/admin/pedidos': typeof AdminPedidosRoute
@@ -143,6 +150,7 @@ export interface FileRoutesByTo {
   '/mis-pedidos': typeof MisPedidosRoute
   '/notificaciones': typeof NotificacionesRoute
   '/productos': typeof ProductosRouteWithChildren
+  '/quienes-somos': typeof QuienesSomosRoute
   '/admin/categorias': typeof AdminCategoriasRoute
   '/admin/clientes': typeof AdminClientesRoute
   '/admin/pedidos': typeof AdminPedidosRoute
@@ -163,6 +171,7 @@ export interface FileRoutesById {
   '/mis-pedidos': typeof MisPedidosRoute
   '/notificaciones': typeof NotificacionesRoute
   '/productos': typeof ProductosRouteWithChildren
+  '/quienes-somos': typeof QuienesSomosRoute
   '/admin/categorias': typeof AdminCategoriasRoute
   '/admin/clientes': typeof AdminClientesRoute
   '/admin/pedidos': typeof AdminPedidosRoute
@@ -184,6 +193,7 @@ export interface FileRouteTypes {
     | '/mis-pedidos'
     | '/notificaciones'
     | '/productos'
+    | '/quienes-somos'
     | '/admin/categorias'
     | '/admin/clientes'
     | '/admin/pedidos'
@@ -203,6 +213,7 @@ export interface FileRouteTypes {
     | '/mis-pedidos'
     | '/notificaciones'
     | '/productos'
+    | '/quienes-somos'
     | '/admin/categorias'
     | '/admin/clientes'
     | '/admin/pedidos'
@@ -222,6 +233,7 @@ export interface FileRouteTypes {
     | '/mis-pedidos'
     | '/notificaciones'
     | '/productos'
+    | '/quienes-somos'
     | '/admin/categorias'
     | '/admin/clientes'
     | '/admin/pedidos'
@@ -242,11 +254,19 @@ export interface RootRouteChildren {
   MisPedidosRoute: typeof MisPedidosRoute
   NotificacionesRoute: typeof NotificacionesRoute
   ProductosRoute: typeof ProductosRouteWithChildren
+  QuienesSomosRoute: typeof QuienesSomosRoute
   PedidoOrderNumberRoute: typeof PedidoOrderNumberRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/quienes-somos': {
+      id: '/quienes-somos'
+      path: '/quienes-somos'
+      fullPath: '/quienes-somos'
+      preLoaderRoute: typeof QuienesSomosRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/productos': {
       id: '/productos'
       path: '/productos'
@@ -410,6 +430,7 @@ const rootRouteChildren: RootRouteChildren = {
   MisPedidosRoute: MisPedidosRoute,
   NotificacionesRoute: NotificacionesRoute,
   ProductosRoute: ProductosRouteWithChildren,
+  QuienesSomosRoute: QuienesSomosRoute,
   PedidoOrderNumberRoute: PedidoOrderNumberRoute,
 }
 export const routeTree = rootRouteImport

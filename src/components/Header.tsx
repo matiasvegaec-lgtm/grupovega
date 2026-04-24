@@ -19,6 +19,7 @@ import {
 const links = [
   { to: "/", label: "Inicio" },
   { to: "/productos", label: "Productos" },
+  { to: "/quienes-somos", label: "Quiénes Somos" },
   { to: "/contacto", label: "Contacto" },
 ] as const;
 
