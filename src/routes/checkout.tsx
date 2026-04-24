@@ -1,6 +1,6 @@
 import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
 import { useState, FormEvent, useEffect } from "react";
-import { Loader2, CreditCard, ShoppingBag, Building2, Banknote, Send, Lock, Clock, ChevronLeft, ChevronRight, Check, User, MapPin, Wallet } from "lucide-react";
+import { Loader2, CreditCard, ShoppingBag, Building2, Banknote, Send, Lock, Clock, ChevronLeft, ChevronRight, Check, User, MapPin, Wallet, FileText } from "lucide-react";
 import { Layout } from "@/components/Layout";
 import { PageHero } from "@/components/PageHero";
 import { useCart } from "@/contexts/CartContext";
@@ -32,7 +32,7 @@ const BANCO_DEMO = {
   correo: "pagos@grupovega.com",
 };
 
-type PayMethod = "card" | "transfer" | "cash";
+type PayMethod = "card" | "transfer" | "cash" | "quote";
 
 const CUSTOMER_STORAGE_KEY = "gv_customer_data_v1";
 
@@ -120,9 +120,14 @@ function CheckoutPage() {
 
   const buildOrderSummaryText = (orderNumber: string) => {
     const itemsList = items.map((i) => `• ${i.name} x${i.quantity} — $${(i.price * i.quantity).toFixed(2)}`).join("\n");
-    const metodoLabel = method === "card" ? "Tarjeta (PlaceToPay)" : method === "transfer" ? "Transferencia bancaria" : "Efectivo en sucursal";
+    const metodoLabel =
+      method === "card" ? "Tarjeta (PlaceToPay)"
+      : method === "transfer" ? "Transferencia bancaria"
+      : method === "cash" ? "Efectivo en sucursal"
+      : "Solicitud de cotización";
+    const tipoDoc = method === "quote" ? "📄 *Cotización*" : "🧾 *Factura / Pedido*";
     return (
-      `🛒 *Pedido ${orderNumber}*\n\n` +
+      `${tipoDoc} ${orderNumber}\n\n` +
       `👤 ${form.customer_name}\n📧 ${form.customer_email}\n📞 ${form.customer_phone}\n🆔 RUC: ${form.customer_ruc}\n` +
       `📦 Recibe: ${form.receiver_name}\n🏝️ Camaronera: ${form.farm_name}\n📍 Ref: ${form.reference}\n\n` +
       `${itemsList}\n\n💰 *Total: $${subtotal.toFixed(2)}*\n💳 Pago: ${metodoLabel}`
@@ -138,16 +143,12 @@ function CheckoutPage() {
     // Validar todos los pasos antes de enviar
     if (!validateStep(0)) { setStep(0); return; }
     if (!validateStep(1)) { setStep(1); return; }
-    if (method === "card") {
-      toast.info("El pago con tarjeta estará disponible muy pronto. Elige otro método.");
-      return;
-    }
     // Abrir ventana de WhatsApp ANTES del await para evitar bloqueo de popups
     const waWindow = window.open("about:blank", "_blank");
     setSubmitting(true);
     try {
       const shippingAddress = `${form.farm_name} — Ref: ${form.reference}`;
-      const status = method === "transfer" ? "pending" : "pending";
+      const status = method === "quote" ? "quote" : "pending";
       const notes = `Método: ${method}. Recibe: ${form.receiver_name}. RUC: ${form.customer_ruc}. ${form.shipping_notes || ""}`.trim();
 
       const { data, error } = await supabase
@@ -189,13 +190,16 @@ function CheckoutPage() {
 
       if (method === "transfer") {
         toast.success("Pedido registrado. Envía el comprobante por WhatsApp.");
-        if (waWindow) waWindow.location.href = waUrl;
-        else window.open(waUrl, "_blank");
       } else if (method === "cash") {
         toast.success("Pedido registrado. Pasa por la sucursal a pagar y retirar.");
-        if (waWindow) waWindow.location.href = waUrl;
-        else window.open(waUrl, "_blank");
+      } else if (method === "card") {
+        toast.success("Pedido registrado. Te enviamos los datos por WhatsApp para confirmar el pago con tarjeta.");
+      } else if (method === "quote") {
+        toast.success("Cotización enviada. Pronto te contactaremos por WhatsApp.");
       }
+      // En todos los casos, abrir WhatsApp con el resumen para la empresa
+      if (waWindow) waWindow.location.href = waUrl;
+      else window.open(waUrl, "_blank");
 
       navigate({ to: "/pedido/$orderNumber", params: { orderNumber } });
     } catch (err: any) {
@@ -326,12 +330,18 @@ function CheckoutPage() {
                 <h3 className="font-bold text-navy-deep text-lg mb-4">Método de pago</h3>
                 <div className="grid gap-3">
                   <MethodOption
+                    icon={<FileText className="w-5 h-5" />}
+                    title="Generar cotización"
+                    subtitle="Recibe una cotización formal por WhatsApp sin compromiso de compra"
+                    selected={method === "quote"}
+                    onClick={() => setMethod("quote")}
+                  />
+                  <MethodOption
                     icon={<CreditCard className="w-5 h-5" />}
                     title="Tarjeta de crédito o débito"
-                    subtitle="PlaceToPay — próximamente"
+                    subtitle="Te enviamos el link de pago por WhatsApp para completar la transacción"
                     selected={method === "card"}
                     onClick={() => setMethod("card")}
-                    disabled
                   />
                   <MethodOption
                     icon={<Building2 className="w-5 h-5" />}
@@ -375,8 +385,21 @@ function CheckoutPage() {
                   </div>
                 )}
                 {method === "card" && (
-                  <div className="mt-5 p-4 rounded-xl bg-muted border border-border text-sm text-muted-foreground">
-                    Estamos integrando <strong className="text-navy-deep">PlaceToPay</strong> para aceptar tarjetas. Mientras tanto, elige transferencia o efectivo.
+                  <div className="mt-5 p-4 rounded-xl bg-foam border border-border space-y-2 text-sm">
+                    <p className="font-semibold text-navy-deep">Pago con tarjeta:</p>
+                    <p className="text-muted-foreground">Al confirmar, enviaremos los datos completos de tu factura por WhatsApp a la empresa. Te responderemos con el link seguro de pago para que completes la transacción con tu tarjeta de crédito o débito.</p>
+                    <p className="text-xs text-ocean flex items-center gap-2 pt-2">
+                      <Send className="w-3.5 h-3.5" /> Procesamiento seguro mediante pasarela de pagos.
+                    </p>
+                  </div>
+                )}
+                {method === "quote" && (
+                  <div className="mt-5 p-4 rounded-xl bg-foam border border-border space-y-2 text-sm">
+                    <p className="font-semibold text-navy-deep">Solicitud de cotización:</p>
+                    <p className="text-muted-foreground">Al confirmar, te generamos una cotización formal con todos los productos seleccionados y la enviamos a la empresa por WhatsApp. Un asesor te contactará para finalizar los detalles, sin compromiso de compra.</p>
+                    <p className="text-xs text-ocean flex items-center gap-2 pt-2">
+                      <Send className="w-3.5 h-3.5" /> Atención personalizada para tu camaronera.
+                    </p>
                   </div>
                 )}
               </div>
@@ -437,7 +460,7 @@ function CheckoutPage() {
               </label>
               <button
                 type="submit"
-                disabled={submitting || method === "card" || step !== STEPS.length - 1}
+                disabled={submitting || step !== STEPS.length - 1}
                 className="mt-6 w-full inline-flex items-center justify-center gap-2 px-6 py-3 rounded-full gradient-wave text-white font-semibold shadow-glow hover:scale-[1.02] transition-transform disabled:opacity-60 disabled:cursor-not-allowed"
                 title={step !== STEPS.length - 1 ? "Completa los pasos anteriores" : ""}
               >
@@ -449,6 +472,10 @@ function CheckoutPage() {
                   <><Send className="w-4 h-4" /> Confirmar y enviar comprobante</>
                 ) : method === "cash" ? (
                   <><Banknote className="w-4 h-4" /> Confirmar pedido</>
+                ) : method === "card" ? (
+                  <><CreditCard className="w-4 h-4" /> Confirmar y recibir link de pago</>
+                ) : method === "quote" ? (
+                  <><FileText className="w-4 h-4" /> Generar cotización</>
                 ) : (
                   <><Lock className="w-4 h-4" /> Próximamente</>
                 )}
