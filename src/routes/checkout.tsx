@@ -1,6 +1,6 @@
 import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
 import { useState, FormEvent, useEffect } from "react";
-import { Loader2, CreditCard, ShoppingBag, Building2, Banknote, Send, Lock, Clock, ChevronLeft, ChevronRight, Check, User, MapPin, Wallet } from "lucide-react";
+import { Loader2, CreditCard, ShoppingBag, Building2, Banknote, Send, Lock, Clock, ChevronLeft, ChevronRight, Check, User, MapPin, Wallet, FileText } from "lucide-react";
 import { Layout } from "@/components/Layout";
 import { PageHero } from "@/components/PageHero";
 import { useCart } from "@/contexts/CartContext";
@@ -32,7 +32,7 @@ const BANCO_DEMO = {
   correo: "pagos@grupovega.com",
 };
 
-type PayMethod = "card" | "transfer" | "cash";
+type PayMethod = "card" | "transfer" | "cash" | "quote";
 
 const CUSTOMER_STORAGE_KEY = "gv_customer_data_v1";
 
@@ -120,9 +120,14 @@ function CheckoutPage() {
 
   const buildOrderSummaryText = (orderNumber: string) => {
     const itemsList = items.map((i) => `• ${i.name} x${i.quantity} — $${(i.price * i.quantity).toFixed(2)}`).join("\n");
-    const metodoLabel = method === "card" ? "Tarjeta (PlaceToPay)" : method === "transfer" ? "Transferencia bancaria" : "Efectivo en sucursal";
+    const metodoLabel =
+      method === "card" ? "Tarjeta (PlaceToPay)"
+      : method === "transfer" ? "Transferencia bancaria"
+      : method === "cash" ? "Efectivo en sucursal"
+      : "Solicitud de cotización";
+    const tipoDoc = method === "quote" ? "📄 *Cotización*" : "🧾 *Factura / Pedido*";
     return (
-      `🛒 *Pedido ${orderNumber}*\n\n` +
+      `${tipoDoc} ${orderNumber}\n\n` +
       `👤 ${form.customer_name}\n📧 ${form.customer_email}\n📞 ${form.customer_phone}\n🆔 RUC: ${form.customer_ruc}\n` +
       `📦 Recibe: ${form.receiver_name}\n🏝️ Camaronera: ${form.farm_name}\n📍 Ref: ${form.reference}\n\n` +
       `${itemsList}\n\n💰 *Total: $${subtotal.toFixed(2)}*\n💳 Pago: ${metodoLabel}`
@@ -138,16 +143,12 @@ function CheckoutPage() {
     // Validar todos los pasos antes de enviar
     if (!validateStep(0)) { setStep(0); return; }
     if (!validateStep(1)) { setStep(1); return; }
-    if (method === "card") {
-      toast.info("El pago con tarjeta estará disponible muy pronto. Elige otro método.");
-      return;
-    }
     // Abrir ventana de WhatsApp ANTES del await para evitar bloqueo de popups
     const waWindow = window.open("about:blank", "_blank");
     setSubmitting(true);
     try {
       const shippingAddress = `${form.farm_name} — Ref: ${form.reference}`;
-      const status = method === "transfer" ? "pending" : "pending";
+      const status = method === "quote" ? "quote" : "pending";
       const notes = `Método: ${method}. Recibe: ${form.receiver_name}. RUC: ${form.customer_ruc}. ${form.shipping_notes || ""}`.trim();
 
       const { data, error } = await supabase
@@ -189,13 +190,16 @@ function CheckoutPage() {
 
       if (method === "transfer") {
         toast.success("Pedido registrado. Envía el comprobante por WhatsApp.");
-        if (waWindow) waWindow.location.href = waUrl;
-        else window.open(waUrl, "_blank");
       } else if (method === "cash") {
         toast.success("Pedido registrado. Pasa por la sucursal a pagar y retirar.");
-        if (waWindow) waWindow.location.href = waUrl;
-        else window.open(waUrl, "_blank");
+      } else if (method === "card") {
+        toast.success("Pedido registrado. Te enviamos los datos por WhatsApp para confirmar el pago con tarjeta.");
+      } else if (method === "quote") {
+        toast.success("Cotización enviada. Pronto te contactaremos por WhatsApp.");
       }
+      // En todos los casos, abrir WhatsApp con el resumen para la empresa
+      if (waWindow) waWindow.location.href = waUrl;
+      else window.open(waUrl, "_blank");
 
       navigate({ to: "/pedido/$orderNumber", params: { orderNumber } });
     } catch (err: any) {
