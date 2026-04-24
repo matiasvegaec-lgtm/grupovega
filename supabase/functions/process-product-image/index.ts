@@ -45,7 +45,7 @@ Deno.serve(async (req) => {
             content: [
               {
                 type: "text",
-                text: "Remove the background completely and replace it with a clean solid pure white (#FFFFFF) background. Center the product perfectly in a square 1:1 composition with consistent padding around it (about 8% margin on all sides). Keep the product perfectly intact, sharp, well lit, with natural shadows. Do not add any text, logos, decorations, watermarks or extra objects. Output only the processed product photo.",
+                text: "Remove the background completely so the result has a fully TRANSPARENT background (alpha channel, no white, no color, no checkerboard). Keep ONLY the product, perfectly cut out with clean smooth edges (no white halo or fringe). Center the product in a square 1:1 composition with about 8% padding on all sides. Preserve the product intact, sharp and well lit, including its natural soft shadow if any. Do not add any text, logos, decorations, watermarks, borders or extra objects. Output a transparent PNG with only the product visible.",
               },
               {
                 type: "image_url",
