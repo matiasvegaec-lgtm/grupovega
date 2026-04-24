@@ -25,7 +25,6 @@ const stats = [
   { value: "50+", label: "PRODUCTOS" },
   { value: "1,200+", label: "HECTÁREAS ASESORADAS" },
   { value: "30+", label: "​CLIENTES POTENCIALES" },
-  { value: "​", label: "​" },
 ];
 
 const highlights = [
@@ -254,7 +253,7 @@ function QuienesSomosPage() {
       {/* Stats */}
       <section className="py-16 gradient-wave">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-2 md:grid-cols-5 gap-8 text-center text-white">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center text-white max-w-5xl mx-auto justify-items-center">
             {stats.map((s, i) => (
               <motion.div
                 key={s.label}
