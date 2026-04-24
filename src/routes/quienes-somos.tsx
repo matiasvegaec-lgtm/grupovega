@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
-import { motion } from "framer-motion";
-import { Leaf, ShieldCheck, Target, Layers, Globe2 } from "lucide-react";
+import { useEffect, useMemo, useState } from "react";
+import { AnimatePresence, motion } from "framer-motion";
+import { Leaf, ShieldCheck, Target, Layers, Globe2, Award, Users, Sparkles, Anchor } from "lucide-react";
 import { Layout } from "@/components/Layout";
 import { PageHero } from "@/components/PageHero";
 import { supabase } from "@/integrations/supabase/client";
@@ -28,8 +28,16 @@ const stats = [
   { value: "24/7", label: "SOPORTE TÉCNICO" },
 ];
 
+const highlights = [
+  { icon: Award, title: "Calidad certificada", text: "Procesos auditados y mejora continua en cada lote." },
+  { icon: Users, title: "Equipo técnico", text: "Profesionales con experiencia en cultivos camaroneros." },
+  { icon: Sparkles, title: "Innovación constante", text: "Probióticos, minerales y tecnología de punta." },
+  { icon: Anchor, title: "Cobertura nacional", text: "Distribuimos a las principales zonas camaroneras." },
+];
+
 function QuienesSomosPage() {
   const [images, setImages] = useState<CompanyImage[]>([]);
+  const [activeIdx, setActiveIdx] = useState(0);
 
   useEffect(() => {
     let mounted = true;
@@ -44,8 +52,16 @@ function QuienesSomosPage() {
     return () => { mounted = false; };
   }, []);
 
-  // Duplicamos para loop continuo
-  const carouselImages = images.length > 0 ? [...images, ...images] : [];
+  // Auto-rotación de imagen cada 4.5s
+  useEffect(() => {
+    if (images.length <= 1) return;
+    const interval = setInterval(() => {
+      setActiveIdx((prev) => (prev + 1) % images.length);
+    }, 4500);
+    return () => clearInterval(interval);
+  }, [images.length]);
+
+  const activeImage = useMemo(() => images[activeIdx], [images, activeIdx]);
 
   return (
     <Layout>
@@ -55,44 +71,111 @@ function QuienesSomosPage() {
         description="Somos Grupo Vega: insumos, asesoría técnica y tecnología para que tu camaronera produzca más y mejor."
       />
 
-      {/* Carrusel automático */}
-      <section className="py-16 bg-background overflow-hidden">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8 mb-10 text-center">
-          <p className="text-sm font-semibold uppercase tracking-widest text-ocean mb-3">Nuestra empresa</p>
-          <h2 className="text-3xl md:text-4xl font-bold text-navy-deep">Momentos que nos definen</h2>
-        </div>
+      {/* Sección "¿Por qué elegirnos?" — info izquierda + imagen rotativa derecha */}
+      <section className="py-20 bg-ocean/95 relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-br from-ocean via-ocean to-navy-deep opacity-95" />
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative grid lg:grid-cols-2 gap-12 items-center">
+          {/* Columna info */}
+          <motion.div
+            initial={{ opacity: 0, x: -30 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+            className="text-white"
+          >
+            <p className="text-xs font-semibold uppercase tracking-[0.25em] text-turquoise mb-4">
+              ¿Por qué elegirnos?
+            </p>
+            <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold leading-tight mb-4">
+              Más de 30 años en la industria camaronera
+            </h2>
+            <div className="w-16 h-1 rounded-full bg-turquoise mb-6" />
+            <p className="text-base md:text-lg text-white/85 leading-relaxed mb-8">
+              Estamos comprometidos en entregar a los acuicultores y a la industria
+              productos y herramientas que faciliten los procesos de producción y
+              garanticen resultados eficientes.
+            </p>
 
-        {carouselImages.length > 0 ? (
-          <div className="relative">
-            <div className="flex gap-6 animate-marquee w-max">
-              {carouselImages.map((img, idx) => (
-                <figure
-                  key={`${img.id}-${idx}`}
-                  className="w-[280px] md:w-[380px] aspect-[4/3] rounded-3xl overflow-hidden shadow-elegant ring-1 ring-border bg-card flex-shrink-0 relative group"
-                >
-                  <img
-                    src={img.image_url}
-                    alt={img.caption ?? "Grupo Vega"}
-                    loading="lazy"
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+            <div className="grid sm:grid-cols-2 gap-x-6 gap-y-6">
+              {highlights.map((h, i) => {
+                const Icon = h.icon;
+                return (
+                  <motion.div
+                    key={h.title}
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.4, delay: 0.15 + i * 0.08 }}
+                    className="flex gap-3"
+                  >
+                    <div className="flex-shrink-0 w-11 h-11 rounded-xl border border-white/30 flex items-center justify-center bg-white/5 backdrop-blur-sm">
+                      <Icon className="w-5 h-5 text-turquoise" />
+                    </div>
+                    <div>
+                      <h3 className="font-semibold text-white text-sm md:text-base mb-1">{h.title}</h3>
+                      <p className="text-xs md:text-sm text-white/70 leading-relaxed">{h.text}</p>
+                    </div>
+                  </motion.div>
+                );
+              })}
+            </div>
+          </motion.div>
+
+          {/* Columna imagen rotativa */}
+          <motion.div
+            initial={{ opacity: 0, x: 30 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+            className="relative"
+          >
+            <div className="relative aspect-[4/5] md:aspect-[4/4] rounded-3xl overflow-hidden shadow-elegant ring-1 ring-white/20 bg-navy-deep/40">
+              {activeImage ? (
+                <AnimatePresence mode="wait">
+                  <motion.img
+                    key={activeImage.id}
+                    src={activeImage.image_url}
+                    alt={activeImage.caption ?? "Grupo Vega"}
+                    initial={{ opacity: 0, scale: 1.05 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.98 }}
+                    transition={{ duration: 0.9, ease: "easeInOut" }}
+                    className="absolute inset-0 w-full h-full object-cover"
                   />
-                  {img.caption && (
-                    <figcaption className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-navy-deep/90 to-transparent text-white text-sm font-medium p-4">
-                      {img.caption}
-                    </figcaption>
-                  )}
-                </figure>
-              ))}
+                </AnimatePresence>
+              ) : (
+                <div className="absolute inset-0 flex items-center justify-center text-white/60 text-sm border-2 border-dashed border-white/20 m-4 rounded-2xl">
+                  <div className="text-center px-6">
+                    <p>Sube imágenes desde el panel administrativo</p>
+                    <p className="text-xs mt-2 text-white/40">(Galería)</p>
+                  </div>
+                </div>
+              )}
+
+              {activeImage?.caption && (
+                <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-navy-deep/95 via-navy-deep/60 to-transparent p-5">
+                  <p className="text-white text-sm md:text-base font-medium">{activeImage.caption}</p>
+                </div>
+              )}
             </div>
-          </div>
-        ) : (
-          <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="rounded-3xl border-2 border-dashed border-border p-12 text-center text-muted-foreground">
-              <p className="text-sm">Aún no hay imágenes en el carrusel.</p>
-              <p className="text-xs mt-2">Sube fotos desde el panel administrativo.</p>
-            </div>
-          </div>
-        )}
+
+            {/* Indicadores */}
+            {images.length > 1 && (
+              <div className="flex justify-center gap-2 mt-5">
+                {images.map((_, idx) => (
+                  <button
+                    key={idx}
+                    onClick={() => setActiveIdx(idx)}
+                    aria-label={`Ver imagen ${idx + 1}`}
+                    className={`h-1.5 rounded-full transition-all duration-300 ${
+                      idx === activeIdx ? "w-8 bg-turquoise" : "w-1.5 bg-white/30 hover:bg-white/50"
+                    }`}
+                  />
+                ))}
+              </div>
+            )}
+          </motion.div>
+        </div>
       </section>
 
       {/* Principios, Política, Objetivos */}
