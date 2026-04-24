@@ -30,6 +30,9 @@ function AuthPage() {
   const [password, setPassword] = useState("");
   const [submitting, setSubmitting] = useState(false);
 
+  // Mostrar Google solo en el flujo de acceso administrativo
+  const isAdminFlow = (redirect ?? "").startsWith("/admin");
+
   useEffect(() => {
     if (loading || !user) return;
     if (redirect) {
@@ -99,7 +102,9 @@ function AuthPage() {
               {isLogin ? "Accede con tu correo o con Google" : "Regístrate para comprar y guardar favoritos"}
             </p>
 
-            {/* Google */}
+            {/* Google — solo en el flujo administrativo */}
+            {isAdminFlow && (
+              <>
             <button
               type="button"
               onClick={handleGoogle}
@@ -114,6 +119,8 @@ function AuthPage() {
             <div className="flex items-center gap-3 text-xs text-muted-foreground my-5">
               <div className="flex-1 h-px bg-border" /> o con tu correo <div className="flex-1 h-px bg-border" />
             </div>
+              </>
+            )}
 
             {/* Email/password form */}
             <form onSubmit={handleEmailSubmit} className="space-y-3">
