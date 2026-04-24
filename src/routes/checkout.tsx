@@ -330,12 +330,18 @@ function CheckoutPage() {
                 <h3 className="font-bold text-navy-deep text-lg mb-4">Método de pago</h3>
                 <div className="grid gap-3">
                   <MethodOption
+                    icon={<FileText className="w-5 h-5" />}
+                    title="Generar cotización"
+                    subtitle="Recibe una cotización formal por WhatsApp sin compromiso de compra"
+                    selected={method === "quote"}
+                    onClick={() => setMethod("quote")}
+                  />
+                  <MethodOption
                     icon={<CreditCard className="w-5 h-5" />}
                     title="Tarjeta de crédito o débito"
-                    subtitle="PlaceToPay — próximamente"
+                    subtitle="Te enviamos el link de pago por WhatsApp para completar la transacción"
                     selected={method === "card"}
                     onClick={() => setMethod("card")}
-                    disabled
                   />
                   <MethodOption
                     icon={<Building2 className="w-5 h-5" />}
@@ -379,8 +385,21 @@ function CheckoutPage() {
                   </div>
                 )}
                 {method === "card" && (
-                  <div className="mt-5 p-4 rounded-xl bg-muted border border-border text-sm text-muted-foreground">
-                    Estamos integrando <strong className="text-navy-deep">PlaceToPay</strong> para aceptar tarjetas. Mientras tanto, elige transferencia o efectivo.
+                  <div className="mt-5 p-4 rounded-xl bg-foam border border-border space-y-2 text-sm">
+                    <p className="font-semibold text-navy-deep">Pago con tarjeta:</p>
+                    <p className="text-muted-foreground">Al confirmar, enviaremos los datos completos de tu factura por WhatsApp a la empresa. Te responderemos con el link seguro de pago para que completes la transacción con tu tarjeta de crédito o débito.</p>
+                    <p className="text-xs text-ocean flex items-center gap-2 pt-2">
+                      <Send className="w-3.5 h-3.5" /> Procesamiento seguro mediante pasarela de pagos.
+                    </p>
+                  </div>
+                )}
+                {method === "quote" && (
+                  <div className="mt-5 p-4 rounded-xl bg-foam border border-border space-y-2 text-sm">
+                    <p className="font-semibold text-navy-deep">Solicitud de cotización:</p>
+                    <p className="text-muted-foreground">Al confirmar, te generamos una cotización formal con todos los productos seleccionados y la enviamos a la empresa por WhatsApp. Un asesor te contactará para finalizar los detalles, sin compromiso de compra.</p>
+                    <p className="text-xs text-ocean flex items-center gap-2 pt-2">
+                      <Send className="w-3.5 h-3.5" /> Atención personalizada para tu camaronera.
+                    </p>
                   </div>
                 )}
               </div>
