@@ -274,7 +274,7 @@ function Index() {
               Descubre nuestro catálogo organizado por categorías para encontrar exactamente lo que tu camaronera necesita.
             </p>
           </div>
-          {/* Desktop: grid */}
+          {/* Desktop: grid 4 columnas */}
           <div className="hidden lg:grid grid-cols-4 gap-6 max-w-6xl mx-auto">
             {categories.map((c, i) => (
               <motion.div
@@ -304,8 +304,34 @@ function Index() {
             ))}
           </div>
 
-          {/* Mobile / Tablet: carrusel centrado con item activo destacado por opacidad */}
-          <div className="lg:hidden max-w-md mx-auto px-2">
+          {/* Tablet: grid 2 columnas para aprovechar el ancho */}
+          <div className="hidden md:grid lg:hidden grid-cols-2 gap-6 max-w-3xl mx-auto">
+            {categories.map((c, i) => (
+              <motion.div
+                key={c.name}
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: i * 0.08 }}
+                className="group relative"
+              >
+                <Link to="/productos" search={{ categoria: c.categoria }} className="block h-full">
+                  <div className="absolute -inset-0.5 gradient-wave rounded-2xl opacity-0 group-hover:opacity-60 blur transition duration-500" />
+                  <div className="relative h-full bg-card border border-border rounded-2xl p-6 flex flex-col items-center text-center hover:border-ocean transition-all duration-300 group-hover:-translate-y-2 group-hover:shadow-elegant overflow-hidden">
+                    <div className="relative w-20 h-20 rounded-2xl gradient-wave flex items-center justify-center shadow-glow mb-4">
+                      <c.icon className="w-10 h-10 text-white" strokeWidth={1.6} />
+                    </div>
+                    <span className="font-bold text-lg text-navy-deep mb-1">{c.name}</span>
+                    <span className="text-xs font-semibold uppercase tracking-wider text-ocean mb-3">{c.count}</span>
+                    <p className="text-sm text-muted-foreground leading-relaxed flex-1">{c.desc}</p>
+                  </div>
+                </Link>
+              </motion.div>
+            ))}
+          </div>
+
+          {/* Mobile: carrusel centrado con item activo destacado por opacidad */}
+          <div className="md:hidden max-w-md mx-auto px-2">
             <Carousel
               opts={{ align: "center", loop: true }}
               plugins={[categoriesAutoplay.current]}
@@ -403,8 +429,28 @@ function Index() {
             </div>
           </div>
 
-          {/* Mobile / Tablet: carrusel centrado, item central más grande */}
-          <div className="lg:hidden max-w-md mx-auto px-2">
+          {/* Tablet: grid de productos destacados */}
+          <div className="hidden md:block lg:hidden container mx-auto px-6">
+            <div className="grid grid-cols-3 gap-6 max-w-4xl mx-auto">
+              {featured.slice(0, 6).map((p) => (
+                <Link
+                  key={p.id}
+                  to="/productos/$productId"
+                  params={{ productId: p.slug || p.id }}
+                  className="group flex flex-col items-center cursor-pointer"
+                >
+                  <div className="relative w-40 h-40 flex items-center justify-center">
+                    <div className="absolute inset-0 rounded-full bg-gradient-to-br from-white via-foam to-ocean/20 shadow-[0_10px_30px_-10px_rgba(0,80,140,0.25)] ring-1 ring-ocean/10" />
+                    <img src={p.img} alt={p.name} loading="lazy" className="relative z-10 w-32 h-32 object-contain group-hover:scale-110 transition-transform duration-500 drop-shadow-xl" />
+                  </div>
+                  <p className="mt-3 text-sm font-semibold text-navy-deep text-center px-1 group-hover:text-ocean transition-colors">{p.name}</p>
+                </Link>
+              ))}
+            </div>
+          </div>
+
+          {/* Mobile: carrusel centrado, item central más grande */}
+          <div className="md:hidden max-w-md mx-auto px-2">
             <Carousel
               opts={{ align: "center", loop: true }}
               plugins={[mobileAutoplay.current]}
