@@ -20,6 +20,7 @@ import provBlueweight from "@/assets/proveedor-blueweight.png";
 import provLacolina from "@/assets/proveedor-lacolina.png";
 import provLarviva from "@/assets/proveedor-larviva.png";
 import provBiomar from "@/assets/proveedor-biomar.png";
+import { usePageHero } from "@/hooks/usePageHero";
 
 export const Route = createFileRoute("/")({
   head: () => ({
