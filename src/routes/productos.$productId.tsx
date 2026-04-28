@@ -500,7 +500,11 @@ function ProductDetailPage() {
           <div className="pointer-events-none absolute left-0 top-0 bottom-0 w-32 z-10 bg-gradient-to-r from-foam to-transparent" />
           <div className="pointer-events-none absolute right-0 top-0 bottom-0 w-32 z-10 bg-gradient-to-l from-foam to-transparent" />
           <div className="flex gap-6 animate-marquee-slow w-max hover:[animation-play-state:paused]">
-            {[...SUPPLIERS, ...SUPPLIERS, ...SUPPLIERS].map((s, i) => (
+            {(() => {
+              const repeats = Math.max(1, Math.ceil(12 / Math.max(suppliers.length, 1)));
+              const base = Array.from({ length: repeats }, () => suppliers).flat();
+              return [...base, ...base];
+            })().map((s, i) => (
               <div
                 key={`${s.name}-${i}`}
                 className="relative shrink-0 w-56 h-28 group"
@@ -511,7 +515,8 @@ function ProductDetailPage() {
                     src={s.img}
                     alt={s.name}
                     loading="lazy"
-                    className="max-h-full max-w-full object-contain group-hover:scale-105 transition-transform duration-300"
+                    style={{ transform: `scale(${(s.scale ?? 100) / 100})` }}
+                    className="max-h-full max-w-full object-contain transition-transform duration-300 group-hover:opacity-90"
                   />
                 </div>
               </div>
