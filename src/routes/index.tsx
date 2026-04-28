@@ -427,43 +427,6 @@ function Index() {
         </div>
       </section>
 
-      {/* PROVEEDORES — marquee con efectos por logo */}
-      <section className="py-20 bg-background overflow-hidden">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8 mb-12">
-          <div className="text-center max-w-2xl mx-auto">
-            <p className="text-sm font-semibold uppercase tracking-widest text-ocean mb-3">Proveedores</p>
-            <h2 className="text-4xl md:text-5xl font-bold text-navy-deep">Marcas que distribuimos</h2>
-            <p className="text-muted-foreground mt-4">Trabajamos con los líderes mundiales en nutrición y sanidad acuícola.</p>
-          </div>
-        </div>
-
-        <div className="relative">
-          <div className="pointer-events-none absolute left-0 top-0 bottom-0 w-32 z-10 bg-gradient-to-r from-background to-transparent" />
-          <div className="pointer-events-none absolute right-0 top-0 bottom-0 w-32 z-10 bg-gradient-to-l from-background to-transparent" />
-
-          <div className="flex gap-6 animate-marquee-slow w-max hover:[animation-play-state:paused]">
-            {supplierItems.map((s, i) => (
-              <motion.div
-                key={`${s.name}-${i}`}
-                whileHover={{ scale: 1.1, rotate: -2 }}
-                transition={{ type: "spring", stiffness: 300 }}
-                className="relative shrink-0 w-56 h-28 group"
-              >
-                <div className="absolute inset-0 gradient-wave rounded-2xl opacity-0 group-hover:opacity-100 blur-xl transition duration-500" />
-                <div className="relative w-full h-full bg-white border border-border rounded-2xl flex items-center justify-center p-4 group-hover:border-ocean group-hover:shadow-elegant transition-all duration-300 overflow-hidden">
-                  <img
-                    src={s.img}
-                    alt={s.name}
-                    loading="lazy"
-                    className="max-h-full max-w-full object-contain group-hover:scale-105 transition-transform duration-300"
-                  />
-                </div>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
-
       {/* PUNTO DE VENTA — info izquierda + mapa derecha */}
       <section className="py-12 md:py-16 gradient-hero text-white relative overflow-hidden">
         <div className="absolute inset-0 opacity-30" style={{ background: "var(--gradient-glow)" }} />
@@ -552,6 +515,43 @@ function Index() {
                 className="w-full h-full border-0"
               />
             </motion.div>
+          </div>
+        </div>
+      </section>
+
+      {/* PROVEEDORES — marquee con efectos por logo */}
+      <section className="py-20 bg-background overflow-hidden">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8 mb-12">
+          <div className="text-center max-w-2xl mx-auto">
+            <p className="text-sm font-semibold uppercase tracking-widest text-ocean mb-3">Proveedores</p>
+            <h2 className="text-4xl md:text-5xl font-bold text-navy-deep">Marcas que distribuimos</h2>
+            <p className="text-muted-foreground mt-4">Trabajamos con los líderes mundiales en nutrición y sanidad acuícola.</p>
+          </div>
+        </div>
+
+        <div className="relative">
+          <div className="pointer-events-none absolute left-0 top-0 bottom-0 w-32 z-10 bg-gradient-to-r from-background to-transparent" />
+          <div className="pointer-events-none absolute right-0 top-0 bottom-0 w-32 z-10 bg-gradient-to-l from-background to-transparent" />
+
+          <div className="flex gap-6 animate-marquee-slow w-max hover:[animation-play-state:paused]">
+            {supplierItems.map((s, i) => (
+              <motion.div
+                key={`${s.name}-${i}`}
+                whileHover={{ scale: 1.1, rotate: -2 }}
+                transition={{ type: "spring", stiffness: 300 }}
+                className="relative shrink-0 w-56 h-28 group"
+              >
+                <div className="absolute inset-0 gradient-wave rounded-2xl opacity-0 group-hover:opacity-100 blur-xl transition duration-500" />
+                <div className="relative w-full h-full bg-white border border-border rounded-2xl flex items-center justify-center p-4 group-hover:border-ocean group-hover:shadow-elegant transition-all duration-300 overflow-hidden">
+                  <img
+                    src={s.img}
+                    alt={s.name}
+                    loading="lazy"
+                    className="max-h-full max-w-full object-contain group-hover:scale-105 transition-transform duration-300"
+                  />
+                </div>
+              </motion.div>
+            ))}
           </div>
         </div>
       </section>
