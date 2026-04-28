@@ -65,7 +65,7 @@ const supplierLogosFallback: SupplierLogo[] = [
 
 function Index() {
   const [featured, setFeatured] = useState<FeaturedItem[]>(featuredFallback);
-  const [supplierLogos, setSupplierLogos] = useState<SupplierLogo[]>(supplierLogosFallback);
+  const [supplierLogos, setSupplierLogos] = useState<SupplierLogo[]>([]);
   const homeHeroBg = usePageHero("home", heroImg);
   const mobileAutoplay = useRef(
     Autoplay({ delay: 2200, stopOnInteraction: false, stopOnMouseEnter: false })
@@ -129,15 +129,13 @@ function Index() {
       .eq("active", true)
       .order("sort_order", { ascending: true })
       .then(({ data }) => {
-        if (data && data.length > 0) {
-          setSupplierLogos(
-            data.map((s) => ({
-              name: s.name,
-              img: s.image_url,
-              scale: (s as { display_scale?: number }).display_scale ?? 100,
-            })),
-          );
-        }
+        setSupplierLogos(
+          (data ?? []).map((s) => ({
+            name: s.name,
+            img: s.image_url,
+            scale: (s as { display_scale?: number }).display_scale ?? 100,
+          })),
+        );
       });
   }, []);
 
