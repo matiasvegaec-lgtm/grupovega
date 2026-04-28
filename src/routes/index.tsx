@@ -5,7 +5,7 @@ import { useEffect, useRef, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Layout } from "@/components/Layout";
 import { UnderwaterScene } from "@/components/UnderwaterScene";
-import { Carousel, CarouselContent, CarouselItem } from "@/components/ui/carousel";
+import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
 import Autoplay from "embla-carousel-autoplay";
 import heroImg from "@/assets/hero-shrimp-farm.jpg";
 import pBalanceado from "@/assets/p-balanceado.png";
@@ -34,10 +34,10 @@ export const Route = createFileRoute("/")({
 });
 
 const categories = [
-  { icon: Wheat, name: "Alimentos", desc: "Balanceados premium para cada etapa de cultivo", count: "20+ productos" },
-  { icon: Sprout, name: "Fertilizantes", desc: "Nutrientes que potencian la productividad de tus piscinas", count: "12+ productos" },
-  { icon: FlaskConical, name: "Aditivos", desc: "Probióticos, vitaminas y mejoradores de rendimiento", count: "15+ productos" },
-  { icon: Beaker, name: "Insumos", desc: "Equipos y químicos para el manejo diario", count: "30+ productos" },
+  { icon: Wheat, name: "Alimentos", desc: "Balanceados premium para cada etapa de cultivo", count: "20+ productos", categoria: "Alimentos" },
+  { icon: Sprout, name: "Fertilizantes", desc: "Nutrientes que potencian la productividad de tus piscinas", count: "12+ productos", categoria: "Fertilizantes" },
+  { icon: FlaskConical, name: "Aditivos", desc: "Probióticos, vitaminas y mejoradores de rendimiento", count: "15+ productos", categoria: "Aditivos" },
+  { icon: Beaker, name: "Insumos", desc: "Equipos y químicos para el manejo diario", count: "30+ productos", categoria: "Insumos" },
 ];
 
 type FeaturedItem = { id: string; slug: string | null; name: string; img: string };
