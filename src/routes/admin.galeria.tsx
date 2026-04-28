@@ -507,7 +507,12 @@ function SuppliersSection() {
               }`}
             >
               <div className="relative aspect-[16/9] bg-white flex items-center justify-center p-4 group">
-                <img src={logo.image_url} alt={logo.name} className="max-w-full max-h-full object-contain" />
+                <img
+                  src={logo.image_url}
+                  alt={logo.name}
+                  className="max-w-full max-h-full object-contain transition-transform"
+                  style={{ transform: `scale(${(logo.display_scale ?? 100) / 100})` }}
+                />
                 <label
                   htmlFor={`logo-replace-${logo.id}`}
                   className={`absolute inset-0 flex items-center justify-center bg-black/50 text-white text-xs font-semibold opacity-0 group-hover:opacity-100 transition cursor-pointer ${
