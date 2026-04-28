@@ -114,7 +114,11 @@ function ProductosPage() {
     }
   }, [categoria]);
 
-  const allCategoryNames = categories.map((c) => c.name);
+  const allCategoryNames = [...categories.map((c) => c.name)].sort((a, b) => {
+    if (a === "Alimentos") return -1;
+    if (b === "Alimentos") return 1;
+    return 0;
+  });
   const categoryCounts = allCategoryNames.reduce<Record<string, number>>((acc, c) => {
     acc[c] = products.filter((p) => p.category === c).length;
     return acc;
