@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { motion } from "framer-motion";
-import { ArrowRight, Wheat, Droplet, FlaskConical, Sprout, Pill, Beaker, MapPin, Phone, Mail, Clock, ChevronLeft, ChevronRight } from "lucide-react";
+import { ArrowRight, Wheat, FlaskConical, Sprout, Beaker, MapPin, Phone, Mail, Clock } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Layout } from "@/components/Layout";
@@ -66,8 +66,6 @@ function Index() {
     Autoplay({ delay: 2200, stopOnInteraction: false, stopOnMouseEnter: false })
   );
   const marqueeRef = useRef<HTMLDivElement>(null);
-  const [marqueeOffset, setMarqueeOffset] = useState(0);
-  const [marqueePaused, setMarqueePaused] = useState(false);
 
   useEffect(() => {
     supabase
@@ -311,70 +309,46 @@ function Index() {
         </div>
 
         <div className="relative w-full">
-          {/* Marquee automático en todos los tamaños + flechas en mobile/tablet */}
-          <div className="relative">
-            <div className="pointer-events-none absolute left-0 top-0 bottom-0 w-12 md:w-24 z-10 bg-gradient-to-r from-foam to-transparent" />
-            <div className="pointer-events-none absolute right-0 top-0 bottom-0 w-12 md:w-24 z-10 bg-gradient-to-l from-foam to-transparent" />
-            <div
-              ref={marqueeRef}
-              className="flex gap-8 md:gap-12 w-max animate-marquee hover:[animation-play-state:paused] transition-transform duration-500"
-              style={{
-                transform: `translateX(${marqueeOffset}px)`,
-                animationPlayState: marqueePaused ? "paused" : undefined,
-              }}
-            >
+          {/* Desktop: marquee continuo */}
+          <div className="relative hidden lg:block">
+            <div className="pointer-events-none absolute left-0 top-0 bottom-0 w-24 z-10 bg-gradient-to-r from-foam to-transparent" />
+            <div className="pointer-events-none absolute right-0 top-0 bottom-0 w-24 z-10 bg-gradient-to-l from-foam to-transparent" />
+            <div ref={marqueeRef} className="flex gap-12 w-max animate-marquee hover:[animation-play-state:paused]">
               {carouselItems.map((p, i) => (
-                <Link
-                  key={`${p.name}-${i}`}
-                  to="/productos/$productId"
-                  params={{ productId: p.slug || p.id }}
-                  className="marquee-item group flex flex-col items-center w-44 md:w-56 shrink-0 cursor-pointer"
-                >
-                  <div className="relative w-44 h-44 md:w-56 md:h-56 flex items-center justify-center">
-                    {/* Fondo circular: marco visible que unifica todas las imágenes (con o sin fondo transparente) */}
+                <Link key={`${p.name}-${i}`} to="/productos/$productId" params={{ productId: p.slug || p.id }} className="marquee-item group flex flex-col items-center w-56 shrink-0 cursor-pointer">
+                  <div className="relative w-56 h-56 flex items-center justify-center">
                     <div className="absolute inset-0 rounded-full bg-gradient-to-br from-white via-foam to-ocean/20 shadow-[0_10px_30px_-10px_rgba(0,80,140,0.25)] ring-1 ring-ocean/10" />
-                    {/* Glow y borde punteado solo en desktop (en mobile se eliminan) */}
-                    <div className="hidden md:block absolute inset-4 rounded-full gradient-wave opacity-0 group-hover:opacity-40 blur-2xl transition-all duration-700 group-hover:scale-110" />
-                    <div className="hidden md:block absolute inset-0 rounded-full border-2 border-dashed border-ocean/0 group-hover:border-ocean/30 group-hover:rotate-180 transition-all duration-1000" />
-                    {/* Imagen sin recorte: queda por encima del círculo y puede crecer libremente */}
-                    <img
-                      src={p.img}
-                      alt={p.name}
-                      loading="lazy"
-                      className="relative z-10 w-32 h-32 md:w-44 md:h-44 object-contain group-hover:scale-110 group-hover:-translate-y-2 group-hover:-rotate-3 transition-all duration-500 drop-shadow-xl md:drop-shadow-2xl"
-                    />
+                    <div className="absolute inset-4 rounded-full gradient-wave opacity-0 group-hover:opacity-40 blur-2xl transition-all duration-700 group-hover:scale-110" />
+                    <div className="absolute inset-0 rounded-full border-2 border-dashed border-ocean/0 group-hover:border-ocean/30 group-hover:rotate-180 transition-all duration-1000" />
+                    <img src={p.img} alt={p.name} loading="lazy" className="relative z-10 w-44 h-44 object-contain group-hover:scale-110 group-hover:-translate-y-2 group-hover:-rotate-3 transition-all duration-500 drop-shadow-2xl" />
                   </div>
-                  <p className="mt-3 md:mt-4 text-sm md:text-base font-semibold text-navy-deep text-center group-hover:text-ocean transition-colors px-1">{p.name}</p>
+                  <p className="mt-4 text-base font-semibold text-navy-deep text-center group-hover:text-ocean transition-colors px-1">{p.name}</p>
                   <span className="destacado-label text-xs text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity duration-300 mt-1">Destacado ⭐</span>
                 </Link>
               ))}
             </div>
+          </div>
 
-            {/* Flechas mobile/tablet: pausan el marquee y desplazan manualmente */}
-            <button
-              type="button"
-              aria-label="Anterior"
-              onClick={() => {
-                setMarqueePaused(true);
-                setMarqueeOffset((o) => o + 180);
-                window.setTimeout(() => setMarqueePaused(false), 2500);
-              }}
-              className="lg:hidden absolute left-2 top-1/2 -translate-y-1/2 z-20 w-10 h-10 rounded-full bg-card/95 border border-ocean/30 text-ocean shadow-lg flex items-center justify-center active:scale-95 transition"
-            >
-              <ChevronLeft className="w-5 h-5" />
-            </button>
-            <button
-              type="button"
-              aria-label="Siguiente"
-              onClick={() => {
-                setMarqueePaused(true);
-                setMarqueeOffset((o) => o - 180);
-                window.setTimeout(() => setMarqueePaused(false), 2500);
-              }}
-              className="lg:hidden absolute right-2 top-1/2 -translate-y-1/2 z-20 w-10 h-10 rounded-full bg-card/95 border border-ocean/30 text-ocean shadow-lg flex items-center justify-center active:scale-95 transition"
-            >
-              <ChevronRight className="w-5 h-5" />
-            </button>
+          {/* Mobile / Tablet: carrusel real con autoplay y flechas funcionales */}
+          <div className="lg:hidden max-w-3xl mx-auto px-2">
+            <Carousel opts={{ align: "start", loop: true }} plugins={[mobileAutoplay.current]} className="relative">
+              <CarouselContent className="-ml-4 py-2">
+                {featured.map((p) => (
+                  <CarouselItem key={p.id} className="pl-4 basis-[68%] sm:basis-[42%]">
+                    <Link to="/productos/$productId" params={{ productId: p.slug || p.id }} className="marquee-item group flex h-full flex-col items-center cursor-pointer">
+                      <div className="relative w-44 h-44 sm:w-52 sm:h-52 flex items-center justify-center">
+                        <div className="absolute inset-0 rounded-full bg-gradient-to-br from-white via-foam to-ocean/20 shadow-[0_10px_30px_-10px_rgba(0,80,140,0.25)] ring-1 ring-ocean/10" />
+                        <img src={p.img} alt={p.name} loading="lazy" className="relative z-10 w-32 h-32 sm:w-40 sm:h-40 object-contain group-hover:scale-110 group-hover:-translate-y-2 group-hover:-rotate-3 transition-all duration-500 drop-shadow-xl" />
+                      </div>
+                      <p className="mt-3 text-sm font-semibold text-navy-deep text-center group-hover:text-ocean transition-colors px-1">{p.name}</p>
+                      <span className="destacado-label text-xs text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity duration-300 mt-1">Destacado ⭐</span>
+                    </Link>
+                  </CarouselItem>
+                ))}
+              </CarouselContent>
+              <CarouselPrevious className="left-1 bg-card/95 border-ocean/30 text-ocean hover:bg-ocean hover:text-white" />
+              <CarouselNext className="right-1 bg-card/95 border-ocean/30 text-ocean hover:bg-ocean hover:text-white" />
+            </Carousel>
           </div>
         </div>
 
