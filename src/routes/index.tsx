@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { motion } from "framer-motion";
-import { ArrowRight, Wheat, Droplet, FlaskConical, Sprout, Pill, Beaker, MapPin, Phone, Mail, Clock } from "lucide-react";
+import { ArrowRight, Wheat, Droplet, FlaskConical, Sprout, Pill, Beaker, MapPin, Phone, Mail, Clock, ChevronLeft, ChevronRight } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Layout } from "@/components/Layout";
@@ -66,6 +66,8 @@ function Index() {
     Autoplay({ delay: 2200, stopOnInteraction: false, stopOnMouseEnter: false })
   );
   const marqueeRef = useRef<HTMLDivElement>(null);
+  const [marqueeOffset, setMarqueeOffset] = useState(0);
+  const [marqueePaused, setMarqueePaused] = useState(false);
 
   useEffect(() => {
     supabase
