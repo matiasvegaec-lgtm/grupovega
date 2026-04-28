@@ -68,6 +68,11 @@ function Index() {
   const marqueeRef = useRef<HTMLDivElement>(null);
   const [featuredApi, setFeaturedApi] = useState<CarouselApi | null>(null);
   const [featuredSelected, setFeaturedSelected] = useState(0);
+  const [categoriesApi, setCategoriesApi] = useState<CarouselApi | null>(null);
+  const [categoriesSelected, setCategoriesSelected] = useState(0);
+  const categoriesAutoplay = useRef(
+    Autoplay({ delay: 2600, stopOnInteraction: false, stopOnMouseEnter: false })
+  );
 
   useEffect(() => {
     if (!featuredApi) return;
@@ -80,6 +85,18 @@ function Index() {
       featuredApi.off("reInit", onSelect);
     };
   }, [featuredApi]);
+
+  useEffect(() => {
+    if (!categoriesApi) return;
+    const onSelect = () => setCategoriesSelected(categoriesApi.selectedScrollSnap());
+    onSelect();
+    categoriesApi.on("select", onSelect);
+    categoriesApi.on("reInit", onSelect);
+    return () => {
+      categoriesApi.off("select", onSelect);
+      categoriesApi.off("reInit", onSelect);
+    };
+  }, [categoriesApi]);
 
   useEffect(() => {
     supabase
@@ -256,24 +273,36 @@ function Index() {
             ))}
           </div>
 
-          {/* Mobile / Tablet: carrusel horizontal con flechas */}
-          <div className="lg:hidden max-w-2xl mx-auto px-2">
-            <Carousel opts={{ align: "start", loop: false }} className="relative">
-              <CarouselContent className="-ml-3">
-                {categories.map((c) => (
-                  <CarouselItem key={c.name} className="pl-3 basis-[70%] sm:basis-[45%]">
-                    <Link to="/productos" search={{ categoria: c.categoria }} className="group block h-full">
-                      <div className="relative h-full bg-card border border-border rounded-2xl p-5 flex flex-col items-center text-center hover:border-ocean transition-all duration-300 overflow-hidden">
-                        <div className="relative w-16 h-16 rounded-2xl gradient-wave flex items-center justify-center shadow-glow mb-3">
-                          <c.icon className="w-8 h-8 text-white" strokeWidth={1.6} />
+          {/* Mobile / Tablet: carrusel centrado con item activo destacado por opacidad */}
+          <div className="lg:hidden max-w-md mx-auto px-2">
+            <Carousel
+              opts={{ align: "center", loop: true }}
+              plugins={[categoriesAutoplay.current]}
+              setApi={setCategoriesApi}
+              className="relative"
+            >
+              <CarouselContent className="py-4">
+                {categories.map((c, idx) => {
+                  const isActive = idx === categoriesSelected;
+                  return (
+                    <CarouselItem key={c.name} className="basis-[70%] flex justify-center">
+                      <Link
+                        to="/productos"
+                        search={{ categoria: c.categoria }}
+                        className={`group block h-full w-full transition-all duration-500 ease-out ${isActive ? "opacity-100" : "opacity-50"}`}
+                      >
+                        <div className="relative h-full bg-card border border-border rounded-2xl p-5 flex flex-col items-center text-center hover:border-ocean transition-all duration-300 overflow-hidden">
+                          <div className="relative w-16 h-16 rounded-2xl gradient-wave flex items-center justify-center shadow-glow mb-3">
+                            <c.icon className="w-8 h-8 text-white" strokeWidth={1.6} />
+                          </div>
+                          <span className="font-bold text-base text-navy-deep mb-1">{c.name}</span>
+                          <span className="text-[11px] font-semibold uppercase tracking-wider text-ocean mb-2">{c.count}</span>
+                          <p className="text-xs text-muted-foreground leading-relaxed flex-1">{c.desc}</p>
                         </div>
-                        <span className="font-bold text-base text-navy-deep mb-1">{c.name}</span>
-                        <span className="text-[11px] font-semibold uppercase tracking-wider text-ocean mb-2">{c.count}</span>
-                        <p className="text-xs text-muted-foreground leading-relaxed flex-1">{c.desc}</p>
-                      </div>
-                    </Link>
-                  </CarouselItem>
-                ))}
+                      </Link>
+                    </CarouselItem>
+                  );
+                })}
               </CarouselContent>
               <CarouselPrevious className="left-1 bg-card/95 border-ocean/30 text-ocean hover:bg-ocean hover:text-white" />
               <CarouselNext className="right-1 bg-card/95 border-ocean/30 text-ocean hover:bg-ocean hover:text-white" />
