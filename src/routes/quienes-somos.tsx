@@ -5,6 +5,7 @@ import { Leaf, ShieldCheck, Target, Layers, Globe2, Award, Users, Sparkles, Anch
 import { Layout } from "@/components/Layout";
 import { PageHero } from "@/components/PageHero";
 import { supabase } from "@/integrations/supabase/client";
+import { usePageHero } from "@/hooks/usePageHero";
 
 export const Route = createFileRoute("/quienes-somos")({
   head: () => ({
@@ -61,6 +62,7 @@ function QuienesSomosPage() {
   }, [images.length]);
 
   const activeImage = useMemo(() => images[activeIdx], [images, activeIdx]);
+  const heroBg = usePageHero("quienes-somos");
 
   return (
     <Layout>
@@ -68,6 +70,7 @@ function QuienesSomosPage() {
         eyebrow="Quiénes Somos"
         title="Comprometidos con la acuicultura ecuatoriana"
         description="Somos Grupo Vega: insumos, asesoría técnica y tecnología para que tu camaronera produzca más y mejor."
+        backgroundImage={heroBg}
       />
 
       {/* Sección "¿Por qué elegirnos?" — info izquierda + imagen rotativa derecha */}
