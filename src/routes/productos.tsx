@@ -138,6 +138,8 @@ function ProductosPage() {
       if (sort === "price-asc") return Number(a.price) - Number(b.price);
       if (sort === "price-desc") return Number(b.price) - Number(a.price);
       if (sort === "name") return a.name.localeCompare(b.name);
+      if (a.category === "Alimentos" && b.category !== "Alimentos") return -1;
+      if (b.category === "Alimentos" && a.category !== "Alimentos") return 1;
       return 0;
     });
 
@@ -488,7 +490,13 @@ function ProductosPage() {
                             </span>
                             <button
                               type="button"
-                              onClick={() => setQuantities((q) => ({ ...q, [p.id]: Math.min(p.stock, (q[p.id] ?? 0) + 1) }))}
+                              onClick={() => {
+                                setQuantities((q) => {
+                                  const next = Math.min(p.stock, (q[p.id] ?? 0) + 1);
+                                  toast.success(`${p.name} (${next})`);
+                                  return { ...q, [p.id]: next };
+                                });
+                              }}
                               className="w-8 h-8 rounded-full border border-border flex items-center justify-center hover:border-ocean hover:text-ocean transition"
                               aria-label="Aumentar"
                             >
