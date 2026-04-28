@@ -16,6 +16,7 @@ import provLacolina from "@/assets/proveedor-lacolina.png";
 import provLarviva from "@/assets/proveedor-larviva.png";
 import provBiomar from "@/assets/proveedor-biomar.png";
 import productosHero from "@/assets/productos-hero.jpeg";
+import { usePageHero } from "@/hooks/usePageHero";
 
 export const Route = createFileRoute("/productos")({
   head: () => ({
