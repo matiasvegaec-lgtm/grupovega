@@ -46,29 +46,66 @@ export function ImageAdjuster({ src, outputSize = 1000, backgroundColor = "#FFFF
 
   useEffect(() => {
     setImgLoaded(false);
-    const img = new Image();
-    img.crossOrigin = "anonymous";
-    img.onload = () => {
-      imgRef.current = img;
-      setNaturalSize({ w: img.naturalWidth, h: img.naturalHeight });
-      setImgLoaded(true);
-    };
-    img.onerror = () => {
-      // Reintentar sin crossOrigin si falla por CORS
-      const img2 = new Image();
-      img2.onload = () => {
-        imgRef.current = img2;
-        setNaturalSize({ w: img2.naturalWidth, h: img2.naturalHeight });
+    let cancelled = false;
+    let localObjectUrl: string | null = null;
+
+    const loadFromUrl = (url: string, isObjectUrl: boolean) => {
+      const img = new Image();
+      // Sólo aplicamos crossOrigin a URLs http(s) reales para que el canvas no quede "tainted"
+      if (!isObjectUrl && /^https?:/i.test(url)) {
+        img.crossOrigin = "anonymous";
+      }
+      img.onload = () => {
+        if (cancelled) return;
+        imgRef.current = img;
+        setNaturalSize({ w: img.naturalWidth, h: img.naturalHeight });
         setImgLoaded(true);
       };
-      img2.src = src;
+      img.onerror = () => {
+        if (cancelled) return;
+        // Último recurso: cargar sin CORS (no se podrá exportar pero al menos se ve)
+        const fallback = new Image();
+        fallback.onload = () => {
+          if (cancelled) return;
+          imgRef.current = fallback;
+          setNaturalSize({ w: fallback.naturalWidth, h: fallback.naturalHeight });
+          setImgLoaded(true);
+        };
+        fallback.src = url;
+      };
+      img.src = url;
     };
-    img.src = src;
+
+    // Estrategia robusta: descargar como blob y usar object URL.
+    // Esto evita el problema de "canvas tainted" al exportar imágenes
+    // que vienen de otro origen (Supabase storage) cuando CORS no responde
+    // con los headers esperados.
+    if (/^https?:/i.test(src)) {
+      fetch(src, { mode: "cors", cache: "no-cache" })
+        .then((r) => {
+          if (!r.ok) throw new Error("No se pudo descargar la imagen");
+          return r.blob();
+        })
+        .then((blob) => {
+          if (cancelled) return;
+          localObjectUrl = URL.createObjectURL(blob);
+          objectUrlRef.current = localObjectUrl;
+          loadFromUrl(localObjectUrl, true);
+        })
+        .catch(() => {
+          if (cancelled) return;
+          // Si falla el fetch, intentamos cargar la URL directa con crossOrigin
+          loadFromUrl(src, false);
+        });
+    } else {
+      loadFromUrl(src, false);
+    }
 
     return () => {
-      if (objectUrlRef.current) {
-        URL.revokeObjectURL(objectUrlRef.current);
-        objectUrlRef.current = null;
+      cancelled = true;
+      if (localObjectUrl) {
+        URL.revokeObjectURL(localObjectUrl);
+        if (objectUrlRef.current === localObjectUrl) objectUrlRef.current = null;
       }
     };
   }, [src]);
@@ -119,14 +156,25 @@ export function ImageAdjuster({ src, outputSize = 1000, backgroundColor = "#FFFF
       ctx.imageSmoothingQuality = "high";
       ctx.drawImage(imgRef.current, cx - finalDrawW / 2, cy - finalDrawH / 2, finalDrawW, finalDrawH);
 
-      const blob: Blob = await new Promise((resolve, reject) => {
-        canvas.toBlob((b) => (b ? resolve(b) : reject(new Error("No se pudo generar la imagen"))), "image/png", 0.95);
-      });
-      const previewUrl = URL.createObjectURL(blob);
-      objectUrlRef.current = previewUrl;
-      imgRef.current = null;
-      setImgLoaded(false);
+      let blob: Blob;
+      try {
+        blob = await new Promise<Blob>((resolve, reject) => {
+          canvas.toBlob(
+            (b) => (b ? resolve(b) : reject(new Error("No se pudo generar la imagen"))),
+            "image/png",
+            0.95,
+          );
+        });
+      } catch (err) {
+        // Caso típico: canvas "tainted" por CORS. Avisamos al usuario.
+        throw new Error(
+          "No se pudo exportar la imagen ajustada (problema de permisos CORS). Vuelve a subir la imagen original.",
+        );
+      }
       await onConfirm(blob);
+    } catch (err: any) {
+      // Re-lanzar para que quien lo invoque pueda mostrar toast si quiere
+      throw err;
     } finally {
       setSaving(false);
     }
