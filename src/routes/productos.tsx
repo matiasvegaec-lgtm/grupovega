@@ -16,6 +16,7 @@ import provLacolina from "@/assets/proveedor-lacolina.png";
 import provLarviva from "@/assets/proveedor-larviva.png";
 import provBiomar from "@/assets/proveedor-biomar.png";
 import productosHero from "@/assets/productos-hero.jpeg";
+import { usePageHero } from "@/hooks/usePageHero";
 
 export const Route = createFileRoute("/productos")({
   head: () => ({
@@ -82,6 +83,7 @@ function ProductosPage() {
   const [loading, setLoading] = useState(true);
   const { addItem } = useCart();
   const { toggle: toggleFav, isFavorite } = useFavorites();
+  const heroBg = usePageHero("productos", productosHero);
 
   useEffect(() => {
     (async () => {
@@ -298,7 +300,7 @@ function ProductosPage() {
         eyebrow="Catálogo"
         title="Productos para cada fase del cultivo"
         description="Más de 60 productos especializados para optimizar la productividad de tu camaronera."
-        backgroundImage={productosHero}
+        backgroundImage={heroBg}
       />
 
       <section className="py-16 bg-background">
