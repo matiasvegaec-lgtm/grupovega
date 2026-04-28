@@ -1,7 +1,7 @@
 import { createFileRoute, Link, Outlet, useLocation } from "@tanstack/react-router";
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { Search, ShoppingCart, Loader2, Wheat, Sprout, FlaskConical, Beaker, Pill, Droplet, Layers, X, Heart } from "lucide-react";
+import { Search, ShoppingCart, Loader2, Wheat, Sprout, FlaskConical, Beaker, Pill, Droplet, Layers, X, Heart, Plus, Minus, CreditCard } from "lucide-react";
 import { Layout } from "@/components/Layout";
 import { PageHero } from "@/components/PageHero";
 import { useCart } from "@/contexts/CartContext";
@@ -44,6 +44,7 @@ type Product = {
   image_url: string | null;
   stock: number;
   subcategory_id: string | null;
+  price_card_3m: number | null;
 };
 
 type Category = { id: string; name: string };
@@ -81,6 +82,7 @@ function ProductosPage() {
   const [categories, setCategories] = useState<Category[]>([]);
   const [subcategories, setSubcategories] = useState<Subcategory[]>([]);
   const [loading, setLoading] = useState(true);
+  const [quantities, setQuantities] = useState<Record<string, number>>({});
   const { addItem } = useCart();
   const { toggle: toggleFav, isFavorite } = useFavorites();
   const heroBg = usePageHero("productos", productosHero);
