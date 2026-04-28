@@ -26,9 +26,10 @@ export const Route = createFileRoute("/productos")({
       { property: "og:description", content: "Catálogo completo para camaroneras." },
     ],
   }),
-  validateSearch: (search: Record<string, unknown>) => ({
-    categoria: typeof search.categoria === "string" ? search.categoria : undefined,
-  }),
+  validateSearch: (search: Record<string, unknown>): { categoria?: string } => {
+    const categoria = typeof search.categoria === "string" ? search.categoria : undefined;
+    return categoria ? { categoria } : {};
+  },
   component: ProductosPage,
 });
 
