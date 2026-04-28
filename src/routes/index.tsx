@@ -345,23 +345,32 @@ function Index() {
 
           {/* Mobile / Tablet: carrusel centrado, item central más grande */}
           <div className="lg:hidden max-w-md mx-auto px-2">
-            <Carousel opts={{ align: "center", loop: true }} plugins={[mobileAutoplay.current]} className="relative">
-              <CarouselContent className="py-4">
-                {featured.map((p) => (
-                  <CarouselItem
-                    key={p.id}
-                    className="basis-[60%] flex justify-center transition-all duration-500 [&:not(:has(.is-snapped))]:opacity-60 [&:not(:has(.is-snapped))]:scale-75"
-                  >
-                    <Link to="/productos/$productId" params={{ productId: p.slug || p.id }} className="marquee-item group flex h-full flex-col items-center cursor-pointer">
-                      <div className="relative w-44 h-44 sm:w-52 sm:h-52 flex items-center justify-center">
-                        <div className="absolute inset-0 rounded-full bg-gradient-to-br from-white via-foam to-ocean/20 shadow-[0_10px_30px_-10px_rgba(0,80,140,0.25)] ring-1 ring-ocean/10" />
-                        <img src={p.img} alt={p.name} loading="lazy" className="relative z-10 w-32 h-32 sm:w-40 sm:h-40 object-contain group-hover:scale-110 transition-all duration-500 drop-shadow-xl" />
-                      </div>
-                      <p className="mt-3 text-sm font-semibold text-navy-deep text-center px-1">{p.name}</p>
-                      <span className="destacado-label text-xs text-muted-foreground mt-1">Destacado ⭐</span>
-                    </Link>
-                  </CarouselItem>
-                ))}
+            <Carousel
+              opts={{ align: "center", loop: true }}
+              plugins={[mobileAutoplay.current]}
+              setApi={setFeaturedApi}
+              className="relative"
+            >
+              <CarouselContent className="py-6">
+                {featured.map((p, idx) => {
+                  const isActive = idx === featuredSelected;
+                  return (
+                    <CarouselItem key={p.id} className="basis-[60%] flex justify-center">
+                      <Link
+                        to="/productos/$productId"
+                        params={{ productId: p.slug || p.id }}
+                        className={`group flex h-full flex-col items-center cursor-pointer transition-all duration-500 ease-out ${isActive ? "scale-110 opacity-100" : "scale-75 opacity-60"}`}
+                      >
+                        <div className="relative w-44 h-44 flex items-center justify-center">
+                          <div className="absolute inset-0 rounded-full bg-gradient-to-br from-white via-foam to-ocean/20 shadow-[0_10px_30px_-10px_rgba(0,80,140,0.25)] ring-1 ring-ocean/10" />
+                          <img src={p.img} alt={p.name} loading="lazy" className="relative z-10 w-36 h-36 object-contain drop-shadow-xl transition-transform duration-500" />
+                        </div>
+                        <p className="mt-3 text-sm font-semibold text-navy-deep text-center px-1">{p.name}</p>
+                        {isActive && <span className="text-xs text-muted-foreground mt-1">Destacado ⭐</span>}
+                      </Link>
+                    </CarouselItem>
+                  );
+                })}
               </CarouselContent>
               <CarouselPrevious className="left-1 bg-card/95 border-ocean/30 text-ocean hover:bg-ocean hover:text-white" />
               <CarouselNext className="right-1 bg-card/95 border-ocean/30 text-ocean hover:bg-ocean hover:text-white" />
