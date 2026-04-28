@@ -329,20 +329,21 @@ function Index() {
             </div>
           </div>
 
-          {/* Mobile / Tablet: carrusel centrado con misma animación que PC */}
+          {/* Mobile / Tablet: carrusel centrado, item central más grande */}
           <div className="lg:hidden max-w-md mx-auto px-2">
             <Carousel opts={{ align: "center", loop: true }} plugins={[mobileAutoplay.current]} className="relative">
-              <CarouselContent className="py-2">
+              <CarouselContent className="py-4">
                 {featured.map((p) => (
-                  <CarouselItem key={p.id} className="basis-full flex justify-center">
+                  <CarouselItem
+                    key={p.id}
+                    className="basis-[60%] flex justify-center transition-all duration-500 [&:not(:has(.is-snapped))]:opacity-60 [&:not(:has(.is-snapped))]:scale-75"
+                  >
                     <Link to="/productos/$productId" params={{ productId: p.slug || p.id }} className="marquee-item group flex h-full flex-col items-center cursor-pointer">
-                      <div className="relative w-56 h-56 flex items-center justify-center">
+                      <div className="relative w-44 h-44 sm:w-52 sm:h-52 flex items-center justify-center">
                         <div className="absolute inset-0 rounded-full bg-gradient-to-br from-white via-foam to-ocean/20 shadow-[0_10px_30px_-10px_rgba(0,80,140,0.25)] ring-1 ring-ocean/10" />
-                        <div className="absolute inset-4 rounded-full gradient-wave opacity-40 blur-2xl transition-all duration-700 animate-pulse" />
-                        <div className="absolute inset-0 rounded-full border-2 border-dashed border-ocean/30 animate-[spin_12s_linear_infinite]" />
-                        <img src={p.img} alt={p.name} loading="lazy" className="relative z-10 w-44 h-44 object-contain group-hover:scale-110 group-hover:-translate-y-2 group-hover:-rotate-3 transition-all duration-500 drop-shadow-2xl" />
+                        <img src={p.img} alt={p.name} loading="lazy" className="relative z-10 w-32 h-32 sm:w-40 sm:h-40 object-contain group-hover:scale-110 transition-all duration-500 drop-shadow-xl" />
                       </div>
-                      <p className="mt-4 text-base font-semibold text-navy-deep text-center group-hover:text-ocean transition-colors px-1">{p.name}</p>
+                      <p className="mt-3 text-sm font-semibold text-navy-deep text-center px-1">{p.name}</p>
                       <span className="destacado-label text-xs text-muted-foreground mt-1">Destacado ⭐</span>
                     </Link>
                   </CarouselItem>
