@@ -445,30 +445,70 @@ function ProductosPage() {
                         >
                           {p.name}
                         </Link>
+                        {p.subcategory_id && (() => {
+                          const sub = subcategories.find((s) => s.id === p.subcategory_id);
+                          return sub ? (
+                            <span className="inline-block self-start px-2 py-0.5 mb-2 rounded-full bg-foam text-ocean text-[11px] font-semibold">
+                              {sub.name}
+                            </span>
+                          ) : null;
+                        })()}
                         <p className="text-muted-foreground text-sm mb-4 line-clamp-2 flex-1">
                           {p.description}
                         </p>
-                        <div className="flex items-center justify-between mb-3">
-                          <span className="text-xl font-bold text-navy-deep">
-                            ${Number(p.price).toFixed(2)}
-                          </span>
+                        <div className="flex items-end justify-between mb-3 gap-2">
+                          <div className="flex flex-col">
+                            <span className="text-xl font-bold text-navy-deep leading-tight">
+                              ${Number(p.price).toFixed(2)}
+                            </span>
+                            {p.price_card_3m && Number(p.price_card_3m) > 0 && (
+                              <span className="inline-flex items-center gap-1 text-[11px] text-muted-foreground mt-0.5">
+                                <CreditCard className="w-3 h-3" />
+                                ${Number(p.price_card_3m).toFixed(2)} c/tarjeta
+                              </span>
+                            )}
+                          </div>
                           {p.stock > 0 ? (
                             <span className="text-xs text-green-700 font-semibold">En stock</span>
                           ) : (
                             <span className="text-xs text-muted-foreground">Agotado</span>
                           )}
                         </div>
+                        {p.stock > 0 && (
+                          <div className="flex items-center justify-center gap-2 mb-3">
+                            <button
+                              type="button"
+                              onClick={() => setQuantities((q) => ({ ...q, [p.id]: Math.max(1, (q[p.id] ?? 1) - 1) }))}
+                              className="w-8 h-8 rounded-full border border-border flex items-center justify-center hover:border-ocean hover:text-ocean transition"
+                              aria-label="Disminuir"
+                            >
+                              <Minus className="w-3.5 h-3.5" />
+                            </button>
+                            <span className="min-w-[2rem] text-center font-semibold text-navy-deep">
+                              {quantities[p.id] ?? 1}
+                            </span>
+                            <button
+                              type="button"
+                              onClick={() => setQuantities((q) => ({ ...q, [p.id]: Math.min(p.stock, (q[p.id] ?? 1) + 1) }))}
+                              className="w-8 h-8 rounded-full border border-border flex items-center justify-center hover:border-ocean hover:text-ocean transition"
+                              aria-label="Aumentar"
+                            >
+                              <Plus className="w-3.5 h-3.5" />
+                            </button>
+                          </div>
+                        )}
                         <button
                           disabled={p.stock <= 0}
                           onClick={() => {
+                            const qty = quantities[p.id] ?? 1;
                             addItem({
                               id: p.id,
                               name: p.name,
                               price: Number(p.price),
                               category: p.category,
                               img: p.image_url || feedImg,
-                            });
-                            toast.success(`${p.name} agregado al carrito`);
+                            }, qty);
+                            toast.success(`${qty} × ${p.name} agregado al carrito`);
                           }}
                           className="w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-full gradient-wave text-white text-sm font-semibold shadow-glow hover:scale-[1.02] transition-transform disabled:opacity-50 disabled:cursor-not-allowed"
                         >
