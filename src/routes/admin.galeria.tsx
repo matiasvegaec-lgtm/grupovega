@@ -285,6 +285,9 @@ function SuppliersSection() {
   const [uploading, setUploading] = useState(false);
   const [name, setName] = useState("");
   const fileRef = useRef<HTMLInputElement>(null);
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const [editingName, setEditingName] = useState("");
+  const [replacingId, setReplacingId] = useState<string | null>(null);
 
   async function load() {
     setLoading(true);
@@ -370,6 +373,57 @@ function SuppliersSection() {
       supabase.from("supplier_logos").update({ sort_order: logo.sort_order }).eq("id", swap.id),
     ]);
     load();
+  }
+
+  function startEdit(logo: SupplierLogoRow) {
+    setEditingId(logo.id);
+    setEditingName(logo.name);
+  }
+
+  async function saveEdit(logo: SupplierLogoRow) {
+    if (!editingName.trim()) return toast.error("El nombre no puede estar vacío");
+    const { error } = await supabase
+      .from("supplier_logos")
+      .update({ name: editingName.trim() })
+      .eq("id", logo.id);
+    if (error) return toast.error(error.message);
+    toast.success("Nombre actualizado");
+    setEditingId(null);
+    load();
+  }
+
+  async function replaceImage(logo: SupplierLogoRow, file: File) {
+    setReplacingId(logo.id);
+    try {
+      const ext = file.name.split(".").pop() || "png";
+      const path = `suppliers/${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${ext}`;
+      const up = await supabase.storage.from("company-images").upload(path, file, {
+        cacheControl: "3600",
+        upsert: false,
+      });
+      if (up.error) throw up.error;
+      const { data: pub } = supabase.storage.from("company-images").getPublicUrl(path);
+
+      // Borrar imagen anterior si está en nuestro storage
+      try {
+        const url = new URL(logo.image_url);
+        const parts = url.pathname.split("/company-images/");
+        if (parts[1]) await supabase.storage.from("company-images").remove([parts[1]]);
+      } catch { /* ignore */ }
+
+      const { error } = await supabase
+        .from("supplier_logos")
+        .update({ image_url: pub.publicUrl })
+        .eq("id", logo.id);
+      if (error) throw error;
+      toast.success("Imagen reemplazada");
+      load();
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : "Error al reemplazar";
+      toast.error(msg);
+    } finally {
+      setReplacingId(null);
+    }
   }
 
   return (
