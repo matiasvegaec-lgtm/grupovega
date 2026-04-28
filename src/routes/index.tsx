@@ -201,20 +201,20 @@ function Index() {
   return (
     <Layout>
       {/* HERO */}
-      <section className="relative min-h-[85vh] flex items-center overflow-hidden gradient-deep">
+      <section className="relative min-h-[85vh] md:min-h-[80vh] flex items-center overflow-hidden gradient-deep">
         <div className="absolute inset-0">
           <img src={homeHeroBg} alt="" className="w-full h-full object-cover opacity-40" width={1920} height={1080} />
           <div className="absolute inset-0 gradient-deep opacity-70" />
         </div>
         <UnderwaterScene />
 
-        <div className="relative z-10 container mx-auto px-4 sm:px-6 lg:px-8 pt-24 pb-16">
-          <div className="max-w-3xl">
+        <div className="relative z-10 container mx-auto px-4 sm:px-6 md:px-10 lg:px-8 pt-24 md:pt-28 pb-16 md:pb-20">
+          <div className="max-w-3xl md:max-w-4xl md:mx-auto md:text-center lg:mx-0 lg:text-left">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6 }}
-              className="inline-flex items-center gap-2 px-4 py-2 glass rounded-full text-white/90 text-sm mb-6"
+              className="inline-flex items-center gap-2 px-4 py-2 glass rounded-full text-white/90 text-sm md:text-base mb-6"
             >
               <span className="w-2 h-2 rounded-full bg-turquoise animate-pulse" />
               Insumos para la industria camaronera
@@ -223,7 +223,7 @@ function Index() {
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.7, delay: 0.1 }}
-              className="text-5xl sm:text-6xl lg:text-7xl font-bold text-white leading-[1.05] mb-6"
+              className="text-5xl sm:text-6xl md:text-7xl lg:text-7xl font-bold text-white leading-[1.05] mb-6"
             >
               Todo para tu <span className="text-gradient">camaronera</span> en un solo lugar
             </motion.h1>
@@ -231,7 +231,7 @@ function Index() {
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.7, delay: 0.2 }}
-              className="text-lg sm:text-xl text-white/80 mb-8 max-w-2xl leading-relaxed"
+              className="text-lg sm:text-xl md:text-2xl text-white/80 mb-8 max-w-2xl md:max-w-3xl md:mx-auto lg:mx-0 leading-relaxed"
             >
               Alimento balanceado, aceites, aditivos y más insumos premium con distribución en toda la costa ecuatoriana.
             </motion.p>
@@ -239,17 +239,17 @@ function Index() {
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.7, delay: 0.3 }}
-              className="flex flex-wrap gap-4"
+              className="flex flex-wrap gap-4 md:justify-center lg:justify-start"
             >
               <Link
                 to="/productos"
-                className="group inline-flex items-center gap-2 px-7 py-4 rounded-full gradient-wave text-white font-semibold shadow-glow hover:scale-105 transition-transform"
+                className="group inline-flex items-center gap-2 px-7 md:px-8 py-4 md:py-5 rounded-full gradient-wave text-white font-semibold md:text-lg shadow-glow hover:scale-105 transition-transform"
               >
                 Ver productos <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition" />
               </Link>
               <Link
                 to="/contacto"
-                className="inline-flex items-center gap-2 px-7 py-4 rounded-full glass text-white font-semibold hover:bg-white/20 transition"
+                className="inline-flex items-center gap-2 px-7 md:px-8 py-4 md:py-5 rounded-full glass text-white font-semibold md:text-lg hover:bg-white/20 transition"
               >
                 Contáctanos
               </Link>
@@ -265,12 +265,12 @@ function Index() {
       </section>
 
       {/* CATEGORÍAS — solo icono + nombre */}
-      <section className="py-20 bg-background">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center max-w-2xl mx-auto mb-14">
-            <p className="text-sm font-semibold uppercase tracking-widest text-ocean mb-3">Categorías</p>
-            <h2 className="text-4xl md:text-5xl font-bold text-navy-deep mb-4">Líneas de producto</h2>
-            <p className="text-muted-foreground text-lg">
+      <section className="py-20 md:py-24 bg-background">
+        <div className="container mx-auto px-4 sm:px-6 md:px-10 lg:px-8">
+          <div className="text-center max-w-2xl md:max-w-3xl mx-auto mb-14 md:mb-16">
+            <p className="text-sm md:text-base font-semibold uppercase tracking-widest text-ocean mb-3">Categorías</p>
+            <h2 className="text-4xl md:text-6xl font-bold text-navy-deep mb-4">Líneas de producto</h2>
+            <p className="text-muted-foreground text-lg md:text-xl">
               Descubre nuestro catálogo organizado por categorías para encontrar exactamente lo que tu camaronera necesita.
             </p>
           </div>
@@ -343,7 +343,7 @@ function Index() {
       </section>
 
       {/* PRODUCTOS DESTACADOS — carrusel automático, sueltos sin caja */}
-      <section className="relative py-24 bg-foam overflow-hidden">
+      <section className="relative py-24 md:py-28 bg-foam overflow-hidden">
         {/* fondo decorativo inmersivo */}
         <div className="absolute inset-0 pointer-events-none">
           <div className="absolute -top-32 -left-32 w-96 h-96 rounded-full bg-ocean/10 blur-3xl animate-float-slow" />
@@ -351,13 +351,13 @@ function Index() {
           <div className="absolute top-1/3 left-1/2 w-72 h-72 rounded-full bg-primary/10 blur-3xl animate-float" />
         </div>
 
-        <div className="relative container mx-auto px-4 sm:px-6 lg:px-8 mb-14">
-          <div className="text-center max-w-2xl mx-auto">
+        <div className="relative container mx-auto px-4 sm:px-6 md:px-10 lg:px-8 mb-14 md:mb-16">
+          <div className="text-center max-w-2xl md:max-w-3xl mx-auto">
             <motion.p
               initial={{ opacity: 0, y: 10 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              className="inline-flex items-center gap-2 text-sm font-semibold uppercase tracking-widest text-ocean mb-3"
+              className="inline-flex items-center gap-2 text-sm md:text-base font-semibold uppercase tracking-widest text-ocean mb-3"
             >
               <span className="w-8 h-px bg-ocean" /> Destacados <span className="w-8 h-px bg-ocean" />
             </motion.p>
@@ -366,7 +366,7 @@ function Index() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: 0.1 }}
-              className="text-4xl md:text-5xl font-bold text-navy-deep mb-4"
+              className="text-4xl md:text-6xl font-bold text-navy-deep mb-4"
             >
               Productos más <span className="text-gradient">vendidos</span>
             </motion.h2>
@@ -375,7 +375,7 @@ function Index() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: 0.2 }}
-              className="text-muted-foreground text-lg"
+              className="text-muted-foreground text-lg md:text-xl"
             >
               Los favoritos de los camaroneros ecuatorianos, seleccionados por calidad y rendimiento.
             </motion.p>
@@ -459,12 +459,12 @@ function Index() {
       </section>
 
       {/* PUNTO DE VENTA — info izquierda + mapa derecha */}
-      <section className="py-12 md:py-16 gradient-hero text-white relative overflow-hidden">
+      <section className="py-12 md:py-20 gradient-hero text-white relative overflow-hidden">
         <div className="absolute inset-0 opacity-30" style={{ background: "var(--gradient-glow)" }} />
-        <div className="relative container mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center max-w-2xl mx-auto mb-8">
-            <p className="text-sm font-semibold uppercase tracking-widest text-turquoise mb-2">Punto de venta</p>
-            <h2 className="text-3xl md:text-4xl font-bold">Visítanos</h2>
+        <div className="relative container mx-auto px-4 sm:px-6 md:px-10 lg:px-8">
+          <div className="text-center max-w-2xl md:max-w-3xl mx-auto mb-8 md:mb-12">
+            <p className="text-sm md:text-base font-semibold uppercase tracking-widest text-turquoise mb-2">Punto de venta</p>
+            <h2 className="text-3xl md:text-5xl font-bold">Visítanos</h2>
           </div>
 
           <div className="grid lg:grid-cols-5 gap-6 items-stretch max-w-5xl mx-auto">
@@ -551,12 +551,12 @@ function Index() {
       </section>
 
       {/* PROVEEDORES — marquee con efectos por logo */}
-      <section className="py-20 bg-background overflow-hidden">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8 mb-12">
-          <div className="text-center max-w-2xl mx-auto">
-            <p className="text-sm font-semibold uppercase tracking-widest text-ocean mb-3">Proveedores</p>
-            <h2 className="text-4xl md:text-5xl font-bold text-navy-deep">Marcas que distribuimos</h2>
-            <p className="text-muted-foreground mt-4">Trabajamos con los líderes mundiales en nutrición y sanidad acuícola.</p>
+      <section className="py-20 md:py-24 bg-background overflow-hidden">
+        <div className="container mx-auto px-4 sm:px-6 md:px-10 lg:px-8 mb-12 md:mb-14">
+          <div className="text-center max-w-2xl md:max-w-3xl mx-auto">
+            <p className="text-sm md:text-base font-semibold uppercase tracking-widest text-ocean mb-3">Proveedores</p>
+            <h2 className="text-4xl md:text-6xl font-bold text-navy-deep">Marcas que distribuimos</h2>
+            <p className="text-muted-foreground mt-4 md:text-lg">Trabajamos con los líderes mundiales en nutrición y sanidad acuícola.</p>
           </div>
         </div>
 
