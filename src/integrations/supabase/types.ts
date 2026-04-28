@@ -301,6 +301,7 @@ export type Database = {
         Row: {
           active: boolean
           created_at: string
+          display_scale: number
           id: string
           image_url: string
           name: string
@@ -310,6 +311,7 @@ export type Database = {
         Insert: {
           active?: boolean
           created_at?: string
+          display_scale?: number
           id?: string
           image_url: string
           name: string
@@ -319,6 +321,7 @@ export type Database = {
         Update: {
           active?: boolean
           created_at?: string
+          display_scale?: number
           id?: string
           image_url?: string
           name?: string
