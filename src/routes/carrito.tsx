@@ -3,6 +3,7 @@ import { Minus, Plus, Trash2, ShoppingBag, ArrowRight } from "lucide-react";
 import { Layout } from "@/components/Layout";
 import { PageHero } from "@/components/PageHero";
 import { useCart } from "@/contexts/CartContext";
+import { usePageHero } from "@/hooks/usePageHero";
 
 export const Route = createFileRoute("/carrito")({
   head: () => ({
@@ -16,10 +17,11 @@ export const Route = createFileRoute("/carrito")({
 
 function CarritoPage() {
   const { items, updateQty, removeItem, subtotal } = useCart();
+  const heroBg = usePageHero("carrito");
 
   return (
     <Layout>
-      <PageHero eyebrow="Tu compra" title="Carrito" description="Revisa, ajusta cantidades y procede al pago." />
+      <PageHero eyebrow="Tu compra" title="Carrito" description="Revisa, ajusta cantidades y procede al pago." backgroundImage={heroBg} />
       <section className="py-16 bg-background">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-5xl">
           {items.length === 0 ? (
