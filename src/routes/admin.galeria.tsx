@@ -491,11 +491,74 @@ function SuppliersSection() {
                 !logo.active ? "opacity-60" : ""
               }`}
             >
-              <div className="aspect-[16/9] bg-white flex items-center justify-center p-4">
+              <div className="relative aspect-[16/9] bg-white flex items-center justify-center p-4 group">
                 <img src={logo.image_url} alt={logo.name} className="max-w-full max-h-full object-contain" />
+                <label
+                  htmlFor={`logo-replace-${logo.id}`}
+                  className={`absolute inset-0 flex items-center justify-center bg-black/50 text-white text-xs font-semibold opacity-0 group-hover:opacity-100 transition cursor-pointer ${
+                    replacingId === logo.id ? "opacity-100" : ""
+                  }`}
+                >
+                  {replacingId === logo.id ? (
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                  ) : (
+                    <span className="inline-flex items-center gap-1">
+                      <ImageUp className="w-3.5 h-3.5" /> Reemplazar imagen
+                    </span>
+                  )}
+                </label>
+                <input
+                  id={`logo-replace-${logo.id}`}
+                  type="file"
+                  accept="image/*"
+                  className="hidden"
+                  onChange={(e) => {
+                    const file = e.target.files?.[0];
+                    if (file) replaceImage(logo, file);
+                    e.target.value = "";
+                  }}
+                />
               </div>
               <div className="p-3 space-y-2">
-                <p className="text-sm font-semibold text-navy-deep truncate">{logo.name}</p>
+                {editingId === logo.id ? (
+                  <div className="flex items-center gap-1">
+                    <input
+                      type="text"
+                      value={editingName}
+                      onChange={(e) => setEditingName(e.target.value)}
+                      className="flex-1 px-2 py-1 rounded border border-border bg-background text-sm"
+                      autoFocus
+                    />
+                    <button
+                      type="button"
+                      onClick={() => saveEdit(logo)}
+                      className="p-1.5 rounded text-emerald-600 hover:bg-emerald-50"
+                      title="Guardar"
+                    >
+                      <Check className="w-3.5 h-3.5" />
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setEditingId(null)}
+                      className="p-1.5 rounded text-muted-foreground hover:bg-foam"
+                      title="Cancelar"
+                    >
+                      <XIcon className="w-3.5 h-3.5" />
+                    </button>
+                  </div>
+                ) : (
+                  <div className="flex items-center justify-between gap-2">
+                    <p className="text-sm font-semibold text-navy-deep truncate flex-1">{logo.name}</p>
+                    <button
+                      type="button"
+                      onClick={() => startEdit(logo)}
+                      className="p-1.5 rounded text-ocean hover:bg-ocean/10"
+                      title="Editar nombre"
+                    >
+                      <Pencil className="w-3.5 h-3.5" />
+                    </button>
+                  </div>
+                )}
                 <div className="flex items-center justify-between gap-2">
                   <div className="flex items-center gap-1 text-muted-foreground">
                     <GripVertical className="w-3.5 h-3.5" />
