@@ -5,7 +5,7 @@ import { useEffect, useRef, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Layout } from "@/components/Layout";
 import { UnderwaterScene } from "@/components/UnderwaterScene";
-import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
+import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious, type CarouselApi } from "@/components/ui/carousel";
 import Autoplay from "embla-carousel-autoplay";
 import heroImg from "@/assets/hero-shrimp-farm.jpg";
 import pBalanceado from "@/assets/p-balanceado.png";
@@ -66,6 +66,20 @@ function Index() {
     Autoplay({ delay: 2200, stopOnInteraction: false, stopOnMouseEnter: false })
   );
   const marqueeRef = useRef<HTMLDivElement>(null);
+  const [featuredApi, setFeaturedApi] = useState<CarouselApi | null>(null);
+  const [featuredSelected, setFeaturedSelected] = useState(0);
+
+  useEffect(() => {
+    if (!featuredApi) return;
+    const onSelect = () => setFeaturedSelected(featuredApi.selectedScrollSnap());
+    onSelect();
+    featuredApi.on("select", onSelect);
+    featuredApi.on("reInit", onSelect);
+    return () => {
+      featuredApi.off("select", onSelect);
+      featuredApi.off("reInit", onSelect);
+    };
+  }, [featuredApi]);
 
   useEffect(() => {
     supabase
