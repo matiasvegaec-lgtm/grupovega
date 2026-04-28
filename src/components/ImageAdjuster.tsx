@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { X, Loader2, ZoomIn, ZoomOut, RotateCcw, Check } from "lucide-react";
+import { toast } from "sonner";
 
 type Props = {
   /** Imagen fuente: URL pública, data URL o object URL */
@@ -165,7 +166,7 @@ export function ImageAdjuster({ src, outputSize = 1000, backgroundColor = "#FFFF
             0.95,
           );
         });
-      } catch (err) {
+      } catch {
         // Caso típico: canvas "tainted" por CORS. Avisamos al usuario.
         throw new Error(
           "No se pudo exportar la imagen ajustada (problema de permisos CORS). Vuelve a subir la imagen original.",
@@ -173,8 +174,7 @@ export function ImageAdjuster({ src, outputSize = 1000, backgroundColor = "#FFFF
       }
       await onConfirm(blob);
     } catch (err: any) {
-      // Re-lanzar para que quien lo invoque pueda mostrar toast si quiere
-      throw err;
+      toast.error(err?.message ?? "No se pudo aplicar el ajuste de imagen");
     } finally {
       setSaving(false);
     }
