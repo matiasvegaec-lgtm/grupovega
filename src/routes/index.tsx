@@ -309,8 +309,8 @@ function Index() {
         </div>
 
         <div className="relative w-full">
-          {/* Marquee automático (mismo efecto en mobile y desktop) */}
-          <div className="relative">
+          {/* Desktop: marquee automático */}
+          <div className="relative hidden lg:block">
             <div className="pointer-events-none absolute left-0 top-0 bottom-0 w-12 md:w-24 z-10 bg-gradient-to-r from-foam to-transparent" />
             <div className="pointer-events-none absolute right-0 top-0 bottom-0 w-12 md:w-24 z-10 bg-gradient-to-l from-foam to-transparent" />
             <div
@@ -343,6 +343,36 @@ function Index() {
                 </Link>
               ))}
             </div>
+          </div>
+
+          {/* Mobile / Tablet: carrusel con flechas */}
+          <div className="lg:hidden container mx-auto px-6">
+            <Carousel opts={{ align: "start", loop: true }} className="relative">
+              <CarouselContent className="-ml-4">
+                {featured.map((p, i) => (
+                  <CarouselItem key={`${p.name}-${i}`} className="pl-4 basis-[60%] sm:basis-[40%]">
+                    <Link
+                      to="/productos/$productId"
+                      params={{ productId: p.slug || p.id }}
+                      className="group flex flex-col items-center cursor-pointer"
+                    >
+                      <div className="relative w-40 h-40 sm:w-48 sm:h-48 flex items-center justify-center">
+                        <div className="absolute inset-0 rounded-full bg-gradient-to-br from-white via-foam to-ocean/20 shadow-[0_10px_30px_-10px_rgba(0,80,140,0.25)] ring-1 ring-ocean/10" />
+                        <img
+                          src={p.img}
+                          alt={p.name}
+                          loading="lazy"
+                          className="relative z-10 w-32 h-32 sm:w-36 sm:h-36 object-contain drop-shadow-xl"
+                        />
+                      </div>
+                      <p className="mt-3 font-semibold text-sm text-navy-deep text-center px-1">{p.name}</p>
+                    </Link>
+                  </CarouselItem>
+                ))}
+              </CarouselContent>
+              <CarouselPrevious className="left-1 bg-card/95 border-ocean/30 text-ocean hover:bg-ocean hover:text-white" />
+              <CarouselNext className="right-1 bg-card/95 border-ocean/30 text-ocean hover:bg-ocean hover:text-white" />
+            </Carousel>
           </div>
         </div>
 
