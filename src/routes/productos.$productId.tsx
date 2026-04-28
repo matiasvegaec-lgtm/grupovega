@@ -8,22 +8,9 @@ import { useCart } from "@/contexts/CartContext";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import feedImg from "@/assets/product-feed.jpg";
-import provNlproinsu from "@/assets/proveedor-nlproinsu.png";
-import provNaturalstar from "@/assets/proveedor-naturalstar.png";
-import provBlueweight from "@/assets/proveedor-blueweight.png";
-import provLacolina from "@/assets/proveedor-lacolina.png";
-import provLarviva from "@/assets/proveedor-larviva.png";
-import provBiomar from "@/assets/proveedor-biomar.png";
 import paymentMethods from "@/assets/payment-methods.png";
 
-const SUPPLIERS = [
-  { name: "NLProinsu", img: provNlproinsu },
-  { name: "NaturalStar", img: provNaturalstar },
-  { name: "Blueweight", img: provBlueweight },
-  { name: "La Colina", img: provLacolina },
-  { name: "Larviva", img: provLarviva },
-  { name: "BioMar", img: provBiomar },
-];
+type Supplier = { name: string; img: string; scale: number };
 
 type Product = {
   id: string;
@@ -80,6 +67,24 @@ function ProductDetailPage() {
   const [related, setRelated] = useState<Product[]>([]);
   const [emblaRef, emblaApi] = useEmblaCarousel({ loop: false, align: "center" });
   const [selectedIdx, setSelectedIdx] = useState(0);
+  const [suppliers, setSuppliers] = useState<Supplier[]>([]);
+
+  useEffect(() => {
+    supabase
+      .from("supplier_logos")
+      .select("name, image_url, display_scale")
+      .eq("active", true)
+      .order("sort_order", { ascending: true })
+      .then(({ data }) => {
+        setSuppliers(
+          (data ?? []).map((s) => ({
+            name: s.name,
+            img: s.image_url,
+            scale: (s as { display_scale?: number }).display_scale ?? 100,
+          })),
+        );
+      });
+  }, []);
 
   useEffect(() => {
     if (!emblaApi) return;
@@ -495,7 +500,11 @@ function ProductDetailPage() {
           <div className="pointer-events-none absolute left-0 top-0 bottom-0 w-32 z-10 bg-gradient-to-r from-foam to-transparent" />
           <div className="pointer-events-none absolute right-0 top-0 bottom-0 w-32 z-10 bg-gradient-to-l from-foam to-transparent" />
           <div className="flex gap-6 animate-marquee-slow w-max hover:[animation-play-state:paused]">
-            {[...SUPPLIERS, ...SUPPLIERS, ...SUPPLIERS].map((s, i) => (
+            {(() => {
+              const repeats = Math.max(1, Math.ceil(12 / Math.max(suppliers.length, 1)));
+              const base = Array.from({ length: repeats }, () => suppliers).flat();
+              return [...base, ...base];
+            })().map((s, i) => (
               <div
                 key={`${s.name}-${i}`}
                 className="relative shrink-0 w-56 h-28 group"
@@ -506,7 +515,8 @@ function ProductDetailPage() {
                     src={s.img}
                     alt={s.name}
                     loading="lazy"
-                    className="max-h-full max-w-full object-contain group-hover:scale-105 transition-transform duration-300"
+                    style={{ transform: `scale(${(s.scale ?? 100) / 100})` }}
+                    className="max-h-full max-w-full object-contain transition-transform duration-300 group-hover:opacity-90"
                   />
                 </div>
               </div>
