@@ -676,6 +676,19 @@ function HeroesSection() {
     load();
   }
 
+  async function removeHero(row: PageHeroRow) {
+    if (!confirm(`¿Eliminar la imagen del banner "${row.label}"? La página volverá a usar el degradado por defecto.`)) return;
+    try {
+      const url = new URL(row.image_url);
+      const parts = url.pathname.split("/company-images/");
+      if (parts[1]) await supabase.storage.from("company-images").remove([parts[1]]);
+    } catch { /* ignore */ }
+    const { error } = await supabase.from("page_heroes").delete().eq("id", row.id);
+    if (error) return toast.error(error.message);
+    toast.success("Banner eliminado");
+    load();
+  }
+
   return (
     <div>
       <p className="text-xs text-muted-foreground mb-4">
@@ -732,14 +745,24 @@ function HeroesSection() {
                       }}
                     />
                     {row && (
-                      <button
-                        type="button"
-                        onClick={() => toggleActive(row)}
-                        className="inline-flex items-center gap-1 text-xs text-ocean hover:bg-ocean/10 px-2 py-1 rounded"
-                        title={row.active ? "Ocultar" : "Mostrar"}
-                      >
-                        {row.active ? <Eye className="w-3.5 h-3.5" /> : <EyeOff className="w-3.5 h-3.5" />}
-                      </button>
+                      <div className="flex items-center gap-1">
+                        <button
+                          type="button"
+                          onClick={() => toggleActive(row)}
+                          className="inline-flex items-center gap-1 text-xs text-ocean hover:bg-ocean/10 px-2 py-1 rounded"
+                          title={row.active ? "Ocultar" : "Mostrar"}
+                        >
+                          {row.active ? <Eye className="w-3.5 h-3.5" /> : <EyeOff className="w-3.5 h-3.5" />}
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => removeHero(row)}
+                          className="inline-flex items-center gap-1 text-xs text-destructive hover:bg-destructive/10 px-2 py-1 rounded"
+                          title="Eliminar"
+                        >
+                          <Trash2 className="w-3.5 h-3.5" />
+                        </button>
+                      </div>
                     )}
                   </div>
                 </div>
