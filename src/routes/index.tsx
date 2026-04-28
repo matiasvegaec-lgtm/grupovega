@@ -52,7 +52,7 @@ const featuredFallback: FeaturedItem[] = [
   { id: "fb-6", slug: null, name: "Vitaminas Premix", img: pVitamina },
 ];
 
-type SupplierLogo = { name: string; img: string };
+type SupplierLogo = { name: string; img: string; scale?: number };
 
 const supplierLogosFallback: SupplierLogo[] = [
   { name: "NLProinsu", img: provNlproinsu },
@@ -125,12 +125,18 @@ function Index() {
   useEffect(() => {
     supabase
       .from("supplier_logos")
-      .select("name, image_url")
+      .select("name, image_url, display_scale")
       .eq("active", true)
       .order("sort_order", { ascending: true })
       .then(({ data }) => {
         if (data && data.length > 0) {
-          setSupplierLogos(data.map((s) => ({ name: s.name, img: s.image_url })));
+          setSupplierLogos(
+            data.map((s) => ({
+              name: s.name,
+              img: s.image_url,
+              scale: (s as { display_scale?: number }).display_scale ?? 100,
+            })),
+          );
         }
       });
   }, []);
