@@ -13,17 +13,16 @@ const BUBBLES = Array.from({ length: 14 }, (_, i) => {
 });
 
 export function UnderwaterScene() {
-  const [isMobile, setIsMobile] = useState(false);
+  const [hideProducts, setHideProducts] = useState(false);
 
   useEffect(() => {
-    const mql = window.matchMedia("(max-width: 639px)");
-    const update = () => setIsMobile(mql.matches);
+    // Ocultar imagen de productos en mobile y tablet (hasta lg = 1024px)
+    const mql = window.matchMedia("(max-width: 1023px)");
+    const update = () => setHideProducts(mql.matches);
     update();
     mql.addEventListener("change", update);
     return () => mql.removeEventListener("change", update);
   }, []);
-
-  if (isMobile) return null;
 
   return (
     <>
@@ -47,6 +46,7 @@ export function UnderwaterScene() {
         ))}
       </div>
 
+      {hideProducts ? null : (
     <div
       className="
         pointer-events-none absolute -z-0
@@ -81,6 +81,7 @@ export function UnderwaterScene() {
         className="relative z-10 w-full h-full object-contain hero-product-reveal"
       />
       </div>
+      )}
     </>
   );
 }
