@@ -67,6 +67,24 @@ function ProductDetailPage() {
   const [related, setRelated] = useState<Product[]>([]);
   const [emblaRef, emblaApi] = useEmblaCarousel({ loop: false, align: "center" });
   const [selectedIdx, setSelectedIdx] = useState(0);
+  const [suppliers, setSuppliers] = useState<Supplier[]>([]);
+
+  useEffect(() => {
+    supabase
+      .from("supplier_logos")
+      .select("name, image_url, display_scale")
+      .eq("active", true)
+      .order("sort_order", { ascending: true })
+      .then(({ data }) => {
+        setSuppliers(
+          (data ?? []).map((s) => ({
+            name: s.name,
+            img: s.image_url,
+            scale: (s as { display_scale?: number }).display_scale ?? 100,
+          })),
+        );
+      });
+  }, []);
 
   useEffect(() => {
     if (!emblaApi) return;
