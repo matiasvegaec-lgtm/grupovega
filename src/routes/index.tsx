@@ -304,34 +304,8 @@ function Index() {
             ))}
           </div>
 
-          {/* Tablet: grid 2 columnas para aprovechar el ancho */}
-          <div className="hidden md:grid lg:hidden grid-cols-2 gap-6 max-w-3xl mx-auto">
-            {categories.map((c, i) => (
-              <motion.div
-                key={c.name}
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: i * 0.08 }}
-                className="group relative"
-              >
-                <Link to="/productos" search={{ categoria: c.categoria }} className="block h-full">
-                  <div className="absolute -inset-0.5 gradient-wave rounded-2xl opacity-0 group-hover:opacity-60 blur transition duration-500" />
-                  <div className="relative h-full bg-card border border-border rounded-2xl p-6 flex flex-col items-center text-center hover:border-ocean transition-all duration-300 group-hover:-translate-y-2 group-hover:shadow-elegant overflow-hidden">
-                    <div className="relative w-20 h-20 rounded-2xl gradient-wave flex items-center justify-center shadow-glow mb-4">
-                      <c.icon className="w-10 h-10 text-white" strokeWidth={1.6} />
-                    </div>
-                    <span className="font-bold text-lg text-navy-deep mb-1">{c.name}</span>
-                    <span className="text-xs font-semibold uppercase tracking-wider text-ocean mb-3">{c.count}</span>
-                    <p className="text-sm text-muted-foreground leading-relaxed flex-1">{c.desc}</p>
-                  </div>
-                </Link>
-              </motion.div>
-            ))}
-          </div>
-
-          {/* Mobile: carrusel centrado con item activo destacado por opacidad */}
-          <div className="md:hidden max-w-md mx-auto px-2">
+          {/* Mobile / Tablet: mismo carrusel, mayor ancho/escala en tablet */}
+          <div className="lg:hidden max-w-md md:max-w-2xl mx-auto px-2">
             <Carousel
               opts={{ align: "center", loop: true }}
               plugins={[categoriesAutoplay.current]}
@@ -342,19 +316,19 @@ function Index() {
                 {categories.map((c, idx) => {
                   const isActive = idx === categoriesSelected;
                   return (
-                    <CarouselItem key={c.name} className="basis-[70%] flex justify-center">
+                    <CarouselItem key={c.name} className="basis-[70%] md:basis-[55%] flex justify-center">
                       <Link
                         to="/productos"
                         search={{ categoria: c.categoria }}
                         className={`group block h-full w-full transition-all duration-500 ease-out ${isActive ? "opacity-100" : "opacity-50"}`}
                       >
-                        <div className="relative h-full bg-card border border-border rounded-2xl p-5 flex flex-col items-center text-center hover:border-ocean transition-all duration-300 overflow-hidden">
-                          <div className="relative w-16 h-16 rounded-2xl gradient-wave flex items-center justify-center shadow-glow mb-3">
-                            <c.icon className="w-8 h-8 text-white" strokeWidth={1.6} />
+                        <div className="relative h-full bg-card border border-border rounded-2xl p-5 md:p-7 flex flex-col items-center text-center hover:border-ocean transition-all duration-300 overflow-hidden">
+                          <div className="relative w-16 h-16 md:w-20 md:h-20 rounded-2xl gradient-wave flex items-center justify-center shadow-glow mb-3 md:mb-4">
+                            <c.icon className="w-8 h-8 md:w-10 md:h-10 text-white" strokeWidth={1.6} />
                           </div>
-                          <span className="font-bold text-base text-navy-deep mb-1">{c.name}</span>
-                          <span className="text-[11px] font-semibold uppercase tracking-wider text-ocean mb-2">{c.count}</span>
-                          <p className="text-xs text-muted-foreground leading-relaxed flex-1">{c.desc}</p>
+                          <span className="font-bold text-base md:text-lg text-navy-deep mb-1">{c.name}</span>
+                          <span className="text-[11px] md:text-xs font-semibold uppercase tracking-wider text-ocean mb-2 md:mb-3">{c.count}</span>
+                          <p className="text-xs md:text-sm text-muted-foreground leading-relaxed flex-1">{c.desc}</p>
                         </div>
                       </Link>
                     </CarouselItem>
@@ -429,28 +403,8 @@ function Index() {
             </div>
           </div>
 
-          {/* Tablet: grid de productos destacados */}
-          <div className="hidden md:block lg:hidden container mx-auto px-6">
-            <div className="grid grid-cols-3 gap-6 max-w-4xl mx-auto">
-              {featured.slice(0, 6).map((p) => (
-                <Link
-                  key={p.id}
-                  to="/productos/$productId"
-                  params={{ productId: p.slug || p.id }}
-                  className="group flex flex-col items-center cursor-pointer"
-                >
-                  <div className="relative w-40 h-40 flex items-center justify-center">
-                    <div className="absolute inset-0 rounded-full bg-gradient-to-br from-white via-foam to-ocean/20 shadow-[0_10px_30px_-10px_rgba(0,80,140,0.25)] ring-1 ring-ocean/10" />
-                    <img src={p.img} alt={p.name} loading="lazy" className="relative z-10 w-32 h-32 object-contain group-hover:scale-110 transition-transform duration-500 drop-shadow-xl" />
-                  </div>
-                  <p className="mt-3 text-sm font-semibold text-navy-deep text-center px-1 group-hover:text-ocean transition-colors">{p.name}</p>
-                </Link>
-              ))}
-            </div>
-          </div>
-
-          {/* Mobile: carrusel centrado, item central más grande */}
-          <div className="md:hidden max-w-md mx-auto px-2">
+          {/* Mobile / Tablet: mismo carrusel, mayor ancho/escala en tablet */}
+          <div className="lg:hidden max-w-md md:max-w-2xl mx-auto px-2">
             <Carousel
               opts={{ align: "center", loop: true }}
               plugins={[mobileAutoplay.current]}
@@ -461,17 +415,17 @@ function Index() {
                 {featured.map((p, idx) => {
                   const isActive = idx === featuredSelected;
                   return (
-                    <CarouselItem key={p.id} className="basis-[60%] flex justify-center">
+                    <CarouselItem key={p.id} className="basis-[60%] md:basis-[45%] flex justify-center">
                       <Link
                         to="/productos/$productId"
                         params={{ productId: p.slug || p.id }}
                         className={`group flex h-full flex-col items-center cursor-pointer transition-all duration-500 ease-out ${isActive ? "scale-110 opacity-100" : "scale-75 opacity-60"}`}
                       >
-                        <div className="relative w-44 h-44 flex items-center justify-center">
+                        <div className="relative w-44 h-44 md:w-56 md:h-56 flex items-center justify-center">
                           <div className="absolute inset-0 rounded-full bg-gradient-to-br from-white via-foam to-ocean/20 shadow-[0_10px_30px_-10px_rgba(0,80,140,0.25)] ring-1 ring-ocean/10" />
-                          <img src={p.img} alt={p.name} loading="lazy" className="relative z-10 w-36 h-36 object-contain drop-shadow-xl transition-transform duration-500" />
+                          <img src={p.img} alt={p.name} loading="lazy" className="relative z-10 w-36 h-36 md:w-44 md:h-44 object-contain drop-shadow-xl transition-transform duration-500" />
                         </div>
-                        <p className="mt-3 text-sm font-semibold text-navy-deep text-center px-1">{p.name}</p>
+                        <p className="mt-3 text-sm md:text-base font-semibold text-navy-deep text-center px-1">{p.name}</p>
                         {isActive && <span className="text-xs text-muted-foreground mt-1">Destacado ⭐</span>}
                       </Link>
                     </CarouselItem>
