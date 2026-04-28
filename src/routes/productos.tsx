@@ -474,53 +474,76 @@ function ProductosPage() {
                             <span className="text-xs text-muted-foreground">Agotado</span>
                           )}
                         </div>
-                        {p.stock > 0 && (
-                          <div className="flex items-center justify-center gap-2 mb-3">
-                            <button
-                              type="button"
-                              onClick={() => setQuantities((q) => ({ ...q, [p.id]: Math.max(0, (q[p.id] ?? 0) - 1) }))}
-                              className="w-8 h-8 rounded-full border border-border flex items-center justify-center hover:border-ocean hover:text-ocean transition"
-                              aria-label="Disminuir"
-                            >
-                              <Minus className="w-3.5 h-3.5" />
-                            </button>
-                            <span className="min-w-[2rem] text-center font-semibold text-navy-deep">
-                              {quantities[p.id] ?? 0}
-                            </span>
-                            <button
-                              type="button"
-                              onClick={() => {
-                                setQuantities((q) => {
-                                  const next = Math.min(p.stock, (q[p.id] ?? 0) + 1);
-                                  toast.success(`${p.name} (${next})`);
-                                  return { ...q, [p.id]: next };
-                                });
-                              }}
-                              className="w-8 h-8 rounded-full border border-border flex items-center justify-center hover:border-ocean hover:text-ocean transition"
-                              aria-label="Aumentar"
-                            >
-                              <Plus className="w-3.5 h-3.5" />
-                            </button>
-                          </div>
-                        )}
-                        <button
-                          disabled={p.stock <= 0}
-                          onClick={() => {
-                            const qty = Math.max(1, quantities[p.id] ?? 1);
-                            addItem({
-                              id: p.id,
-                              name: p.name,
-                              price: Number(p.price),
-                              category: p.category,
-                              img: p.image_url || feedImg,
-                            }, qty);
-                            toast.success(`${qty} × ${p.name} agregado al carrito`);
-                            setQuantities((q) => ({ ...q, [p.id]: 0 }));
-                          }}
-                          className="w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-full gradient-wave text-white text-sm font-semibold shadow-glow hover:scale-[1.02] transition-transform disabled:opacity-50 disabled:cursor-not-allowed"
-                        >
-                          <ShoppingCart className="w-4 h-4" /> Agregar al carrito
-                        </button>
+                        {(() => {
+                          const inCart = cartItems.find((c) => c.id === p.id)?.quantity ?? 0;
+                          return (
+                            <>
+                              {p.stock > 0 && (
+                                <div className="flex items-center justify-center gap-2 mb-3">
+                                  <button
+                                    type="button"
+                                    onClick={() => {
+                                      const next = Math.max(0, inCart - 1);
+                                      updateQty(p.id, next);
+                                      if (inCart > 0) {
+                                        toast.success(
+                                          next === 0
+                                            ? `${p.name} eliminado del carrito`
+                                            : `${p.name} actualizado (${next})`,
+                                        );
+                                      }
+                                    }}
+                                    className="w-8 h-8 rounded-full border border-border flex items-center justify-center hover:border-ocean hover:text-ocean transition"
+                                    aria-label="Disminuir"
+                                  >
+                                    <Minus className="w-3.5 h-3.5" />
+                                  </button>
+                                  <span className="min-w-[2rem] text-center font-semibold text-navy-deep">
+                                    {inCart}
+                                  </span>
+                                  <button
+                                    type="button"
+                                    onClick={() => {
+                                      if (inCart >= p.stock) return;
+                                      addItem({
+                                        id: p.id,
+                                        name: p.name,
+                                        price: Number(p.price),
+                                        category: p.category,
+                                        img: p.image_url || feedImg,
+                                      }, 1);
+                                      toast.success(`${p.name} agregado al carrito (${inCart + 1})`);
+                                    }}
+                                    className="w-8 h-8 rounded-full border border-border flex items-center justify-center hover:border-ocean hover:text-ocean transition"
+                                    aria-label="Aumentar"
+                                  >
+                                    <Plus className="w-3.5 h-3.5" />
+                                  </button>
+                                </div>
+                              )}
+                              <button
+                                disabled={p.stock <= 0}
+                                onClick={() => {
+                                  if (inCart === 0) {
+                                    addItem({
+                                      id: p.id,
+                                      name: p.name,
+                                      price: Number(p.price),
+                                      category: p.category,
+                                      img: p.image_url || feedImg,
+                                    }, 1);
+                                    toast.success(`${p.name} agregado al carrito (1)`);
+                                  } else {
+                                    toast.success(`${p.name} ya está en el carrito (${inCart})`);
+                                  }
+                                }}
+                                className="w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-full gradient-wave text-white text-sm font-semibold shadow-glow hover:scale-[1.02] transition-transform disabled:opacity-50 disabled:cursor-not-allowed"
+                              >
+                                <ShoppingCart className="w-4 h-4" /> Agregar al carrito
+                              </button>
+                            </>
+                          );
+                        })()}
                       </div>
                     </motion.div>
                   ))}
