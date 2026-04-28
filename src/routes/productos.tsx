@@ -9,12 +9,6 @@ import { useFavorites } from "@/contexts/FavoritesContext";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import feedImg from "@/assets/product-feed.jpg";
-import provNlproinsu from "@/assets/proveedor-nlproinsu.png";
-import provNaturalstar from "@/assets/proveedor-naturalstar.png";
-import provBlueweight from "@/assets/proveedor-blueweight.png";
-import provLacolina from "@/assets/proveedor-lacolina.png";
-import provLarviva from "@/assets/proveedor-larviva.png";
-import provBiomar from "@/assets/proveedor-biomar.png";
 import productosHero from "@/assets/productos-hero.jpeg";
 import { usePageHero } from "@/hooks/usePageHero";
 
@@ -59,14 +53,7 @@ const CATEGORY_META: Record<string, { icon: typeof Wheat; desc: string }> = {
   "Aceites": { icon: Droplet, desc: "Aceites de pescado" },
 };
 
-const SUPPLIERS = [
-  { name: "NLProinsu", img: provNlproinsu },
-  { name: "NaturalStar", img: provNaturalstar },
-  { name: "Blueweight", img: provBlueweight },
-  { name: "La Colina", img: provLacolina },
-  { name: "Larviva", img: provLarviva },
-  { name: "BioMar", img: provBiomar },
-];
+type Supplier = { name: string; img: string; scale: number };
 
 function ProductosPage() {
   const location = useLocation();
