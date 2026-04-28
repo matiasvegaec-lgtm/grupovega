@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState, FormEvent, useRef } from "react";
-import { Trash2, Loader2, ImageUp, GripVertical, Eye, EyeOff } from "lucide-react";
+import { Trash2, Loader2, ImageUp, GripVertical, Eye, EyeOff, ImageIcon } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 
@@ -25,15 +25,29 @@ type SupplierLogoRow = {
   created_at: string;
 };
 
+type PageHeroRow = {
+  id: string;
+  page_key: string;
+  label: string;
+  image_url: string;
+  active: boolean;
+};
+
+// Páginas que pueden tener un banner editable. Si no existe registro en BD,
+// se ofrecerá crearlo desde el panel.
+const EDITABLE_HERO_PAGES: { page_key: string; label: string }[] = [
+  { page_key: "productos", label: "Banner — Productos" },
+];
+
 function AdminGaleria() {
-  const [tab, setTab] = useState<"company" | "suppliers">("company");
+  const [tab, setTab] = useState<"company" | "suppliers" | "heroes">("company");
 
   return (
     <div className="p-4 md:p-8 max-w-5xl mx-auto">
       <div className="mb-6">
         <h1 className="text-2xl md:text-3xl font-bold text-navy-deep">Galería</h1>
         <p className="text-sm text-muted-foreground mt-1">
-          Administra las imágenes de "Quiénes Somos" y los logos de marcas que distribuyes.
+          Administra las imágenes de "Quiénes Somos", los logos de marcas y los banners de las páginas.
         </p>
       </div>
 
@@ -58,9 +72,21 @@ function AdminGaleria() {
         >
           Marcas que distribuimos
         </button>
+        <button
+          onClick={() => setTab("heroes")}
+          className={`px-4 py-2 text-sm font-semibold border-b-2 -mb-px transition ${
+            tab === "heroes"
+              ? "border-ocean text-ocean"
+              : "border-transparent text-muted-foreground hover:text-navy-deep"
+          }`}
+        >
+          Banners de páginas
+        </button>
       </div>
 
-      {tab === "company" ? <CompanyGallerySection /> : <SuppliersSection />}
+      {tab === "company" && <CompanyGallerySection />}
+      {tab === "suppliers" && <SuppliersSection />}
+      {tab === "heroes" && <HeroesSection />}
     </div>
   );
 }
