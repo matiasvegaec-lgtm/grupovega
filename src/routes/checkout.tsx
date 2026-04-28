@@ -174,7 +174,14 @@ function CheckoutPage() {
       if (error) throw error;
       const orderNumber = data.order_number;
       const summary = buildOrderSummaryText(orderNumber);
-      const waUrl = `https://wa.me/${WHATSAPP_EMPRESA}?text=${encodeURIComponent(summary)}`;
+      // Usamos web.whatsapp.com en escritorio para abrir directo el chat web
+      // (evita el diálogo "¿Abrir WhatsApp?"). En móvil, wa.me abre la app nativa.
+      const isMobile = typeof navigator !== "undefined" &&
+        /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent);
+      const encoded = encodeURIComponent(summary);
+      const waUrl = isMobile
+        ? `https://wa.me/${WHATSAPP_EMPRESA}?text=${encoded}`
+        : `https://web.whatsapp.com/send?phone=${WHATSAPP_EMPRESA}&text=${encoded}`;
 
       // Guardar datos del cliente para futuras compras
       if (saveData && typeof window !== "undefined") {
