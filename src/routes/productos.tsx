@@ -403,9 +403,19 @@ function ProductosPage() {
                           loading="lazy"
                           className="w-full h-full object-contain p-3 group-hover:scale-110 transition-transform duration-700"
                         />
-                        <span className="absolute top-3 left-3 px-3 py-1 rounded-full bg-orange-500 text-white text-xs font-semibold shadow-md">
-                          {p.category}
-                        </span>
+                        <div className="absolute top-3 left-3 flex flex-col items-start gap-1">
+                          <span className="px-3 py-1 rounded-full bg-orange-500 text-white text-xs font-semibold shadow-md">
+                            {p.category}
+                          </span>
+                          {p.subcategory_id && (() => {
+                            const sub = subcategories.find((s) => s.id === p.subcategory_id);
+                            return sub ? (
+                              <span className="px-2 py-0.5 rounded-full bg-white/95 text-navy-deep text-[10px] font-semibold shadow-sm">
+                                {sub.name}
+                              </span>
+                            ) : null;
+                          })()}
+                        </div>
                       </Link>
                       <button
                         type="button"
@@ -441,21 +451,10 @@ function ProductosPage() {
                         <Link
                           to="/productos/$productId"
                           params={{ productId: p.slug || p.id }}
-                          className="text-left font-bold text-navy-deep mb-1 hover:text-ocean transition"
+                          className="text-left font-bold text-navy-deep mb-3 hover:text-ocean transition flex-1"
                         >
                           {p.name}
                         </Link>
-                        {p.subcategory_id && (() => {
-                          const sub = subcategories.find((s) => s.id === p.subcategory_id);
-                          return sub ? (
-                            <span className="inline-block self-start px-2 py-0.5 mb-2 rounded-full bg-foam text-ocean text-[11px] font-semibold">
-                              {sub.name}
-                            </span>
-                          ) : null;
-                        })()}
-                        <p className="text-muted-foreground text-sm mb-4 line-clamp-2 flex-1">
-                          {p.description}
-                        </p>
                         <div className="flex items-end justify-between mb-3 gap-2">
                           <div className="flex flex-col">
                             <span className="text-xl font-bold text-navy-deep leading-tight">
@@ -478,18 +477,18 @@ function ProductosPage() {
                           <div className="flex items-center justify-center gap-2 mb-3">
                             <button
                               type="button"
-                              onClick={() => setQuantities((q) => ({ ...q, [p.id]: Math.max(1, (q[p.id] ?? 1) - 1) }))}
+                              onClick={() => setQuantities((q) => ({ ...q, [p.id]: Math.max(0, (q[p.id] ?? 0) - 1) }))}
                               className="w-8 h-8 rounded-full border border-border flex items-center justify-center hover:border-ocean hover:text-ocean transition"
                               aria-label="Disminuir"
                             >
                               <Minus className="w-3.5 h-3.5" />
                             </button>
                             <span className="min-w-[2rem] text-center font-semibold text-navy-deep">
-                              {quantities[p.id] ?? 1}
+                              {quantities[p.id] ?? 0}
                             </span>
                             <button
                               type="button"
-                              onClick={() => setQuantities((q) => ({ ...q, [p.id]: Math.min(p.stock, (q[p.id] ?? 1) + 1) }))}
+                              onClick={() => setQuantities((q) => ({ ...q, [p.id]: Math.min(p.stock, (q[p.id] ?? 0) + 1) }))}
                               className="w-8 h-8 rounded-full border border-border flex items-center justify-center hover:border-ocean hover:text-ocean transition"
                               aria-label="Aumentar"
                             >
@@ -500,7 +499,7 @@ function ProductosPage() {
                         <button
                           disabled={p.stock <= 0}
                           onClick={() => {
-                            const qty = quantities[p.id] ?? 1;
+                            const qty = Math.max(1, quantities[p.id] ?? 1);
                             addItem({
                               id: p.id,
                               name: p.name,
@@ -509,6 +508,7 @@ function ProductosPage() {
                               img: p.image_url || feedImg,
                             }, qty);
                             toast.success(`${qty} × ${p.name} agregado al carrito`);
+                            setQuantities((q) => ({ ...q, [p.id]: 0 }));
                           }}
                           className="w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-full gradient-wave text-white text-sm font-semibold shadow-glow hover:scale-[1.02] transition-transform disabled:opacity-50 disabled:cursor-not-allowed"
                         >
