@@ -69,6 +69,7 @@ function ProductosPage() {
   const [categories, setCategories] = useState<Category[]>([]);
   const [subcategories, setSubcategories] = useState<Subcategory[]>([]);
   const [loading, setLoading] = useState(true);
+  const [suppliers, setSuppliers] = useState<Supplier[]>([]);
   const { addItem, updateQty, items: cartItems, drawerOpen, setDrawerOpen } = useCart();
 
   const openCartIfNeeded = () => {
@@ -94,6 +95,24 @@ function ProductosPage() {
       if (!subRes.error) setSubcategories((subRes.data ?? []) as Subcategory[]);
       setLoading(false);
     })();
+  }, []);
+
+  // Cargar logos de proveedores desde el panel administrativo
+  useEffect(() => {
+    supabase
+      .from("supplier_logos")
+      .select("name, image_url, display_scale")
+      .eq("active", true)
+      .order("sort_order", { ascending: true })
+      .then(({ data }) => {
+        setSuppliers(
+          (data ?? []).map((s) => ({
+            name: s.name,
+            img: s.image_url,
+            scale: (s as { display_scale?: number }).display_scale ?? 100,
+          })),
+        );
+      });
   }, []);
 
   // Aplicar categoría desde el search param ?categoria=Alimentos
@@ -142,7 +161,9 @@ function ProductosPage() {
     setSort("recent");
   };
 
-  const supplierItems = [...SUPPLIERS, ...SUPPLIERS, ...SUPPLIERS];
+  const supplierBaseRepeats = Math.max(1, Math.ceil(12 / Math.max(suppliers.length, 1)));
+  const supplierBase = Array.from({ length: supplierBaseRepeats }, () => suppliers).flat();
+  const supplierItems = [...supplierBase, ...supplierBase];
 
   if (location.pathname !== "/productos") {
     return <Outlet />;
