@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
-import { Loader2, ShoppingBag, ChevronDown, ChevronUp, MessageCircle } from "lucide-react";
+import { useEffect, useMemo, useState } from "react";
+import { Loader2, ShoppingBag, ChevronDown, ChevronUp, MessageCircle, Search, Calendar, X } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 
@@ -50,6 +50,8 @@ function AdminPedidos() {
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState<string>("all");
   const [expanded, setExpanded] = useState<string | null>(null);
+  const [searchName, setSearchName] = useState("");
+  const [searchDate, setSearchDate] = useState(""); // formato YYYY-MM-DD
 
   const load = async () => {
     setLoading(true);
@@ -78,7 +80,26 @@ function AdminPedidos() {
     window.open(`https://wa.me/${phone}?text=${text}`, "_blank");
   };
 
-  const filtered = filter === "all" ? orders : orders.filter((o) => o.status === filter);
+  const filtered = useMemo(() => {
+    const nameQuery = searchName.trim().toLowerCase();
+    return orders.filter((o) => {
+      if (filter !== "all" && o.status !== filter) return false;
+      if (nameQuery) {
+        const haystack = `${o.customer_name} ${o.order_number} ${o.customer_email}`.toLowerCase();
+        if (!haystack.includes(nameQuery)) return false;
+      }
+      if (searchDate) {
+        // Comparamos por fecha local YYYY-MM-DD
+        const d = new Date(o.created_at);
+        const yyyy = d.getFullYear();
+        const mm = String(d.getMonth() + 1).padStart(2, "0");
+        const dd = String(d.getDate()).padStart(2, "0");
+        const local = `${yyyy}-${mm}-${dd}`;
+        if (local !== searchDate) return false;
+      }
+      return true;
+    });
+  }, [orders, filter, searchName, searchDate]);
 
   return (
     <div className="p-4 md:p-8">
@@ -103,6 +124,43 @@ function AdminPedidos() {
             );
           })}
         </div>
+      </div>
+
+      {/* Buscadores */}
+      <div className="mb-4 grid gap-2 sm:grid-cols-[1fr_auto_auto]">
+        <div className="relative">
+          <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground pointer-events-none" />
+          <input
+            type="text"
+            value={searchName}
+            onChange={(e) => setSearchName(e.target.value)}
+            placeholder="Buscar por nombre, email o N° de pedido…"
+            className="w-full pl-9 pr-9 py-2 rounded-lg bg-card border border-border text-sm focus:border-ocean focus:outline-none"
+          />
+          {searchName && (
+            <button type="button" onClick={() => setSearchName("")} className="absolute right-2 top-1/2 -translate-y-1/2 p-1 text-muted-foreground hover:text-navy-deep" aria-label="Limpiar búsqueda">
+              <X className="w-4 h-4" />
+            </button>
+          )}
+        </div>
+        <div className="relative">
+          <Calendar className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground pointer-events-none" />
+          <input
+            type="date"
+            value={searchDate}
+            onChange={(e) => setSearchDate(e.target.value)}
+            className="pl-9 pr-3 py-2 rounded-lg bg-card border border-border text-sm focus:border-ocean focus:outline-none"
+          />
+        </div>
+        {(searchName || searchDate) && (
+          <button
+            type="button"
+            onClick={() => { setSearchName(""); setSearchDate(""); }}
+            className="px-3 py-2 rounded-lg bg-foam text-navy-deep text-sm font-semibold hover:bg-foam/70"
+          >
+            Limpiar
+          </button>
+        )}
       </div>
 
       {loading ? (

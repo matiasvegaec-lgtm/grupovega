@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useEffect, useState, FormEvent } from "react";
-import { Plus, Pencil, Trash2, Loader2, X, Upload, Eye, EyeOff, Star, Crop } from "lucide-react";
+import { useEffect, useMemo, useState, FormEvent } from "react";
+import { Plus, Pencil, Trash2, Loader2, X, Upload, Eye, EyeOff, Star, Crop, Search } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { ImageAdjuster } from "@/components/ImageAdjuster";
@@ -68,6 +68,7 @@ function AdminProductos() {
   const [categories, setCategories] = useState<Category[]>([]);
   const [subcategories, setSubcategories] = useState<Subcategory[]>([]);
   const [adjusterSrc, setAdjusterSrc] = useState<string | null>(null);
+  const [searchName, setSearchName] = useState("");
 
   const load = async () => {
     setLoading(true);
@@ -194,6 +195,11 @@ function AdminProductos() {
 
   const inputCls = "w-full px-3 py-2 rounded-lg bg-background border border-border focus:border-ocean focus:outline-none text-sm";
   const presentationParts = getPresentationParts(form.presentation);
+  const filteredList = useMemo(() => {
+    const q = searchName.trim().toLowerCase();
+    if (!q) return list;
+    return list.filter((p) => `${p.name} ${p.category}`.toLowerCase().includes(q));
+  }, [list, searchName]);
 
   return (
     <div className="p-4 md:p-8 pb-24 md:pb-8">
@@ -221,9 +227,28 @@ function AdminProductos() {
         </div>
       ) : (
         <>
+        {/* Buscador */}
+        <div className="mb-4 relative max-w-md">
+          <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground pointer-events-none" />
+          <input
+            type="text"
+            value={searchName}
+            onChange={(e) => setSearchName(e.target.value)}
+            placeholder="Buscar producto por nombre o categoría…"
+            className="w-full pl-9 pr-9 py-2 rounded-lg bg-card border border-border text-sm focus:border-ocean focus:outline-none"
+          />
+          {searchName && (
+            <button type="button" onClick={() => setSearchName("")} className="absolute right-2 top-1/2 -translate-y-1/2 p-1 text-muted-foreground hover:text-navy-deep" aria-label="Limpiar búsqueda">
+              <X className="w-4 h-4" />
+            </button>
+          )}
+        </div>
+
         {/* Mobile: cards */}
         <div className="md:hidden space-y-3">
-          {list.map((p) => (
+          {filteredList.length === 0 ? (
+            <div className="text-center py-10 bg-card rounded-2xl text-sm text-muted-foreground">Sin resultados para "{searchName}"</div>
+          ) : filteredList.map((p) => (
             <div key={p.id} className="bg-card rounded-2xl shadow-card p-3 flex gap-3">
               {p.image_url ? (
                 <img src={p.image_url} alt={p.name} className="w-20 h-20 rounded-xl object-cover shrink-0" />
@@ -277,7 +302,9 @@ function AdminProductos() {
               </tr>
             </thead>
             <tbody>
-              {list.map((p) => (
+              {filteredList.length === 0 ? (
+                <tr><td colSpan={8} className="p-8 text-center text-sm text-muted-foreground">Sin resultados para "{searchName}"</td></tr>
+              ) : filteredList.map((p) => (
                 <tr key={p.id} className="border-t border-border">
                   <td className="p-3">
                     {p.image_url ? <img src={p.image_url} alt={p.name} className="w-12 h-12 rounded-lg object-cover" /> : <div className="w-12 h-12 rounded-lg bg-foam" />}
