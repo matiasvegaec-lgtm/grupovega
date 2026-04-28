@@ -23,6 +23,7 @@ type SupplierLogoRow = {
   sort_order: number;
   active: boolean;
   created_at: string;
+  display_scale: number;
 };
 
 type PageHeroRow = {
