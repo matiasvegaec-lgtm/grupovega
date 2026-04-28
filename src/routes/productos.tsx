@@ -82,7 +82,11 @@ function ProductosPage() {
   const [categories, setCategories] = useState<Category[]>([]);
   const [subcategories, setSubcategories] = useState<Subcategory[]>([]);
   const [loading, setLoading] = useState(true);
-  const { addItem, updateQty, items: cartItems } = useCart();
+  const { addItem, updateQty, items: cartItems, drawerOpen, setDrawerOpen } = useCart();
+
+  const openCartIfNeeded = () => {
+    if (!drawerOpen) setDrawerOpen(true);
+  };
   const { toggle: toggleFav, isFavorite } = useFavorites();
   const heroBg = usePageHero("productos", productosHero);
 
