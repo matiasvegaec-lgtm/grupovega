@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState, FormEvent, useRef } from "react";
-import { Trash2, Loader2, ImageUp, GripVertical, Eye, EyeOff, ImageIcon } from "lucide-react";
+import { Trash2, Loader2, ImageUp, GripVertical, Eye, EyeOff, ImageIcon, Pencil, Check, X as XIcon } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 
@@ -37,6 +37,10 @@ type PageHeroRow = {
 // se ofrecerá crearlo desde el panel.
 const EDITABLE_HERO_PAGES: { page_key: string; label: string }[] = [
   { page_key: "productos", label: "Banner — Productos" },
+  { page_key: "home", label: "Banner — Inicio" },
+  { page_key: "quienes-somos", label: "Banner — Quiénes Somos" },
+  { page_key: "contacto", label: "Banner — Contacto" },
+  { page_key: "carrito", label: "Banner — Carrito" },
 ];
 
 function AdminGaleria() {
