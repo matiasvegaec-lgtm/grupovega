@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import { MapPin, Phone, Mail, Send, CheckCircle2 } from "lucide-react";
 import { Layout } from "@/components/Layout";
 import { PageHero } from "@/components/PageHero";
+import { usePageHero } from "@/hooks/usePageHero";
 
 export const Route = createFileRoute("/contacto")({
   head: () => ({
@@ -23,6 +24,7 @@ const offices = [
 
 function ContactoPage() {
   const [sent, setSent] = useState(false);
+  const heroBg = usePageHero("contacto");
 
   return (
     <Layout>
@@ -30,6 +32,7 @@ function ContactoPage() {
         eyebrow="Contacto"
         title="Hablemos de tu camaronera"
         description="Nuestros asesores están listos para ayudarte. Respondemos en menos de 24 horas hábiles."
+        backgroundImage={heroBg}
       />
 
       <section className="py-24 bg-background">

@@ -20,6 +20,7 @@ import provBlueweight from "@/assets/proveedor-blueweight.png";
 import provLacolina from "@/assets/proveedor-lacolina.png";
 import provLarviva from "@/assets/proveedor-larviva.png";
 import provBiomar from "@/assets/proveedor-biomar.png";
+import { usePageHero } from "@/hooks/usePageHero";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -65,6 +66,7 @@ const supplierLogosFallback: SupplierLogo[] = [
 function Index() {
   const [featured, setFeatured] = useState<FeaturedItem[]>(featuredFallback);
   const [supplierLogos, setSupplierLogos] = useState<SupplierLogo[]>(supplierLogosFallback);
+  const homeHeroBg = usePageHero("home", heroImg);
   const mobileAutoplay = useRef(
     Autoplay({ delay: 2200, stopOnInteraction: false, stopOnMouseEnter: false })
   );
@@ -189,7 +191,7 @@ function Index() {
       {/* HERO */}
       <section className="relative min-h-[85vh] flex items-center overflow-hidden gradient-deep">
         <div className="absolute inset-0">
-          <img src={heroImg} alt="" className="w-full h-full object-cover opacity-40" width={1920} height={1080} />
+          <img src={homeHeroBg} alt="" className="w-full h-full object-cover opacity-40" width={1920} height={1080} />
           <div className="absolute inset-0 gradient-deep opacity-70" />
         </div>
         <UnderwaterScene />

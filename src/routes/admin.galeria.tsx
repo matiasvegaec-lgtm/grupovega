@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState, FormEvent, useRef } from "react";
-import { Trash2, Loader2, ImageUp, GripVertical, Eye, EyeOff, ImageIcon } from "lucide-react";
+import { Trash2, Loader2, ImageUp, GripVertical, Eye, EyeOff, ImageIcon, Pencil, Check, X as XIcon } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 
@@ -37,6 +37,10 @@ type PageHeroRow = {
 // se ofrecerá crearlo desde el panel.
 const EDITABLE_HERO_PAGES: { page_key: string; label: string }[] = [
   { page_key: "productos", label: "Banner — Productos" },
+  { page_key: "home", label: "Banner — Inicio" },
+  { page_key: "quienes-somos", label: "Banner — Quiénes Somos" },
+  { page_key: "contacto", label: "Banner — Contacto" },
+  { page_key: "carrito", label: "Banner — Carrito" },
 ];
 
 function AdminGaleria() {
@@ -281,6 +285,9 @@ function SuppliersSection() {
   const [uploading, setUploading] = useState(false);
   const [name, setName] = useState("");
   const fileRef = useRef<HTMLInputElement>(null);
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const [editingName, setEditingName] = useState("");
+  const [replacingId, setReplacingId] = useState<string | null>(null);
 
   async function load() {
     setLoading(true);
@@ -368,6 +375,57 @@ function SuppliersSection() {
     load();
   }
 
+  function startEdit(logo: SupplierLogoRow) {
+    setEditingId(logo.id);
+    setEditingName(logo.name);
+  }
+
+  async function saveEdit(logo: SupplierLogoRow) {
+    if (!editingName.trim()) return toast.error("El nombre no puede estar vacío");
+    const { error } = await supabase
+      .from("supplier_logos")
+      .update({ name: editingName.trim() })
+      .eq("id", logo.id);
+    if (error) return toast.error(error.message);
+    toast.success("Nombre actualizado");
+    setEditingId(null);
+    load();
+  }
+
+  async function replaceImage(logo: SupplierLogoRow, file: File) {
+    setReplacingId(logo.id);
+    try {
+      const ext = file.name.split(".").pop() || "png";
+      const path = `suppliers/${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${ext}`;
+      const up = await supabase.storage.from("company-images").upload(path, file, {
+        cacheControl: "3600",
+        upsert: false,
+      });
+      if (up.error) throw up.error;
+      const { data: pub } = supabase.storage.from("company-images").getPublicUrl(path);
+
+      // Borrar imagen anterior si está en nuestro storage
+      try {
+        const url = new URL(logo.image_url);
+        const parts = url.pathname.split("/company-images/");
+        if (parts[1]) await supabase.storage.from("company-images").remove([parts[1]]);
+      } catch { /* ignore */ }
+
+      const { error } = await supabase
+        .from("supplier_logos")
+        .update({ image_url: pub.publicUrl })
+        .eq("id", logo.id);
+      if (error) throw error;
+      toast.success("Imagen reemplazada");
+      load();
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : "Error al reemplazar";
+      toast.error(msg);
+    } finally {
+      setReplacingId(null);
+    }
+  }
+
   return (
     <div>
       <p className="text-xs text-muted-foreground mb-4">
@@ -433,11 +491,74 @@ function SuppliersSection() {
                 !logo.active ? "opacity-60" : ""
               }`}
             >
-              <div className="aspect-[16/9] bg-white flex items-center justify-center p-4">
+              <div className="relative aspect-[16/9] bg-white flex items-center justify-center p-4 group">
                 <img src={logo.image_url} alt={logo.name} className="max-w-full max-h-full object-contain" />
+                <label
+                  htmlFor={`logo-replace-${logo.id}`}
+                  className={`absolute inset-0 flex items-center justify-center bg-black/50 text-white text-xs font-semibold opacity-0 group-hover:opacity-100 transition cursor-pointer ${
+                    replacingId === logo.id ? "opacity-100" : ""
+                  }`}
+                >
+                  {replacingId === logo.id ? (
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                  ) : (
+                    <span className="inline-flex items-center gap-1">
+                      <ImageUp className="w-3.5 h-3.5" /> Reemplazar imagen
+                    </span>
+                  )}
+                </label>
+                <input
+                  id={`logo-replace-${logo.id}`}
+                  type="file"
+                  accept="image/*"
+                  className="hidden"
+                  onChange={(e) => {
+                    const file = e.target.files?.[0];
+                    if (file) replaceImage(logo, file);
+                    e.target.value = "";
+                  }}
+                />
               </div>
               <div className="p-3 space-y-2">
-                <p className="text-sm font-semibold text-navy-deep truncate">{logo.name}</p>
+                {editingId === logo.id ? (
+                  <div className="flex items-center gap-1">
+                    <input
+                      type="text"
+                      value={editingName}
+                      onChange={(e) => setEditingName(e.target.value)}
+                      className="flex-1 px-2 py-1 rounded border border-border bg-background text-sm"
+                      autoFocus
+                    />
+                    <button
+                      type="button"
+                      onClick={() => saveEdit(logo)}
+                      className="p-1.5 rounded text-emerald-600 hover:bg-emerald-50"
+                      title="Guardar"
+                    >
+                      <Check className="w-3.5 h-3.5" />
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setEditingId(null)}
+                      className="p-1.5 rounded text-muted-foreground hover:bg-foam"
+                      title="Cancelar"
+                    >
+                      <XIcon className="w-3.5 h-3.5" />
+                    </button>
+                  </div>
+                ) : (
+                  <div className="flex items-center justify-between gap-2">
+                    <p className="text-sm font-semibold text-navy-deep truncate flex-1">{logo.name}</p>
+                    <button
+                      type="button"
+                      onClick={() => startEdit(logo)}
+                      className="p-1.5 rounded text-ocean hover:bg-ocean/10"
+                      title="Editar nombre"
+                    >
+                      <Pencil className="w-3.5 h-3.5" />
+                    </button>
+                  </div>
+                )}
                 <div className="flex items-center justify-between gap-2">
                   <div className="flex items-center gap-1 text-muted-foreground">
                     <GripVertical className="w-3.5 h-3.5" />
@@ -555,6 +676,19 @@ function HeroesSection() {
     load();
   }
 
+  async function removeHero(row: PageHeroRow) {
+    if (!confirm(`¿Eliminar la imagen del banner "${row.label}"? La página volverá a usar el degradado por defecto.`)) return;
+    try {
+      const url = new URL(row.image_url);
+      const parts = url.pathname.split("/company-images/");
+      if (parts[1]) await supabase.storage.from("company-images").remove([parts[1]]);
+    } catch { /* ignore */ }
+    const { error } = await supabase.from("page_heroes").delete().eq("id", row.id);
+    if (error) return toast.error(error.message);
+    toast.success("Banner eliminado");
+    load();
+  }
+
   return (
     <div>
       <p className="text-xs text-muted-foreground mb-4">
@@ -611,14 +745,24 @@ function HeroesSection() {
                       }}
                     />
                     {row && (
-                      <button
-                        type="button"
-                        onClick={() => toggleActive(row)}
-                        className="inline-flex items-center gap-1 text-xs text-ocean hover:bg-ocean/10 px-2 py-1 rounded"
-                        title={row.active ? "Ocultar" : "Mostrar"}
-                      >
-                        {row.active ? <Eye className="w-3.5 h-3.5" /> : <EyeOff className="w-3.5 h-3.5" />}
-                      </button>
+                      <div className="flex items-center gap-1">
+                        <button
+                          type="button"
+                          onClick={() => toggleActive(row)}
+                          className="inline-flex items-center gap-1 text-xs text-ocean hover:bg-ocean/10 px-2 py-1 rounded"
+                          title={row.active ? "Ocultar" : "Mostrar"}
+                        >
+                          {row.active ? <Eye className="w-3.5 h-3.5" /> : <EyeOff className="w-3.5 h-3.5" />}
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => removeHero(row)}
+                          className="inline-flex items-center gap-1 text-xs text-destructive hover:bg-destructive/10 px-2 py-1 rounded"
+                          title="Eliminar"
+                        >
+                          <Trash2 className="w-3.5 h-3.5" />
+                        </button>
+                      </div>
                     )}
                   </div>
                 </div>
