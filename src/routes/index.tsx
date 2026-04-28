@@ -51,7 +51,9 @@ const featuredFallback: FeaturedItem[] = [
   { id: "fb-6", slug: null, name: "Vitaminas Premix", img: pVitamina },
 ];
 
-const supplierLogos = [
+type SupplierLogo = { name: string; img: string };
+
+const supplierLogosFallback: SupplierLogo[] = [
   { name: "NLProinsu", img: provNlproinsu },
   { name: "NaturalStar", img: provNaturalstar },
   { name: "Blueweight", img: provBlueweight },
@@ -62,6 +64,7 @@ const supplierLogos = [
 
 function Index() {
   const [featured, setFeatured] = useState<FeaturedItem[]>(featuredFallback);
+  const [supplierLogos, setSupplierLogos] = useState<SupplierLogo[]>(supplierLogosFallback);
   const mobileAutoplay = useRef(
     Autoplay({ delay: 2200, stopOnInteraction: false, stopOnMouseEnter: false })
   );
@@ -112,6 +115,20 @@ function Index() {
               .map((p) => ({ id: p.id, slug: p.slug, name: p.name, img: p.image_url || "" }))
               .filter((p) => p.img)
           );
+        }
+      });
+  }, []);
+
+  // Cargar logos de marcas desde la base de datos (editables desde admin)
+  useEffect(() => {
+    supabase
+      .from("supplier_logos")
+      .select("name, image_url")
+      .eq("active", true)
+      .order("sort_order", { ascending: true })
+      .then(({ data }) => {
+        if (data && data.length > 0) {
+          setSupplierLogos(data.map((s) => ({ name: s.name, img: s.image_url })));
         }
       });
   }, []);
@@ -432,8 +449,8 @@ function Index() {
         <div className="absolute inset-0 opacity-30" style={{ background: "var(--gradient-glow)" }} />
         <div className="relative container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center max-w-2xl mx-auto mb-8">
-            <p className="text-xs font-semibold uppercase tracking-widest text-turquoise mb-2">Punto de venta</p>
-            <h2 className="text-2xl md:text-3xl font-bold">Visítanos</h2>
+            <p className="text-sm font-semibold uppercase tracking-widest text-turquoise mb-2">Punto de venta</p>
+            <h2 className="text-3xl md:text-4xl font-bold">Visítanos</h2>
           </div>
 
           <div className="grid lg:grid-cols-5 gap-6 items-stretch max-w-5xl mx-auto">
@@ -443,46 +460,46 @@ function Index() {
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.6 }}
-              className="glass rounded-2xl p-5 md:p-6 flex flex-col justify-center lg:col-span-2"
+              className="glass rounded-2xl p-6 md:p-7 flex flex-col justify-center lg:col-span-2"
             >
-              <h3 className="text-lg font-bold mb-1">Grupo Vega — Pedernales</h3>
-              <p className="text-turquoise text-xs font-semibold mb-4">Sede principal y centro de distribución</p>
+              <h3 className="text-xl md:text-2xl font-bold mb-1">Grupo Vega — Pedernales</h3>
+              <p className="text-turquoise text-sm font-semibold mb-5">Sede principal y centro de distribución</p>
 
-              <ul className="space-y-3">
+              <ul className="space-y-4">
                 <li className="flex gap-3">
-                  <div className="shrink-0 w-8 h-8 rounded-lg gradient-wave flex items-center justify-center">
-                    <MapPin className="w-3.5 h-3.5" />
+                  <div className="shrink-0 w-9 h-9 rounded-lg gradient-wave flex items-center justify-center">
+                    <MapPin className="w-4 h-4" />
                   </div>
                   <div className="min-w-0">
-                    <div className="text-white/60 text-[10px] uppercase tracking-widest font-semibold">Dirección</div>
-                    <div className="text-xs leading-snug">García Moreno y 3 de Noviembre, frente al cementerio — Pedernales, Manabí</div>
+                    <div className="text-white/60 text-xs uppercase tracking-widest font-semibold">Dirección</div>
+                    <div className="text-sm leading-snug">García Moreno y 3 de Noviembre, frente al cementerio — Pedernales, Manabí</div>
                   </div>
                 </li>
                 <li className="flex gap-3">
-                  <div className="shrink-0 w-8 h-8 rounded-lg gradient-wave flex items-center justify-center">
-                    <Phone className="w-3.5 h-3.5" />
+                  <div className="shrink-0 w-9 h-9 rounded-lg gradient-wave flex items-center justify-center">
+                    <Phone className="w-4 h-4" />
                   </div>
                   <div className="min-w-0">
-                    <div className="text-white/60 text-[10px] uppercase tracking-widest font-semibold">Teléfono</div>
-                    <div className="text-xs">+593 99 773 8026</div>
+                    <div className="text-white/60 text-xs uppercase tracking-widest font-semibold">Teléfono</div>
+                    <div className="text-sm">+593 99 773 8026</div>
                   </div>
                 </li>
                 <li className="flex gap-3">
-                  <div className="shrink-0 w-8 h-8 rounded-lg gradient-wave flex items-center justify-center">
-                    <Mail className="w-3.5 h-3.5" />
+                  <div className="shrink-0 w-9 h-9 rounded-lg gradient-wave flex items-center justify-center">
+                    <Mail className="w-4 h-4" />
                   </div>
                   <div className="min-w-0">
-                    <div className="text-white/60 text-[10px] uppercase tracking-widest font-semibold">Email</div>
-                    <div className="text-xs break-all">grupovega.ec@outlook.com</div>
+                    <div className="text-white/60 text-xs uppercase tracking-widest font-semibold">Email</div>
+                    <div className="text-sm break-all">grupovega.ec@outlook.com</div>
                   </div>
                 </li>
                 <li className="flex gap-3">
-                  <div className="shrink-0 w-8 h-8 rounded-lg gradient-wave flex items-center justify-center">
-                    <Clock className="w-3.5 h-3.5" />
+                  <div className="shrink-0 w-9 h-9 rounded-lg gradient-wave flex items-center justify-center">
+                    <Clock className="w-4 h-4" />
                   </div>
                   <div className="min-w-0">
-                    <div className="text-white/60 text-[10px] uppercase tracking-widest font-semibold">Horario</div>
-                    <div className="text-xs">Lun – Vie: 8:00 – 18:00 · Sáb: 8:00 – 13:00</div>
+                    <div className="text-white/60 text-xs uppercase tracking-widest font-semibold">Horario</div>
+                    <div className="text-sm">Lun – Vie: 8:00 – 18:00 · Sáb: 8:00 – 13:00</div>
                   </div>
                 </li>
               </ul>
@@ -491,9 +508,9 @@ function Index() {
                 href="https://maps.app.goo.gl/z8RTL5Aq4AhWzNMN8"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="mt-5 inline-flex items-center justify-center gap-2 px-4 py-2 rounded-full gradient-wave text-white text-xs font-semibold shadow-glow hover:scale-105 transition w-fit"
+                className="mt-6 inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-full gradient-wave text-white text-sm font-semibold shadow-glow hover:scale-105 transition w-fit"
               >
-                Cómo llegar <ArrowRight className="w-3.5 h-3.5" />
+                Cómo llegar <ArrowRight className="w-4 h-4" />
               </a>
             </motion.div>
 
