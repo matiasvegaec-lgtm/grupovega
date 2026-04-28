@@ -32,6 +32,9 @@ const BANCO_DEMO = {
   correo: "pagos@grupovega.com",
 };
 
+const buildWhatsAppUrl = (message: string) =>
+  `https://wa.me/${WHATSAPP_EMPRESA}?text=${encodeURIComponent(message)}`;
+
 type PayMethod = "card" | "transfer" | "cash" | "quote";
 
 const CUSTOMER_STORAGE_KEY = "gv_customer_data_v1";
@@ -125,12 +128,24 @@ function CheckoutPage() {
       : method === "transfer" ? "Transferencia bancaria"
       : method === "cash" ? "Efectivo en sucursal"
       : "Solicitud de cotización";
-    const tipoDoc = method === "quote" ? "📄 *Cotización*" : "🧾 *Factura / Pedido*";
+    const tipoDoc =
+      method === "quote" ? "📄 *Cotización*"
+      : method === "card" ? "💳 *Factura / Link de pago*"
+      : method === "cash" ? "🏬 *Factura / Pago en efectivo*"
+      : "🧾 *Factura / Pedido*";
+    const accion =
+      method === "transfer" ? "Estado: esperando comprobante de pago"
+      : method === "card" ? "Solicitud: enviar link seguro de pago"
+      : method === "cash" ? "Solicitud: reservar pedido para pago en sucursal"
+      : "Solicitud: generar cotización formal";
     return (
       `${tipoDoc} ${orderNumber}\n\n` +
-      `👤 ${form.customer_name}\n📧 ${form.customer_email}\n📞 ${form.customer_phone}\n🆔 RUC: ${form.customer_ruc}\n` +
-      `📦 Recibe: ${form.receiver_name}\n🏝️ Camaronera: ${form.farm_name}\n📍 Ref: ${form.reference}\n\n` +
-      `${itemsList}\n\n💰 *Total: $${subtotal.toFixed(2)}*\n💳 Pago: ${metodoLabel}`
+      `*Datos de facturación*\n` +
+      `👤 Cliente: ${form.customer_name}\n📧 Correo: ${form.customer_email}\n📞 WhatsApp: ${form.customer_phone}\n🆔 RUC/Cédula: ${form.customer_ruc}\n\n` +
+      `*Datos de entrega*\n` +
+      `📦 Recibe: ${form.receiver_name}\n🏝️ Camaronera: ${form.farm_name}\n📍 Referencia: ${form.reference}\n` +
+      `${form.shipping_notes ? `📝 Notas: ${form.shipping_notes}\n` : ""}\n` +
+      `*Productos*\n${itemsList}\n\n💰 *Total: $${subtotal.toFixed(2)}*\n💳 Pago: ${metodoLabel}\n${accion}`
     );
   };
 
@@ -143,8 +158,6 @@ function CheckoutPage() {
     // Validar todos los pasos antes de enviar
     if (!validateStep(0)) { setStep(0); return; }
     if (!validateStep(1)) { setStep(1); return; }
-    // Abrir ventana de WhatsApp ANTES del await para evitar bloqueo de popups
-    const waWindow = window.open("about:blank", "_blank");
     setSubmitting(true);
     try {
       const shippingAddress = `${form.farm_name} — Ref: ${form.reference}`;
@@ -173,10 +186,7 @@ function CheckoutPage() {
 
       if (error) throw error;
       const orderNumber = data.order_number;
-      const summary = buildOrderSummaryText(orderNumber);
-      // Siempre usamos wa.me para abrir directamente el chat sin páginas intermedias.
-      const encoded = encodeURIComponent(summary);
-      const waUrl = `https://wa.me/${WHATSAPP_EMPRESA}?text=${encoded}`;
+      const waUrl = buildWhatsAppUrl(buildOrderSummaryText(orderNumber));
 
       // Guardar datos del cliente para futuras compras
       if (saveData && typeof window !== "undefined") {
@@ -200,12 +210,8 @@ function CheckoutPage() {
         toast.success("Cotización enviada. Pronto te contactaremos por WhatsApp.");
       }
       // En todos los casos, abrir WhatsApp con el resumen para la empresa
-      if (waWindow) waWindow.location.href = waUrl;
-      else window.open(waUrl, "_blank");
-
-      navigate({ to: "/pedido/$orderNumber", params: { orderNumber } });
+      window.location.href = waUrl;
     } catch (err: any) {
-      if (waWindow) waWindow.close();
       toast.error(err.message || "Error al procesar el pedido");
       setSubmitting(false);
     }
