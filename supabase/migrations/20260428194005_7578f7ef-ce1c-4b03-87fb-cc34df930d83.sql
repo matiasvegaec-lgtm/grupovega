@@ -1,0 +1,1 @@
+ALTER TABLE public.supplier_logos ADD COLUMN IF NOT EXISTS display_scale integer NOT NULL DEFAULT 100;

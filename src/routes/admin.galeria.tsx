@@ -23,6 +23,7 @@ type SupplierLogoRow = {
   sort_order: number;
   active: boolean;
   created_at: string;
+  display_scale: number;
 };
 
 type PageHeroRow = {
@@ -426,6 +427,20 @@ function SuppliersSection() {
     }
   }
 
+  async function updateScale(logo: SupplierLogoRow, value: number) {
+    const safe = Math.max(40, Math.min(200, Math.round(value)));
+    // Optimista: actualizar UI antes
+    setLogos((prev) => prev.map((l) => (l.id === logo.id ? { ...l, display_scale: safe } : l)));
+    const { error } = await supabase
+      .from("supplier_logos")
+      .update({ display_scale: safe })
+      .eq("id", logo.id);
+    if (error) {
+      toast.error(error.message);
+      load();
+    }
+  }
+
   return (
     <div>
       <p className="text-xs text-muted-foreground mb-4">
@@ -492,7 +507,12 @@ function SuppliersSection() {
               }`}
             >
               <div className="relative aspect-[16/9] bg-white flex items-center justify-center p-4 group">
-                <img src={logo.image_url} alt={logo.name} className="max-w-full max-h-full object-contain" />
+                <img
+                  src={logo.image_url}
+                  alt={logo.name}
+                  className="max-w-full max-h-full object-contain transition-transform"
+                  style={{ transform: `scale(${(logo.display_scale ?? 100) / 100})` }}
+                />
                 <label
                   htmlFor={`logo-replace-${logo.id}`}
                   className={`absolute inset-0 flex items-center justify-center bg-black/50 text-white text-xs font-semibold opacity-0 group-hover:opacity-100 transition cursor-pointer ${
@@ -594,6 +614,35 @@ function SuppliersSection() {
                       className="inline-flex items-center gap-1 text-xs text-destructive hover:bg-destructive/10 px-2 py-1 rounded"
                     >
                       <Trash2 className="w-3.5 h-3.5" />
+                    </button>
+                  </div>
+                </div>
+                <div className="pt-2 border-t border-border">
+                  <div className="flex items-center justify-between mb-1">
+                    <label className="text-[11px] font-semibold text-navy-deep">
+                      Tamaño del logo
+                    </label>
+                    <span className="text-[11px] text-muted-foreground tabular-nums">
+                      {logo.display_scale ?? 100}%
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <input
+                      type="range"
+                      min={40}
+                      max={200}
+                      step={5}
+                      value={logo.display_scale ?? 100}
+                      onChange={(e) => updateScale(logo, parseInt(e.target.value, 10))}
+                      className="flex-1 accent-ocean"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => updateScale(logo, 100)}
+                      className="text-[11px] px-2 py-1 rounded hover:bg-foam text-muted-foreground"
+                      title="Restablecer al 100%"
+                    >
+                      Reset
                     </button>
                   </div>
                 </div>

@@ -52,7 +52,7 @@ const featuredFallback: FeaturedItem[] = [
   { id: "fb-6", slug: null, name: "Vitaminas Premix", img: pVitamina },
 ];
 
-type SupplierLogo = { name: string; img: string };
+type SupplierLogo = { name: string; img: string; scale?: number };
 
 const supplierLogosFallback: SupplierLogo[] = [
   { name: "NLProinsu", img: provNlproinsu },
@@ -125,12 +125,18 @@ function Index() {
   useEffect(() => {
     supabase
       .from("supplier_logos")
-      .select("name, image_url")
+      .select("name, image_url, display_scale")
       .eq("active", true)
       .order("sort_order", { ascending: true })
       .then(({ data }) => {
         if (data && data.length > 0) {
-          setSupplierLogos(data.map((s) => ({ name: s.name, img: s.image_url })));
+          setSupplierLogos(
+            data.map((s) => ({
+              name: s.name,
+              img: s.image_url,
+              scale: (s as { display_scale?: number }).display_scale ?? 100,
+            })),
+          );
         }
       });
   }, []);
@@ -183,8 +189,16 @@ function Index() {
   const minItems = 12;
   const featuredRepeats = Math.max(2, Math.ceil(minItems / Math.max(featured.length, 1)));
   const carouselItems = Array.from({ length: featuredRepeats }, () => featured).flat();
-  const supplierRepeats = Math.max(2, Math.ceil(minItems / supplierLogos.length));
-  const supplierItems = Array.from({ length: supplierRepeats }, () => supplierLogos).flat();
+  // Para que el marquee infinito no muestre huecos, el contenido visible debe
+  // ser EXACTAMENTE el set base duplicado (la animación traslada -50%).
+  // 1) Construimos un set base con suficientes logos para llenar la pantalla.
+  // 2) Lo duplicamos una sola vez para crear el loop sin saltos.
+  const supplierBaseRepeats = Math.max(
+    1,
+    Math.ceil(minItems / Math.max(supplierLogos.length, 1)),
+  );
+  const supplierBase = Array.from({ length: supplierBaseRepeats }, () => supplierLogos).flat();
+  const supplierItems = [...supplierBase, ...supplierBase];
 
   return (
     <Layout>
@@ -567,6 +581,7 @@ function Index() {
                     alt={s.name}
                     loading="lazy"
                     className="max-h-full max-w-full object-contain group-hover:scale-105 transition-transform duration-300"
+                    style={{ transform: `scale(${(s.scale ?? 100) / 100})` }}
                   />
                 </div>
               </motion.div>
