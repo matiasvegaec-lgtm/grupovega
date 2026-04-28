@@ -212,7 +212,8 @@ function Index() {
               Descubre nuestro catálogo organizado por categorías para encontrar exactamente lo que tu camaronera necesita.
             </p>
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 max-w-6xl mx-auto">
+          {/* Desktop: grid */}
+          <div className="hidden lg:grid grid-cols-4 gap-6 max-w-6xl mx-auto">
             {categories.map((c, i) => (
               <motion.div
                 key={c.name}
@@ -222,12 +223,10 @@ function Index() {
                 transition={{ duration: 0.5, delay: i * 0.08 }}
                 className="group relative"
               >
-                <Link to="/productos" className="block h-full">
+                <Link to="/productos" search={{ categoria: c.categoria }} className="block h-full">
                   <div className="absolute -inset-0.5 gradient-wave rounded-2xl opacity-0 group-hover:opacity-60 blur transition duration-500" />
                   <div className="relative h-full bg-card border border-border rounded-2xl p-6 flex flex-col items-center text-center hover:border-ocean transition-all duration-300 group-hover:-translate-y-2 group-hover:shadow-elegant overflow-hidden">
-                    {/* decorative wave bg */}
                     <div className="absolute inset-x-0 -top-12 h-24 bg-gradient-to-b from-ocean/10 to-transparent opacity-0 group-hover:opacity-100 transition duration-500" />
-
                     <div className="relative w-20 h-20 rounded-2xl gradient-wave flex items-center justify-center shadow-glow mb-4 group-hover:scale-110 group-hover:rotate-6 transition-all duration-500">
                       <c.icon className="w-10 h-10 text-white" strokeWidth={1.6} />
                     </div>
@@ -241,6 +240,30 @@ function Index() {
                 </Link>
               </motion.div>
             ))}
+          </div>
+
+          {/* Mobile / Tablet: carrusel horizontal con flechas */}
+          <div className="lg:hidden max-w-2xl mx-auto px-2">
+            <Carousel opts={{ align: "start", loop: false }} className="relative">
+              <CarouselContent className="-ml-3">
+                {categories.map((c) => (
+                  <CarouselItem key={c.name} className="pl-3 basis-[70%] sm:basis-[45%]">
+                    <Link to="/productos" search={{ categoria: c.categoria }} className="group block h-full">
+                      <div className="relative h-full bg-card border border-border rounded-2xl p-5 flex flex-col items-center text-center hover:border-ocean transition-all duration-300 overflow-hidden">
+                        <div className="relative w-16 h-16 rounded-2xl gradient-wave flex items-center justify-center shadow-glow mb-3">
+                          <c.icon className="w-8 h-8 text-white" strokeWidth={1.6} />
+                        </div>
+                        <span className="font-bold text-base text-navy-deep mb-1">{c.name}</span>
+                        <span className="text-[11px] font-semibold uppercase tracking-wider text-ocean mb-2">{c.count}</span>
+                        <p className="text-xs text-muted-foreground leading-relaxed flex-1">{c.desc}</p>
+                      </div>
+                    </Link>
+                  </CarouselItem>
+                ))}
+              </CarouselContent>
+              <CarouselPrevious className="left-1 bg-card/95 border-ocean/30 text-ocean hover:bg-ocean hover:text-white" />
+              <CarouselNext className="right-1 bg-card/95 border-ocean/30 text-ocean hover:bg-ocean hover:text-white" />
+            </Carousel>
           </div>
         </div>
       </section>
