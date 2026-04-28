@@ -26,6 +26,10 @@ export const Route = createFileRoute("/productos")({
       { property: "og:description", content: "Catálogo completo para camaroneras." },
     ],
   }),
+  validateSearch: (search: Record<string, unknown>): { categoria?: string } => {
+    const categoria = typeof search.categoria === "string" ? search.categoria : undefined;
+    return categoria ? { categoria } : {};
+  },
   component: ProductosPage,
 });
 
@@ -64,6 +68,7 @@ const SUPPLIERS = [
 
 function ProductosPage() {
   const location = useLocation();
+  const { categoria } = Route.useSearch();
   const [active, setActive] = useState("Todos");
   const [activeSub, setActiveSub] = useState<string | null>(null);
   const [query, setQuery] = useState("");
@@ -96,6 +101,14 @@ function ProductosPage() {
       setLoading(false);
     })();
   }, []);
+
+  // Aplicar categoría desde el search param ?categoria=Alimentos
+  useEffect(() => {
+    if (categoria && categoria.length > 0) {
+      setActive(categoria);
+      setActiveSub(null);
+    }
+  }, [categoria]);
 
   const allCategoryNames = categories.map((c) => c.name);
   const categoryCounts = allCategoryNames.reduce<Record<string, number>>((acc, c) => {

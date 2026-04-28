@@ -5,7 +5,7 @@ import { useEffect, useRef, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Layout } from "@/components/Layout";
 import { UnderwaterScene } from "@/components/UnderwaterScene";
-import { Carousel, CarouselContent, CarouselItem } from "@/components/ui/carousel";
+import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
 import Autoplay from "embla-carousel-autoplay";
 import heroImg from "@/assets/hero-shrimp-farm.jpg";
 import pBalanceado from "@/assets/p-balanceado.png";
@@ -34,10 +34,10 @@ export const Route = createFileRoute("/")({
 });
 
 const categories = [
-  { icon: Wheat, name: "Alimentos", desc: "Balanceados premium para cada etapa de cultivo", count: "20+ productos" },
-  { icon: Sprout, name: "Fertilizantes", desc: "Nutrientes que potencian la productividad de tus piscinas", count: "12+ productos" },
-  { icon: FlaskConical, name: "Aditivos", desc: "Probióticos, vitaminas y mejoradores de rendimiento", count: "15+ productos" },
-  { icon: Beaker, name: "Insumos", desc: "Equipos y químicos para el manejo diario", count: "30+ productos" },
+  { icon: Wheat, name: "Alimentos", desc: "Balanceados premium para cada etapa de cultivo", count: "20+ productos", categoria: "Alimentos" },
+  { icon: Sprout, name: "Fertilizantes", desc: "Nutrientes que potencian la productividad de tus piscinas", count: "12+ productos", categoria: "Fertilizantes" },
+  { icon: FlaskConical, name: "Aditivos", desc: "Probióticos, vitaminas y mejoradores de rendimiento", count: "15+ productos", categoria: "Aditivos" },
+  { icon: Beaker, name: "Insumos", desc: "Equipos y químicos para el manejo diario", count: "30+ productos", categoria: "Insumos" },
 ];
 
 type FeaturedItem = { id: string; slug: string | null; name: string; img: string };
@@ -212,7 +212,8 @@ function Index() {
               Descubre nuestro catálogo organizado por categorías para encontrar exactamente lo que tu camaronera necesita.
             </p>
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 max-w-6xl mx-auto">
+          {/* Desktop: grid */}
+          <div className="hidden lg:grid grid-cols-4 gap-6 max-w-6xl mx-auto">
             {categories.map((c, i) => (
               <motion.div
                 key={c.name}
@@ -222,12 +223,10 @@ function Index() {
                 transition={{ duration: 0.5, delay: i * 0.08 }}
                 className="group relative"
               >
-                <Link to="/productos" className="block h-full">
+                <Link to="/productos" search={{ categoria: c.categoria }} className="block h-full">
                   <div className="absolute -inset-0.5 gradient-wave rounded-2xl opacity-0 group-hover:opacity-60 blur transition duration-500" />
                   <div className="relative h-full bg-card border border-border rounded-2xl p-6 flex flex-col items-center text-center hover:border-ocean transition-all duration-300 group-hover:-translate-y-2 group-hover:shadow-elegant overflow-hidden">
-                    {/* decorative wave bg */}
                     <div className="absolute inset-x-0 -top-12 h-24 bg-gradient-to-b from-ocean/10 to-transparent opacity-0 group-hover:opacity-100 transition duration-500" />
-
                     <div className="relative w-20 h-20 rounded-2xl gradient-wave flex items-center justify-center shadow-glow mb-4 group-hover:scale-110 group-hover:rotate-6 transition-all duration-500">
                       <c.icon className="w-10 h-10 text-white" strokeWidth={1.6} />
                     </div>
@@ -241,6 +240,30 @@ function Index() {
                 </Link>
               </motion.div>
             ))}
+          </div>
+
+          {/* Mobile / Tablet: carrusel horizontal con flechas */}
+          <div className="lg:hidden max-w-2xl mx-auto px-2">
+            <Carousel opts={{ align: "start", loop: false }} className="relative">
+              <CarouselContent className="-ml-3">
+                {categories.map((c) => (
+                  <CarouselItem key={c.name} className="pl-3 basis-[70%] sm:basis-[45%]">
+                    <Link to="/productos" search={{ categoria: c.categoria }} className="group block h-full">
+                      <div className="relative h-full bg-card border border-border rounded-2xl p-5 flex flex-col items-center text-center hover:border-ocean transition-all duration-300 overflow-hidden">
+                        <div className="relative w-16 h-16 rounded-2xl gradient-wave flex items-center justify-center shadow-glow mb-3">
+                          <c.icon className="w-8 h-8 text-white" strokeWidth={1.6} />
+                        </div>
+                        <span className="font-bold text-base text-navy-deep mb-1">{c.name}</span>
+                        <span className="text-[11px] font-semibold uppercase tracking-wider text-ocean mb-2">{c.count}</span>
+                        <p className="text-xs text-muted-foreground leading-relaxed flex-1">{c.desc}</p>
+                      </div>
+                    </Link>
+                  </CarouselItem>
+                ))}
+              </CarouselContent>
+              <CarouselPrevious className="left-1 bg-card/95 border-ocean/30 text-ocean hover:bg-ocean hover:text-white" />
+              <CarouselNext className="right-1 bg-card/95 border-ocean/30 text-ocean hover:bg-ocean hover:text-white" />
+            </Carousel>
           </div>
         </div>
       </section>
@@ -286,8 +309,8 @@ function Index() {
         </div>
 
         <div className="relative w-full">
-          {/* Marquee automático (mismo efecto en mobile y desktop) */}
-          <div className="relative">
+          {/* Desktop: marquee automático */}
+          <div className="relative hidden lg:block">
             <div className="pointer-events-none absolute left-0 top-0 bottom-0 w-12 md:w-24 z-10 bg-gradient-to-r from-foam to-transparent" />
             <div className="pointer-events-none absolute right-0 top-0 bottom-0 w-12 md:w-24 z-10 bg-gradient-to-l from-foam to-transparent" />
             <div
@@ -320,6 +343,36 @@ function Index() {
                 </Link>
               ))}
             </div>
+          </div>
+
+          {/* Mobile / Tablet: carrusel con flechas */}
+          <div className="lg:hidden container mx-auto px-6">
+            <Carousel opts={{ align: "start", loop: true }} className="relative">
+              <CarouselContent className="-ml-4">
+                {featured.map((p, i) => (
+                  <CarouselItem key={`${p.name}-${i}`} className="pl-4 basis-[60%] sm:basis-[40%]">
+                    <Link
+                      to="/productos/$productId"
+                      params={{ productId: p.slug || p.id }}
+                      className="group flex flex-col items-center cursor-pointer"
+                    >
+                      <div className="relative w-40 h-40 sm:w-48 sm:h-48 flex items-center justify-center">
+                        <div className="absolute inset-0 rounded-full bg-gradient-to-br from-white via-foam to-ocean/20 shadow-[0_10px_30px_-10px_rgba(0,80,140,0.25)] ring-1 ring-ocean/10" />
+                        <img
+                          src={p.img}
+                          alt={p.name}
+                          loading="lazy"
+                          className="relative z-10 w-32 h-32 sm:w-36 sm:h-36 object-contain drop-shadow-xl"
+                        />
+                      </div>
+                      <p className="mt-3 font-semibold text-sm text-navy-deep text-center px-1">{p.name}</p>
+                    </Link>
+                  </CarouselItem>
+                ))}
+              </CarouselContent>
+              <CarouselPrevious className="left-1 bg-card/95 border-ocean/30 text-ocean hover:bg-ocean hover:text-white" />
+              <CarouselNext className="right-1 bg-card/95 border-ocean/30 text-ocean hover:bg-ocean hover:text-white" />
+            </Carousel>
           </div>
         </div>
 
