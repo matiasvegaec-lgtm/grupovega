@@ -427,6 +427,20 @@ function SuppliersSection() {
     }
   }
 
+  async function updateScale(logo: SupplierLogoRow, value: number) {
+    const safe = Math.max(40, Math.min(200, Math.round(value)));
+    // Optimista: actualizar UI antes
+    setLogos((prev) => prev.map((l) => (l.id === logo.id ? { ...l, display_scale: safe } : l)));
+    const { error } = await supabase
+      .from("supplier_logos")
+      .update({ display_scale: safe })
+      .eq("id", logo.id);
+    if (error) {
+      toast.error(error.message);
+      load();
+    }
+  }
+
   return (
     <div>
       <p className="text-xs text-muted-foreground mb-4">
