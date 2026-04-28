@@ -617,6 +617,35 @@ function SuppliersSection() {
                     </button>
                   </div>
                 </div>
+                <div className="pt-2 border-t border-border">
+                  <div className="flex items-center justify-between mb-1">
+                    <label className="text-[11px] font-semibold text-navy-deep">
+                      Tamaño del logo
+                    </label>
+                    <span className="text-[11px] text-muted-foreground tabular-nums">
+                      {logo.display_scale ?? 100}%
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <input
+                      type="range"
+                      min={40}
+                      max={200}
+                      step={5}
+                      value={logo.display_scale ?? 100}
+                      onChange={(e) => updateScale(logo, parseInt(e.target.value, 10))}
+                      className="flex-1 accent-ocean"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => updateScale(logo, 100)}
+                      className="text-[11px] px-2 py-1 rounded hover:bg-foam text-muted-foreground"
+                      title="Restablecer al 100%"
+                    >
+                      Reset
+                    </button>
+                  </div>
+                </div>
               </div>
             </div>
           ))}
