@@ -35,7 +35,7 @@ export const Route = createFileRoute("/")({
 
 const categories = [
   { icon: Wheat, name: "Alimentos", desc: "Balanceados premium para cada etapa de cultivo", count: "20+ productos", categoria: "Alimentos" },
-  { icon: Sprout, name: "Fertilizantes", desc: "Nutrientes que potencian la productividad de tus piscinas", count: "12+ productos", categoria: "Fertilizantes" },
+  { icon: Sprout, name: "Fertilizantes", desc: "Nutrientes que potencian la productividad de tus piscinas", count: "12+ productos", categoria: "Fertilizante" },
   { icon: FlaskConical, name: "Aditivos", desc: "Probióticos, vitaminas y mejoradores de rendimiento", count: "15+ productos", categoria: "Aditivos" },
   { icon: Beaker, name: "Insumos", desc: "Equipos y químicos para el manejo diario", count: "30+ productos", categoria: "Insumos" },
 ];
