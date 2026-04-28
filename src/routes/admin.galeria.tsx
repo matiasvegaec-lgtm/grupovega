@@ -484,3 +484,149 @@ function SuppliersSection() {
     </div>
   );
 }
+
+function HeroesSection() {
+  const [rows, setRows] = useState<PageHeroRow[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [uploadingKey, setUploadingKey] = useState<string | null>(null);
+
+  async function load() {
+    setLoading(true);
+    const { data, error } = await supabase
+      .from("page_heroes")
+      .select("*");
+    if (error) toast.error(error.message);
+    if (data) setRows(data as PageHeroRow[]);
+    setLoading(false);
+  }
+
+  useEffect(() => { load(); }, []);
+
+  async function uploadHero(page_key: string, label: string, file: File) {
+    setUploadingKey(page_key);
+    try {
+      const ext = file.name.split(".").pop() || "jpg";
+      const path = `heroes/${page_key}-${Date.now()}.${ext}`;
+      const up = await supabase.storage.from("company-images").upload(path, file, {
+        cacheControl: "3600",
+        upsert: false,
+      });
+      if (up.error) throw up.error;
+      const { data: pub } = supabase.storage.from("company-images").getPublicUrl(path);
+
+      const existing = rows.find((r) => r.page_key === page_key);
+      if (existing) {
+        // Borrar archivo anterior del storage si era nuestro
+        try {
+          const url = new URL(existing.image_url);
+          const parts = url.pathname.split("/company-images/");
+          if (parts[1]) await supabase.storage.from("company-images").remove([parts[1]]);
+        } catch { /* ignore */ }
+        const { error } = await supabase
+          .from("page_heroes")
+          .update({ image_url: pub.publicUrl, active: true })
+          .eq("id", existing.id);
+        if (error) throw error;
+      } else {
+        const { error } = await supabase.from("page_heroes").insert({
+          page_key,
+          label,
+          image_url: pub.publicUrl,
+          active: true,
+        });
+        if (error) throw error;
+      }
+      toast.success("Banner actualizado");
+      load();
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : "Error al subir";
+      toast.error(msg);
+    } finally {
+      setUploadingKey(null);
+    }
+  }
+
+  async function toggleActive(row: PageHeroRow) {
+    const { error } = await supabase
+      .from("page_heroes")
+      .update({ active: !row.active })
+      .eq("id", row.id);
+    if (error) return toast.error(error.message);
+    load();
+  }
+
+  return (
+    <div>
+      <p className="text-xs text-muted-foreground mb-4">
+        Imágenes de fondo de los banners (hero) de cada página. Sube una nueva imagen para reemplazarla.
+      </p>
+
+      {loading ? (
+        <div className="flex justify-center py-12">
+          <Loader2 className="w-6 h-6 animate-spin text-ocean" />
+        </div>
+      ) : (
+        <div className="grid sm:grid-cols-2 gap-4">
+          {EDITABLE_HERO_PAGES.map(({ page_key, label }) => {
+            const row = rows.find((r) => r.page_key === page_key);
+            const inputId = `hero-file-${page_key}`;
+            const isUploading = uploadingKey === page_key;
+            return (
+              <div
+                key={page_key}
+                className={`bg-card border border-border rounded-2xl overflow-hidden shadow-card ${
+                  row && !row.active ? "opacity-60" : ""
+                }`}
+              >
+                <div className="aspect-[16/7] bg-foam">
+                  {row?.image_url ? (
+                    <img src={row.image_url} alt={label} className="w-full h-full object-cover" />
+                  ) : (
+                    <div className="w-full h-full flex items-center justify-center text-muted-foreground">
+                      <ImageIcon className="w-8 h-8" />
+                    </div>
+                  )}
+                </div>
+                <div className="p-3 space-y-2">
+                  <p className="text-sm font-semibold text-navy-deep">{label}</p>
+                  <div className="flex items-center justify-between gap-2">
+                    <label
+                      htmlFor={inputId}
+                      className={`inline-flex items-center gap-2 text-xs px-3 py-1.5 rounded-full gradient-wave text-white font-semibold cursor-pointer ${
+                        isUploading ? "opacity-50 pointer-events-none" : ""
+                      }`}
+                    >
+                      {isUploading ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <ImageUp className="w-3.5 h-3.5" />}
+                      {isUploading ? "Subiendo..." : row ? "Reemplazar" : "Subir"}
+                    </label>
+                    <input
+                      id={inputId}
+                      type="file"
+                      accept="image/*"
+                      className="hidden"
+                      onChange={(e) => {
+                        const file = e.target.files?.[0];
+                        if (file) uploadHero(page_key, label, file);
+                        e.target.value = "";
+                      }}
+                    />
+                    {row && (
+                      <button
+                        type="button"
+                        onClick={() => toggleActive(row)}
+                        className="inline-flex items-center gap-1 text-xs text-ocean hover:bg-ocean/10 px-2 py-1 rounded"
+                        title={row.active ? "Ocultar" : "Mostrar"}
+                      >
+                        {row.active ? <Eye className="w-3.5 h-3.5" /> : <EyeOff className="w-3.5 h-3.5" />}
+                      </button>
+                    )}
+                  </div>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      )}
+    </div>
+  );
+}
