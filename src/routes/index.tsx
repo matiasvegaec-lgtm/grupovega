@@ -581,6 +581,7 @@ function Index() {
                     alt={s.name}
                     loading="lazy"
                     className="max-h-full max-w-full object-contain group-hover:scale-105 transition-transform duration-300"
+                    style={{ transform: `scale(${(s.scale ?? 100) / 100})` }}
                   />
                 </div>
               </motion.div>
