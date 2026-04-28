@@ -189,8 +189,16 @@ function Index() {
   const minItems = 12;
   const featuredRepeats = Math.max(2, Math.ceil(minItems / Math.max(featured.length, 1)));
   const carouselItems = Array.from({ length: featuredRepeats }, () => featured).flat();
-  const supplierRepeats = Math.max(2, Math.ceil(minItems / supplierLogos.length));
-  const supplierItems = Array.from({ length: supplierRepeats }, () => supplierLogos).flat();
+  // Para que el marquee infinito no muestre huecos, el contenido visible debe
+  // ser EXACTAMENTE el set base duplicado (la animación traslada -50%).
+  // 1) Construimos un set base con suficientes logos para llenar la pantalla.
+  // 2) Lo duplicamos una sola vez para crear el loop sin saltos.
+  const supplierBaseRepeats = Math.max(
+    1,
+    Math.ceil(minItems / Math.max(supplierLogos.length, 1)),
+  );
+  const supplierBase = Array.from({ length: supplierBaseRepeats }, () => supplierLogos).flat();
+  const supplierItems = [...supplierBase, ...supplierBase];
 
   return (
     <Layout>
