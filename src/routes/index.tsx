@@ -51,7 +51,9 @@ const featuredFallback: FeaturedItem[] = [
   { id: "fb-6", slug: null, name: "Vitaminas Premix", img: pVitamina },
 ];
 
-const supplierLogos = [
+type SupplierLogo = { name: string; img: string };
+
+const supplierLogosFallback: SupplierLogo[] = [
   { name: "NLProinsu", img: provNlproinsu },
   { name: "NaturalStar", img: provNaturalstar },
   { name: "Blueweight", img: provBlueweight },
@@ -62,6 +64,7 @@ const supplierLogos = [
 
 function Index() {
   const [featured, setFeatured] = useState<FeaturedItem[]>(featuredFallback);
+  const [supplierLogos, setSupplierLogos] = useState<SupplierLogo[]>(supplierLogosFallback);
   const mobileAutoplay = useRef(
     Autoplay({ delay: 2200, stopOnInteraction: false, stopOnMouseEnter: false })
   );
@@ -112,6 +115,20 @@ function Index() {
               .map((p) => ({ id: p.id, slug: p.slug, name: p.name, img: p.image_url || "" }))
               .filter((p) => p.img)
           );
+        }
+      });
+  }, []);
+
+  // Cargar logos de marcas desde la base de datos (editables desde admin)
+  useEffect(() => {
+    supabase
+      .from("supplier_logos")
+      .select("name, image_url")
+      .eq("active", true)
+      .order("sort_order", { ascending: true })
+      .then(({ data }) => {
+        if (data && data.length > 0) {
+          setSupplierLogos(data.map((s) => ({ name: s.name, img: s.image_url })));
         }
       });
   }, []);
