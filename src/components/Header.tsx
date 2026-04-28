@@ -26,9 +26,8 @@ const links = [
 export function Header() {
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
-  const [cartOpen, setCartOpen] = useState(false);
   const [promoOpen, setPromoOpen] = useState(false);
-  const { count } = useCart();
+  const { count, drawerOpen: cartOpen, setDrawerOpen: setCartOpen } = useCart();
   const { count: favCount } = useFavorites();
   const { user, signOut } = useAuth();
 

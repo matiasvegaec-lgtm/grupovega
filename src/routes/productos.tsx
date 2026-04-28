@@ -82,7 +82,11 @@ function ProductosPage() {
   const [categories, setCategories] = useState<Category[]>([]);
   const [subcategories, setSubcategories] = useState<Subcategory[]>([]);
   const [loading, setLoading] = useState(true);
-  const { addItem, updateQty, items: cartItems } = useCart();
+  const { addItem, updateQty, items: cartItems, drawerOpen, setDrawerOpen } = useCart();
+
+  const openCartIfNeeded = () => {
+    if (!drawerOpen) setDrawerOpen(true);
+  };
   const { toggle: toggleFav, isFavorite } = useFavorites();
   const heroBg = usePageHero("productos", productosHero);
 
@@ -513,6 +517,7 @@ function ProductosPage() {
                                         img: p.image_url || feedImg,
                                       }, 1);
                                       toast.success(`${p.name} agregado al carrito (${inCart + 1})`);
+                                      if (inCart === 0) openCartIfNeeded();
                                     }}
                                     className="w-8 h-8 rounded-full border border-border flex items-center justify-center hover:border-ocean hover:text-ocean transition"
                                     aria-label="Aumentar"
@@ -533,8 +538,10 @@ function ProductosPage() {
                                       img: p.image_url || feedImg,
                                     }, 1);
                                     toast.success(`${p.name} agregado al carrito (1)`);
+                                    openCartIfNeeded();
                                   } else {
                                     toast.success(`${p.name} ya está en el carrito (${inCart})`);
+                                    openCartIfNeeded();
                                   }
                                 }}
                                 className="w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-full gradient-wave text-white text-sm font-semibold shadow-glow hover:scale-[1.02] transition-transform disabled:opacity-50 disabled:cursor-not-allowed"

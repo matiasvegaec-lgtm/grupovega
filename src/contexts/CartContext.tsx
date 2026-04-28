@@ -17,6 +17,8 @@ type CartContextType = {
   clear: () => void;
   count: number;
   subtotal: number;
+  drawerOpen: boolean;
+  setDrawerOpen: (open: boolean) => void;
 };
 
 const CartContext = createContext<CartContextType | null>(null);
@@ -25,6 +27,7 @@ const STORAGE_KEY = "gv_cart_v1";
 export function CartProvider({ children }: { children: ReactNode }) {
   const [items, setItems] = useState<CartItem[]>([]);
   const [loaded, setLoaded] = useState(false);
+  const [drawerOpen, setDrawerOpen] = useState(false);
 
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -68,7 +71,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
 
   return (
     <CartContext.Provider
-      value={{ items, addItem, removeItem, updateQty, clear, count, subtotal }}
+      value={{ items, addItem, removeItem, updateQty, clear, count, subtotal, drawerOpen, setDrawerOpen }}
     >
       {children}
     </CartContext.Provider>
