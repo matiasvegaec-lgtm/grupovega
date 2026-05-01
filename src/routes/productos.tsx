@@ -338,8 +338,8 @@ function ProductosPage() {
         backgroundImage={heroBg}
       />
 
-      <section className="py-16 bg-background">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+      <section className="py-16 md:py-20 bg-background">
+        <div className="container mx-auto px-4 sm:px-6 md:px-10 lg:px-8">
           <div className="flex flex-col lg:flex-row gap-8">
             {/* Sidebar desktop */}
             <div className="hidden lg:block w-72 shrink-0">
@@ -411,7 +411,7 @@ function ProductosPage() {
               ) : filtered.length === 0 ? (
                 <p className="text-center text-muted-foreground py-16">No se encontraron productos.</p>
               ) : (
-                <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6">
+                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6 md:gap-7">
                   {filtered.map((p, i) => (
                     <motion.div
                       key={p.id}
@@ -589,7 +589,7 @@ function ProductosPage() {
 
       {/* Proveedores — marquee */}
       <section className="py-20 bg-foam overflow-hidden">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8 mb-12">
+        <div className="container mx-auto px-4 sm:px-6 md:px-10 lg:px-8 mb-12">
           <div className="text-center max-w-2xl mx-auto">
             <p className="text-sm font-semibold uppercase tracking-widest text-ocean mb-3">Proveedores</p>
             <h2 className="text-4xl md:text-5xl font-bold text-navy-deep">Marcas que distribuimos</h2>
