@@ -21,6 +21,8 @@ export function ImageAdjuster({ src, outputSize = 1000, backgroundColor = "#FFFF
   const containerRef = useRef<HTMLDivElement>(null);
   const imgRef = useRef<HTMLImageElement | null>(null);
   const objectUrlRef = useRef<string | null>(null);
+  const [displaySrc, setDisplaySrc] = useState(src);
+  const [loadError, setLoadError] = useState<string | null>(null);
   const [imgLoaded, setImgLoaded] = useState(false);
   const [naturalSize, setNaturalSize] = useState({ w: 0, h: 0 });
   const [scale, setScale] = useState(1); // multiplicador sobre el "fit"
@@ -47,6 +49,8 @@ export function ImageAdjuster({ src, outputSize = 1000, backgroundColor = "#FFFF
 
   useEffect(() => {
     setImgLoaded(false);
+    setLoadError(null);
+    setDisplaySrc(src);
     let cancelled = false;
     let localObjectUrl: string | null = null;
 
@@ -59,6 +63,7 @@ export function ImageAdjuster({ src, outputSize = 1000, backgroundColor = "#FFFF
       img.onload = () => {
         if (cancelled) return;
         imgRef.current = img;
+        setDisplaySrc(url);
         setNaturalSize({ w: img.naturalWidth, h: img.naturalHeight });
         setImgLoaded(true);
       };
@@ -69,8 +74,13 @@ export function ImageAdjuster({ src, outputSize = 1000, backgroundColor = "#FFFF
         fallback.onload = () => {
           if (cancelled) return;
           imgRef.current = fallback;
+          setDisplaySrc(url);
           setNaturalSize({ w: fallback.naturalWidth, h: fallback.naturalHeight });
           setImgLoaded(true);
+        };
+        fallback.onerror = () => {
+          if (cancelled) return;
+          setLoadError("No se pudo cargar esta imagen. Intenta volver a subirla.");
         };
         fallback.src = url;
       };
@@ -135,7 +145,11 @@ export function ImageAdjuster({ src, outputSize = 1000, backgroundColor = "#FFFF
   };
 
   const handleConfirm = async () => {
-    if (!imgRef.current || !naturalSize.w) return;
+    if (saving) return;
+    if (!imgRef.current || !naturalSize.w) {
+      toast.error(loadError ?? "Espera a que la imagen termine de cargar");
+      return;
+    }
     setSaving(true);
     try {
       const canvas = document.createElement("canvas");
