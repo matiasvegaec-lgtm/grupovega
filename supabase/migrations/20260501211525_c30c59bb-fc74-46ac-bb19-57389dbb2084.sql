@@ -1,0 +1,1 @@
+UPDATE public.subcategories SET display_order = 99 WHERE id = 'e0eeca95-493b-4b0d-81ee-308f268f4109';

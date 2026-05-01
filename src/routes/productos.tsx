@@ -42,7 +42,7 @@ type Product = {
 };
 
 type Category = { id: string; name: string };
-type Subcategory = { id: string; name: string; category_id: string };
+type Subcategory = { id: string; name: string; category_id: string; display_order: number };
 
 const CATEGORY_META: Record<string, { icon: typeof Wheat; desc: string }> = {
   "Alimentos": { icon: Wheat, desc: "Balanceados premium" },
@@ -83,7 +83,7 @@ function ProductosPage() {
       const [prodRes, catRes, subRes] = await Promise.all([
         supabase.from("products").select("*").eq("active", true).order("display_order").order("created_at", { ascending: false }),
         supabase.from("categories").select("id,name").eq("active", true).order("display_order"),
-        supabase.from("subcategories").select("id,name,category_id").eq("active", true).order("display_order"),
+        supabase.from("subcategories").select("id,name,category_id,display_order").eq("active", true).order("display_order"),
       ]);
       if (!prodRes.error) {
         const list = (prodRes.data ?? []) as Product[];
@@ -128,6 +128,17 @@ function ProductosPage() {
     if (b === "Alimentos") return 1;
     return 0;
   });
+  // Orden visual de categorías: Alimentos primero, resto en su display_order de la BD
+  const categoryOrderIndex = (name: string) => {
+    if (name === "Alimentos") return -1;
+    const idx = categories.findIndex((c) => c.name === name);
+    return idx === -1 ? 999 : idx;
+  };
+  const subcategoryOrderIndex = (subId: string | null) => {
+    if (!subId) return 9999;
+    const s = subcategories.find((x) => x.id === subId);
+    return s ? s.display_order : 9999;
+  };
   const categoryCounts = allCategoryNames.reduce<Record<string, number>>((acc, c) => {
     acc[c] = products.filter((p) => p.category === c).length;
     return acc;
@@ -147,9 +158,14 @@ function ProductosPage() {
       if (sort === "price-asc") return Number(a.price) - Number(b.price);
       if (sort === "price-desc") return Number(b.price) - Number(a.price);
       if (sort === "name") return a.name.localeCompare(b.name);
-      if (a.category === "Alimentos" && b.category !== "Alimentos") return -1;
-      if (b.category === "Alimentos" && a.category !== "Alimentos") return 1;
-      return 0;
+      // Orden por defecto / "recent": agrupar por categoría y subcategoría
+      const ca = categoryOrderIndex(a.category);
+      const cb = categoryOrderIndex(b.category);
+      if (ca !== cb) return ca - cb;
+      const sa = subcategoryOrderIndex(a.subcategory_id);
+      const sb = subcategoryOrderIndex(b.subcategory_id);
+      if (sa !== sb) return sa - sb;
+      return a.name.localeCompare(b.name);
     });
 
   const resetFilters = () => {
