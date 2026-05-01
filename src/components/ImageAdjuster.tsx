@@ -218,7 +218,7 @@ export function ImageAdjuster({ src, outputSize = 1000, backgroundColor = "#FFFF
         >
           {imgLoaded && naturalSize.w > 0 && (
             <img
-              src={src}
+              src={displaySrc}
               alt="Ajustar"
               draggable={false}
               style={{
@@ -234,7 +234,11 @@ export function ImageAdjuster({ src, outputSize = 1000, backgroundColor = "#FFFF
           )}
           {!imgLoaded && (
             <div className="w-full h-full flex items-center justify-center">
-              <Loader2 className="w-6 h-6 animate-spin text-ocean" />
+              {loadError ? (
+                <span className="px-6 text-center text-xs font-semibold text-destructive">{loadError}</span>
+              ) : (
+                <Loader2 className="w-6 h-6 animate-spin text-ocean" />
+              )}
             </div>
           )}
           {/* Marco guía */}
@@ -264,7 +268,7 @@ export function ImageAdjuster({ src, outputSize = 1000, backgroundColor = "#FFFF
 
         <div className="flex justify-end gap-2 mt-5">
           <button type="button" onClick={onCancel} className="px-4 py-2 rounded-lg border border-border text-sm font-semibold">Cancelar</button>
-          <button type="button" disabled={saving || !imgLoaded} onClick={handleConfirm} className="px-5 py-2 rounded-lg gradient-wave text-white text-sm font-semibold inline-flex items-center gap-2 disabled:opacity-60">
+          <button type="button" disabled={saving || !!loadError} onClick={handleConfirm} className="px-5 py-2 rounded-lg gradient-wave text-white text-sm font-semibold inline-flex items-center gap-2 disabled:opacity-60">
             {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Check className="w-4 h-4" />} Aplicar
           </button>
         </div>
