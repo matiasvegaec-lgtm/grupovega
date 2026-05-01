@@ -11,9 +11,16 @@ export const Route = createFileRoute("/quienes-somos")({
   head: () => ({
     meta: [
       { title: "Quiénes Somos — Grupo Vega" },
-      { name: "description", content: "Conoce a Grupo Vega: principios, política de calidad, divisiones y mercados que servimos en la industria camaronera." },
+      {
+        name: "description",
+        content:
+          "Conoce a Grupo Vega: principios, política de calidad, divisiones y mercados que servimos en la industria camaronera.",
+      },
       { property: "og:title", content: "Quiénes Somos — Grupo Vega" },
-      { property: "og:description", content: "Soluciones integrales para acuicultura de camarón en Ecuador y Latinoamérica." },
+      {
+        property: "og:description",
+        content: "Soluciones integrales para acuicultura de camarón en Ecuador y Latinoamérica.",
+      },
     ],
   }),
   component: QuienesSomosPage,
@@ -22,8 +29,8 @@ export const Route = createFileRoute("/quienes-somos")({
 type CompanyImage = { id: string; image_url: string; caption: string | null };
 
 const stats = [
-   { value: "5000+", label: "​VENTAS EN PRODUCTOS" },
-   { value: "50+", label: "PRODUCTOS Y MARCAS" },
+  { value: "5000+", label: "​VENTAS EN PRODUCTOS" },
+  { value: "50+", label: "PRODUCTOS Y MARCAS" },
   { value: "1,200+", label: "HECTÁREAS ASESORADAS" },
   { value: "30+", label: "​CLIENTES POTENCIALES" },
 ];
@@ -49,7 +56,9 @@ function QuienesSomosPage() {
         .order("created_at", { ascending: true });
       if (mounted && data) setImages(data as CompanyImage[]);
     })();
-    return () => { mounted = false; };
+    return () => {
+      mounted = false;
+    };
   }, []);
 
   // Auto-rotación de imagen cada 4.5s
@@ -84,18 +93,14 @@ function QuienesSomosPage() {
             transition={{ duration: 0.6 }}
             className="text-navy-deep"
           >
-            <p className="text-xs font-semibold uppercase tracking-[0.25em] text-ocean mb-4">
-              ¿Por qué elegirnos?
-            </p>
+            <p className="text-xs font-semibold uppercase tracking-[0.25em] text-ocean mb-4">¿Por qué elegirnos?</p>
             <h2 className="text-3xl md:text-4xl lg:text-5xl leading-tight mb-4 font-extralight">
-              Compromiso de empresa
+              Compromiso de nuestra empresa
             </h2>
             <div className="w-16 h-1 rounded-full bg-ocean mb-6" />
             <p className="text-base md:text-lg text-muted-foreground leading-relaxed mb-8">
-              “Nos dedicamos a proveer al sector camaronero y a la industria acuicola en general, 
-              soluciones integrales, productos innovadores y herramientas especializadas que 
-              optimizan los procesos de producción, elevan la eficiencia operativa y garantizan 
-              resultados sostenibles y de alto rendimiento.”
+              Estamos comprometidos en entregar a los acuicultores y a la industria productos y herramientas que
+              faciliten los procesos de producción y garanticen resultados eficientes.
             </p>
 
             <div className="grid sm:grid-cols-2 gap-x-6 gap-y-6">
@@ -215,9 +220,7 @@ function QuienesSomosPage() {
                 </div>
                 <h3 className="text-xl font-bold text-ocean mb-2">{item.title}</h3>
                 <div className="w-12 h-1 rounded-full bg-turquoise mb-4" />
-                <p className="text-sm text-muted-foreground leading-relaxed whitespace-pre-line">
-                  {item.text}
-                </p>
+                <p className="text-sm text-muted-foreground leading-relaxed whitespace-pre-line">{item.text}</p>
               </motion.div>
             );
           })}
@@ -232,9 +235,9 @@ function QuienesSomosPage() {
           </div>
           <h2 className="text-4xl md:text-5xl font-bold text-ocean mb-6">DIVISIONES</h2>
           <p className="text-base md:text-lg text-muted-foreground leading-relaxed">
-            Estamos enfocados en atender los requerimientos del sector camaronero ecuatoriano desde diferentes campos de acción.
-            Nuestras actividades comprenden insumos químicos y biológicos, alimento balanceado, equipos de oxigenación,
-            asesoría técnica especializada y soluciones tecnológicas para la producción acuícola.
+            Estamos enfocados en atender los requerimientos del sector camaronero ecuatoriano desde diferentes campos de
+            acción. Nuestras actividades comprenden insumos químicos y biológicos, alimento balanceado, equipos de
+            oxigenación, asesoría técnica especializada y soluciones tecnológicas para la producción acuícola.
           </p>
         </div>
       </section>
@@ -247,9 +250,9 @@ function QuienesSomosPage() {
           </div>
           <h2 className="text-4xl md:text-5xl font-bold text-ocean mb-6">MERCADOS SERVIDOS</h2>
           <p className="text-base md:text-lg text-muted-foreground leading-relaxed">
-            Grupo Vega opera en el mercado camaronero ecuatoriano ofreciendo a sus clientes una extensa línea de productos
-            para mejorar su productividad: desde probióticos, minerales y alimento balanceado hasta equipos y servicio técnico
-            para todo el ciclo del camarón.
+            Grupo Vega opera en el mercado camaronero ecuatoriano ofreciendo a sus clientes una extensa línea de
+            productos para mejorar su productividad: desde probióticos, minerales y alimento balanceado hasta equipos y
+            servicio técnico para todo el ciclo del camarón.
           </p>
         </div>
       </section>
@@ -267,7 +270,9 @@ function QuienesSomosPage() {
                 transition={{ duration: 0.4, delay: i * 0.08 }}
               >
                 <div className="text-4xl md:text-5xl font-bold mb-1">{s.value}</div>
-                <div className="text-[11px] md:text-xs font-semibold tracking-widest opacity-90 text-justify">{s.label}</div>
+                <div className="text-[11px] md:text-xs font-semibold tracking-widest opacity-90 text-justify">
+                  {s.label}
+                </div>
               </motion.div>
             ))}
           </div>
