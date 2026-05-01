@@ -305,7 +305,7 @@ function Index() {
           </div>
 
           {/* Mobile / Tablet: mismo carrusel, mayor ancho/escala en tablet */}
-          <div className="lg:hidden max-w-md md:max-w-2xl mx-auto px-2">
+          <div className="lg:hidden max-w-md md:max-w-2xl mx-auto px-0 relative">
             <Carousel
               opts={{ align: "center", loop: true }}
               plugins={[categoriesAutoplay.current]}
@@ -335,8 +335,8 @@ function Index() {
                   );
                 })}
               </CarouselContent>
-              <CarouselPrevious className="left-1 bg-card/95 border-ocean/30 text-ocean hover:bg-ocean hover:text-white" />
-              <CarouselNext className="right-1 bg-card/95 border-ocean/30 text-ocean hover:bg-ocean hover:text-white" />
+              <CarouselPrevious className="left-0 bg-card/95 border-ocean/30 text-ocean hover:bg-ocean hover:text-white shadow-md z-10" />
+              <CarouselNext className="right-0 bg-card/95 border-ocean/30 text-ocean hover:bg-ocean hover:text-white shadow-md z-10" />
             </Carousel>
           </div>
         </div>
@@ -404,7 +404,7 @@ function Index() {
           </div>
 
           {/* Mobile / Tablet: mismo carrusel, mayor ancho/escala en tablet */}
-          <div className="lg:hidden max-w-md md:max-w-2xl mx-auto px-2">
+          <div className="lg:hidden max-w-md md:max-w-2xl mx-auto px-0 relative">
             <Carousel
               opts={{ align: "center", loop: true }}
               plugins={[mobileAutoplay.current]}
@@ -432,8 +432,8 @@ function Index() {
                   );
                 })}
               </CarouselContent>
-              <CarouselPrevious className="left-1 bg-card/95 border-ocean/30 text-ocean hover:bg-ocean hover:text-white" />
-              <CarouselNext className="right-1 bg-card/95 border-ocean/30 text-ocean hover:bg-ocean hover:text-white" />
+              <CarouselPrevious className="left-0 bg-card/95 border-ocean/30 text-ocean hover:bg-ocean hover:text-white shadow-md z-10" />
+              <CarouselNext className="right-0 bg-card/95 border-ocean/30 text-ocean hover:bg-ocean hover:text-white shadow-md z-10" />
             </Carousel>
           </div>
         </div>
