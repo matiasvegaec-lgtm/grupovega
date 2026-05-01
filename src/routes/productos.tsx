@@ -424,7 +424,7 @@ function ProductosPage() {
                       <Link
                         to="/productos/$productId"
                         params={{ productId: p.slug || p.id }}
-                        className="block w-full h-48 sm:h-52 overflow-hidden relative text-left bg-white"
+                        className="block w-full h-36 sm:h-52 overflow-hidden relative text-left bg-white"
                       >
                         <img
                           src={p.image_url || feedImg}
@@ -476,17 +476,17 @@ function ProductosPage() {
                           }`}
                         />
                       </button>
-                      <div className="p-5 flex flex-col flex-1">
+                      <div className="p-3 sm:p-5 flex flex-col flex-1">
                         <Link
                           to="/productos/$productId"
                           params={{ productId: p.slug || p.id }}
-                          className="text-left font-bold text-navy-deep mb-3 hover:text-ocean transition flex-1"
+                          className="text-left font-bold text-sm sm:text-base text-navy-deep mb-2 sm:mb-3 hover:text-ocean transition flex-1 line-clamp-2"
                         >
                           {p.name}
                         </Link>
-                        <div className="flex items-end justify-between mb-3 gap-2">
+                        <div className="flex items-end justify-between mb-2 sm:mb-3 gap-2">
                           <div className="flex flex-col">
-                            <span className="text-xl font-bold text-navy-deep leading-tight">
+                            <span className="text-base sm:text-xl font-bold text-navy-deep leading-tight">
                               ${Number(p.price).toFixed(2)}
                             </span>
                             {p.price_card_3m && Number(p.price_card_3m) > 0 && (
@@ -507,7 +507,7 @@ function ProductosPage() {
                           return (
                             <>
                               {p.stock > 0 && (
-                                <div className="flex items-center justify-center gap-2 mb-3">
+                                <div className="flex items-center justify-center gap-2 mb-2 sm:mb-3">
                                   <button
                                     type="button"
                                     onClick={() => {
@@ -568,9 +568,11 @@ function ProductosPage() {
                                     openCartIfNeeded();
                                   }
                                 }}
-                                className="w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-full gradient-wave text-white text-sm font-semibold shadow-glow hover:scale-[1.02] transition-transform disabled:opacity-50 disabled:cursor-not-allowed"
+                                className="w-full inline-flex items-center justify-center gap-1.5 px-2 sm:px-4 py-2 sm:py-2.5 rounded-full gradient-wave text-white text-xs sm:text-sm font-semibold shadow-glow hover:scale-[1.02] transition-transform disabled:opacity-50 disabled:cursor-not-allowed"
                               >
-                                <ShoppingCart className="w-4 h-4" /> Agregar al carrito
+                                <ShoppingCart className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+                                <span className="sm:hidden">Agregar</span>
+                                <span className="hidden sm:inline">Agregar al carrito</span>
                               </button>
                             </>
                           );
