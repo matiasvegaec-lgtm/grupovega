@@ -92,9 +92,10 @@ function QuienesSomosPage() {
             </h2>
             <div className="w-16 h-1 rounded-full bg-ocean mb-6" />
             <p className="text-base md:text-lg text-muted-foreground leading-relaxed mb-8">
-              Estamos comprometidos en entregar a los acuicultores y a la industria
-              productos y herramientas que faciliten los procesos de producción y
-              garanticen resultados eficientes.
+              “Nos dedicamos a proveer al sector camaronero y a la industria acuicola en general, 
+              soluciones integrales, productos innovadores y herramientas especializadas que 
+              optimizan los procesos de producción, elevan la eficiencia operativa y garantizan 
+              resultados sostenibles y de alto rendimiento.”
             </p>
 
             <div className="grid sm:grid-cols-2 gap-x-6 gap-y-6">
