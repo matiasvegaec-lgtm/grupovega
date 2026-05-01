@@ -198,8 +198,8 @@ export function ImageAdjuster({
         );
       }
       await onConfirm(blob);
-    } catch (err: any) {
-      toast.error(err?.message ?? "No se pudo aplicar el ajuste de imagen");
+    } catch (err: unknown) {
+      toast.error(err instanceof Error ? err.message : "No se pudo aplicar el ajuste de imagen");
     } finally {
       setSaving(false);
     }
