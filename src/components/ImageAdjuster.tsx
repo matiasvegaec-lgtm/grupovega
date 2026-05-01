@@ -17,7 +17,13 @@ type Props = {
  * Editor manual de imagen: permite ajustar zoom y posición sobre un lienzo
  * cuadrado y exportar el recorte como PNG listo para el catálogo.
  */
-export function ImageAdjuster({ src, outputSize = 1000, backgroundColor = "#FFFFFF", onCancel, onConfirm }: Props) {
+export function ImageAdjuster({
+  src,
+  outputSize = 1000,
+  backgroundColor = "#FFFFFF",
+  onCancel,
+  onConfirm,
+}: Props) {
   const containerRef = useRef<HTMLDivElement>(null);
   const imgRef = useRef<HTMLImageElement | null>(null);
   const objectUrlRef = useRef<string | null>(null);
@@ -35,9 +41,8 @@ export function ImageAdjuster({ src, outputSize = 1000, backgroundColor = "#FFFF
   const PREVIEW = 320;
 
   // Escala base "contain": ajusta la imagen completa dentro del cuadrado
-  const baseScale = naturalSize.w && naturalSize.h
-    ? Math.min(PREVIEW / naturalSize.w, PREVIEW / naturalSize.h)
-    : 1;
+  const baseScale =
+    naturalSize.w && naturalSize.h ? Math.min(PREVIEW / naturalSize.w, PREVIEW / naturalSize.h) : 1;
 
   const drawW = naturalSize.w * baseScale * scale;
   const drawH = naturalSize.h * baseScale * scale;
@@ -169,7 +174,13 @@ export function ImageAdjuster({ src, outputSize = 1000, backgroundColor = "#FFFF
       const cx = outputSize / 2 + offset.x * ratio;
       const cy = outputSize / 2 + offset.y * ratio;
       ctx.imageSmoothingQuality = "high";
-      ctx.drawImage(imgRef.current, cx - finalDrawW / 2, cy - finalDrawH / 2, finalDrawW, finalDrawH);
+      ctx.drawImage(
+        imgRef.current,
+        cx - finalDrawW / 2,
+        cy - finalDrawH / 2,
+        finalDrawW,
+        finalDrawH,
+      );
 
       let blob: Blob;
       try {
@@ -195,11 +206,19 @@ export function ImageAdjuster({ src, outputSize = 1000, backgroundColor = "#FFFF
   };
 
   return (
-    <div className="fixed inset-0 z-[60] bg-black/70 flex items-center justify-center p-4" onClick={onCancel}>
-      <div className="bg-card rounded-2xl p-4 md:p-6 max-w-md w-full shadow-elegant" onClick={(e) => e.stopPropagation()}>
+    <div
+      className="fixed inset-0 z-[60] bg-black/70 flex items-center justify-center p-4"
+      onClick={onCancel}
+    >
+      <div
+        className="bg-card rounded-2xl p-4 md:p-6 max-w-md w-full shadow-elegant"
+        onClick={(e) => e.stopPropagation()}
+      >
         <div className="flex items-center justify-between mb-4">
           <h3 className="text-lg font-bold text-navy-deep">Ajustar imagen</h3>
-          <button type="button" onClick={onCancel} aria-label="Cerrar"><X className="w-5 h-5" /></button>
+          <button type="button" onClick={onCancel} aria-label="Cerrar">
+            <X className="w-5 h-5" />
+          </button>
         </div>
 
         <p className="text-xs text-muted-foreground mb-3">
@@ -209,7 +228,12 @@ export function ImageAdjuster({ src, outputSize = 1000, backgroundColor = "#FFFF
         <div
           ref={containerRef}
           className="relative mx-auto rounded-xl overflow-hidden border border-border touch-none select-none"
-          style={{ width: PREVIEW, height: PREVIEW, background: backgroundColor, cursor: dragging ? "grabbing" : "grab" }}
+          style={{
+            width: PREVIEW,
+            height: PREVIEW,
+            background: backgroundColor,
+            cursor: dragging ? "grabbing" : "grab",
+          }}
           onPointerDown={onPointerDown}
           onPointerMove={onPointerMove}
           onPointerUp={onPointerUp}
@@ -235,7 +259,9 @@ export function ImageAdjuster({ src, outputSize = 1000, backgroundColor = "#FFFF
           {!imgLoaded && (
             <div className="w-full h-full flex items-center justify-center">
               {loadError ? (
-                <span className="px-6 text-center text-xs font-semibold text-destructive">{loadError}</span>
+                <span className="px-6 text-center text-xs font-semibold text-destructive">
+                  {loadError}
+                </span>
               ) : (
                 <Loader2 className="w-6 h-6 animate-spin text-ocean" />
               )}
@@ -246,7 +272,12 @@ export function ImageAdjuster({ src, outputSize = 1000, backgroundColor = "#FFFF
         </div>
 
         <div className="flex items-center gap-3 mt-4">
-          <button type="button" onClick={() => setScale((s) => Math.max(0.2, s - 0.1))} className="p-2 rounded-lg bg-foam text-navy-deep" aria-label="Alejar">
+          <button
+            type="button"
+            onClick={() => setScale((s) => Math.max(0.2, s - 0.1))}
+            className="p-2 rounded-lg bg-foam text-navy-deep"
+            aria-label="Alejar"
+          >
             <ZoomOut className="w-4 h-4" />
           </button>
           <input
@@ -258,18 +289,41 @@ export function ImageAdjuster({ src, outputSize = 1000, backgroundColor = "#FFFF
             onChange={(e) => setScale(parseFloat(e.target.value))}
             className="flex-1 accent-ocean"
           />
-          <button type="button" onClick={() => setScale((s) => Math.min(5, s + 0.1))} className="p-2 rounded-lg bg-foam text-navy-deep" aria-label="Acercar">
+          <button
+            type="button"
+            onClick={() => setScale((s) => Math.min(5, s + 0.1))}
+            className="p-2 rounded-lg bg-foam text-navy-deep"
+            aria-label="Acercar"
+          >
             <ZoomIn className="w-4 h-4" />
           </button>
-          <button type="button" onClick={reset} className="p-2 rounded-lg bg-foam text-navy-deep" aria-label="Restablecer" title="Restablecer">
+          <button
+            type="button"
+            onClick={reset}
+            className="p-2 rounded-lg bg-foam text-navy-deep"
+            aria-label="Restablecer"
+            title="Restablecer"
+          >
             <RotateCcw className="w-4 h-4" />
           </button>
         </div>
 
         <div className="flex justify-end gap-2 mt-5">
-          <button type="button" onClick={onCancel} className="px-4 py-2 rounded-lg border border-border text-sm font-semibold">Cancelar</button>
-          <button type="button" disabled={saving || !!loadError} onClick={handleConfirm} className="px-5 py-2 rounded-lg gradient-wave text-white text-sm font-semibold inline-flex items-center gap-2 disabled:opacity-60">
-            {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Check className="w-4 h-4" />} Aplicar
+          <button
+            type="button"
+            onClick={onCancel}
+            className="px-4 py-2 rounded-lg border border-border text-sm font-semibold"
+          >
+            Cancelar
+          </button>
+          <button
+            type="button"
+            disabled={saving || !!loadError}
+            onClick={handleConfirm}
+            className="px-5 py-2 rounded-lg gradient-wave text-white text-sm font-semibold inline-flex items-center gap-2 disabled:opacity-60"
+          >
+            {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Check className="w-4 h-4" />}{" "}
+            Aplicar
           </button>
         </div>
       </div>
