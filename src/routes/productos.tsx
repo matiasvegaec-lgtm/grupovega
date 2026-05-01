@@ -42,7 +42,7 @@ type Product = {
 };
 
 type Category = { id: string; name: string };
-type Subcategory = { id: string; name: string; category_id: string };
+type Subcategory = { id: string; name: string; category_id: string; display_order: number };
 
 const CATEGORY_META: Record<string, { icon: typeof Wheat; desc: string }> = {
   "Alimentos": { icon: Wheat, desc: "Balanceados premium" },
@@ -83,7 +83,7 @@ function ProductosPage() {
       const [prodRes, catRes, subRes] = await Promise.all([
         supabase.from("products").select("*").eq("active", true).order("display_order").order("created_at", { ascending: false }),
         supabase.from("categories").select("id,name").eq("active", true).order("display_order"),
-        supabase.from("subcategories").select("id,name,category_id").eq("active", true).order("display_order"),
+        supabase.from("subcategories").select("id,name,category_id,display_order").eq("active", true).order("display_order"),
       ]);
       if (!prodRes.error) {
         const list = (prodRes.data ?? []) as Product[];
