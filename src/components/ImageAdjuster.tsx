@@ -36,6 +36,7 @@ export function ImageAdjuster({
   const [dragging, setDragging] = useState(false);
   const dragStart = useRef<{ x: number; y: number; ox: number; oy: number } | null>(null);
   const [saving, setSaving] = useState(false);
+  const suppressBackdropRef = useRef(false);
 
   // Tamaño del lienzo de previsualización (cuadrado)
   const PREVIEW = 320;
@@ -141,6 +142,11 @@ export function ImageAdjuster({
   const onPointerUp = () => {
     setDragging(false);
     dragStart.current = null;
+    // Evita que al soltar el arrastre fuera del modal se cierre por accidente
+    suppressBackdropRef.current = true;
+    setTimeout(() => {
+      suppressBackdropRef.current = false;
+    }, 300);
   };
 
   const onWheel = (e: React.WheelEvent) => {
@@ -209,7 +215,10 @@ export function ImageAdjuster({
   return (
     <div
       className="fixed inset-0 z-[60] bg-black/70 flex items-center justify-center p-4"
-      onClick={onCancel}
+      onClick={() => {
+        if (suppressBackdropRef.current) return;
+        onCancel();
+      }}
     >
       <div
         className="bg-card rounded-2xl p-4 md:p-6 max-w-md w-full shadow-elegant"
