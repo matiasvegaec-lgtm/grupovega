@@ -144,7 +144,6 @@ export function ImageAdjuster({
   };
 
   const onWheel = (e: React.WheelEvent) => {
-    e.preventDefault();
     const delta = e.deltaY > 0 ? -0.05 : 0.05;
     setScale((s) => Math.max(0.2, Math.min(5, s + delta)));
   };
@@ -152,7 +151,7 @@ export function ImageAdjuster({
   const handleConfirm = async () => {
     if (saving) return;
     if (!imgRef.current || !naturalSize.w) {
-      toast.error(loadError ?? "Espera a que la imagen termine de cargar");
+      toast.error(loadError ?? "Espera a que la imagen termine de cargar antes de aplicar.");
       return;
     }
     setSaving(true);
@@ -182,19 +181,21 @@ export function ImageAdjuster({
         finalDrawH,
       );
 
-      let blob: Blob;
+      let blob: Blob | null = null;
       try {
-        blob = await new Promise<Blob>((resolve, reject) => {
-          canvas.toBlob(
-            (b) => (b ? resolve(b) : reject(new Error("No se pudo generar la imagen"))),
-            "image/png",
-            0.95,
-          );
+        blob = await new Promise<Blob | null>((resolve) => {
+          try {
+            canvas.toBlob((b) => resolve(b), "image/png", 0.95);
+          } catch {
+            resolve(null);
+          }
         });
       } catch {
-        // Caso típico: canvas "tainted" por CORS. Avisamos al usuario.
+        blob = null;
+      }
+      if (!blob) {
         throw new Error(
-          "No se pudo exportar la imagen ajustada (problema de permisos CORS). Vuelve a subir la imagen original.",
+          "No se pudo exportar la imagen ajustada. Vuelve a subir la imagen original e inténtalo de nuevo.",
         );
       }
       await onConfirm(blob);
@@ -318,7 +319,7 @@ export function ImageAdjuster({
           </button>
           <button
             type="button"
-            disabled={saving || !!loadError}
+            disabled={saving || !imgLoaded}
             onClick={handleConfirm}
             className="px-5 py-2 rounded-lg gradient-wave text-white text-sm font-semibold inline-flex items-center gap-2 disabled:opacity-60"
           >
