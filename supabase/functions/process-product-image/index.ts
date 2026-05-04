@@ -13,6 +13,51 @@ Deno.serve(async (req) => {
   }
 
   try {
+    // ---- AuthN/AuthZ: only staff (admin/employee) can call this ----
+    const authHeader = req.headers.get("authorization") ?? "";
+    const token = authHeader.toLowerCase().startsWith("bearer ")
+      ? authHeader.slice(7).trim()
+      : "";
+    if (!token) {
+      return new Response(JSON.stringify({ error: "Unauthorized" }), {
+        status: 401,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
+    const SUPABASE_URL = Deno.env.get("SUPABASE_URL");
+    const SUPABASE_ANON_KEY = Deno.env.get("SUPABASE_ANON_KEY");
+    if (!SUPABASE_URL || !SUPABASE_ANON_KEY) {
+      return new Response(JSON.stringify({ error: "Server misconfigured" }), {
+        status: 500,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
+    const { createClient } = await import("https://esm.sh/@supabase/supabase-js@2");
+    const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
+      global: { headers: { Authorization: `Bearer ${token}` } },
+      auth: { persistSession: false, autoRefreshToken: false },
+    });
+
+    const { data: userData, error: userErr } = await supabase.auth.getUser(token);
+    if (userErr || !userData?.user) {
+      return new Response(JSON.stringify({ error: "Unauthorized" }), {
+        status: 401,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
+    const { data: isStaff, error: roleErr } = await supabase.rpc("is_staff", {
+      _user_id: userData.user.id,
+    });
+    if (roleErr || !isStaff) {
+      return new Response(JSON.stringify({ error: "Forbidden" }), {
+        status: 403,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
     const { imageBase64, mimeType } = await req.json();
     if (!imageBase64) {
       return new Response(JSON.stringify({ error: "imageBase64 requerido" }), {
