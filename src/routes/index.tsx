@@ -259,8 +259,8 @@ function Index() {
           </div>
         </div>
 
-        <div className="absolute bottom-0 left-0 right-0">
-          <svg viewBox="0 0 1440 120" className="w-full h-auto" preserveAspectRatio="none">
+        <div className="absolute bottom-[-1px] left-0 right-0 leading-[0]">
+          <svg viewBox="0 0 1440 120" className="block w-full h-auto" preserveAspectRatio="none">
             <path d="M0,64L80,69.3C160,75,320,85,480,80C640,75,800,53,960,48C1120,43,1280,53,1360,58.7L1440,64L1440,120L0,120Z" style={{ fill: "var(--background)" }} />
           </svg>
         </div>
