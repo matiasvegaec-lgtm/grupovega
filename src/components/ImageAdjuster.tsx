@@ -94,11 +94,11 @@ export function ImageAdjuster({
     };
 
     // Estrategia robusta: descargar como blob y usar object URL.
-    // Esto evita el problema de "canvas tainted" al exportar imágenes
-    // que vienen de otro origen (Supabase storage) cuando CORS no responde
-    // con los headers esperados.
+    // Si el origen externo bloquea CORS, pasamos por un proxy propio para
+    // poder dibujar/exportar la imagen visible en canvas.
     if (/^https?:/i.test(src)) {
-      fetch(src, { mode: "cors", cache: "no-cache" })
+      const proxiedSrc = `/api/public/image-proxy?url=${encodeURIComponent(src)}`;
+      fetch(proxiedSrc, { cache: "no-cache" })
         .then((r) => {
           if (!r.ok) throw new Error("No se pudo descargar la imagen");
           return r.blob();
@@ -111,8 +111,21 @@ export function ImageAdjuster({
         })
         .catch(() => {
           if (cancelled) return;
-          // Si falla el fetch, intentamos cargar la URL directa con crossOrigin
-          loadFromUrl(src, false);
+          fetch(src, { mode: "cors", cache: "no-cache" })
+            .then((r) => {
+              if (!r.ok) throw new Error("No se pudo descargar la imagen");
+              return r.blob();
+            })
+            .then((blob) => {
+              if (cancelled) return;
+              localObjectUrl = URL.createObjectURL(blob);
+              objectUrlRef.current = localObjectUrl;
+              loadFromUrl(localObjectUrl, true);
+            })
+            .catch(() => {
+              if (cancelled) return;
+              loadFromUrl(src, false);
+            });
         });
     } else {
       loadFromUrl(src, false);
