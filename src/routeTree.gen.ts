@@ -28,6 +28,7 @@ import { Route as AdminPedidosRouteImport } from './routes/admin.pedidos'
 import { Route as AdminGaleriaRouteImport } from './routes/admin.galeria'
 import { Route as AdminClientesRouteImport } from './routes/admin.clientes'
 import { Route as AdminCategoriasRouteImport } from './routes/admin.categorias'
+import { Route as ApiPublicSitemapDotxmlRouteImport } from './routes/api/public/sitemap[.]xml'
 import { Route as ApiPublicImageProxyRouteImport } from './routes/api/public/image-proxy'
 
 const QuienesSomosRoute = QuienesSomosRouteImport.update({
@@ -125,6 +126,11 @@ const AdminCategoriasRoute = AdminCategoriasRouteImport.update({
   path: '/categorias',
   getParentRoute: () => AdminRoute,
 } as any)
+const ApiPublicSitemapDotxmlRoute = ApiPublicSitemapDotxmlRouteImport.update({
+  id: '/api/public/sitemap.xml',
+  path: '/api/public/sitemap.xml',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiPublicImageProxyRoute = ApiPublicImageProxyRouteImport.update({
   id: '/api/public/image-proxy',
   path: '/api/public/image-proxy',
@@ -152,6 +158,7 @@ export interface FileRoutesByFullPath {
   '/pedido/$orderNumber': typeof PedidoOrderNumberRoute
   '/productos/$productId': typeof ProductosProductIdRoute
   '/api/public/image-proxy': typeof ApiPublicImageProxyRoute
+  '/api/public/sitemap.xml': typeof ApiPublicSitemapDotxmlRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -174,6 +181,7 @@ export interface FileRoutesByTo {
   '/pedido/$orderNumber': typeof PedidoOrderNumberRoute
   '/productos/$productId': typeof ProductosProductIdRoute
   '/api/public/image-proxy': typeof ApiPublicImageProxyRoute
+  '/api/public/sitemap.xml': typeof ApiPublicSitemapDotxmlRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -197,6 +205,7 @@ export interface FileRoutesById {
   '/pedido/$orderNumber': typeof PedidoOrderNumberRoute
   '/productos/$productId': typeof ProductosProductIdRoute
   '/api/public/image-proxy': typeof ApiPublicImageProxyRoute
+  '/api/public/sitemap.xml': typeof ApiPublicSitemapDotxmlRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -221,6 +230,7 @@ export interface FileRouteTypes {
     | '/pedido/$orderNumber'
     | '/productos/$productId'
     | '/api/public/image-proxy'
+    | '/api/public/sitemap.xml'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -243,6 +253,7 @@ export interface FileRouteTypes {
     | '/pedido/$orderNumber'
     | '/productos/$productId'
     | '/api/public/image-proxy'
+    | '/api/public/sitemap.xml'
   id:
     | '__root__'
     | '/'
@@ -265,6 +276,7 @@ export interface FileRouteTypes {
     | '/pedido/$orderNumber'
     | '/productos/$productId'
     | '/api/public/image-proxy'
+    | '/api/public/sitemap.xml'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -281,6 +293,7 @@ export interface RootRouteChildren {
   QuienesSomosRoute: typeof QuienesSomosRoute
   PedidoOrderNumberRoute: typeof PedidoOrderNumberRoute
   ApiPublicImageProxyRoute: typeof ApiPublicImageProxyRoute
+  ApiPublicSitemapDotxmlRoute: typeof ApiPublicSitemapDotxmlRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -418,6 +431,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminCategoriasRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/api/public/sitemap.xml': {
+      id: '/api/public/sitemap.xml'
+      path: '/api/public/sitemap.xml'
+      fullPath: '/api/public/sitemap.xml'
+      preLoaderRoute: typeof ApiPublicSitemapDotxmlRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/image-proxy': {
       id: '/api/public/image-proxy'
       path: '/api/public/image-proxy'
@@ -474,6 +494,7 @@ const rootRouteChildren: RootRouteChildren = {
   QuienesSomosRoute: QuienesSomosRoute,
   PedidoOrderNumberRoute: PedidoOrderNumberRoute,
   ApiPublicImageProxyRoute: ApiPublicImageProxyRoute,
+  ApiPublicSitemapDotxmlRoute: ApiPublicSitemapDotxmlRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

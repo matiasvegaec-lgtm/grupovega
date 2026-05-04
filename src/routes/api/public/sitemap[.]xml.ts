@@ -3,7 +3,7 @@ import { supabaseAdmin } from "@/integrations/supabase/client.server";
 
 const SITE = "https://grupovega.lovable.app";
 
-export const Route = createFileRoute("/api/public/sitemap/xml")({
+export const Route = createFileRoute("/api/public/sitemap.xml")({
   server: {
     handlers: {
       GET: async () => {
