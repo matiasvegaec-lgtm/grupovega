@@ -49,6 +49,10 @@ export function Header() {
             <img
               src={logoGrupoVega}
               alt="Grupo Vega"
+              width={120}
+              height={48}
+              decoding="async"
+              fetchPriority="high"
               className={`h-10 md:h-12 w-auto object-contain group-hover:scale-105 transition-transform ${
                 scrolled ? "" : "drop-shadow-[0_2px_8px_rgba(0,0,0,0.4)]"
               }`}

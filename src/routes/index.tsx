@@ -203,7 +203,7 @@ function Index() {
       {/* HERO */}
       <section className="relative min-h-[85vh] md:min-h-[80vh] flex items-center overflow-hidden gradient-deep">
         <div className="absolute inset-0">
-          <img src={homeHeroBg} alt="" className="w-full h-full object-cover opacity-40" width={1920} height={1080} />
+          <img src={homeHeroBg} alt="" className="w-full h-full object-cover opacity-40" width={1920} height={1080} loading="eager" decoding="async" fetchPriority="high" />
           <div className="absolute inset-0 gradient-deep opacity-70" />
         </div>
         <UnderwaterScene />

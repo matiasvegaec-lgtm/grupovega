@@ -28,6 +28,8 @@ export function Footer() {
             <img
               src={logoGrupoVega}
               alt="Grupo Vega"
+              loading="lazy"
+              decoding="async"
               className="h-14 w-auto object-contain mb-4"
             />
           </div>
@@ -83,6 +85,8 @@ export function Footer() {
           <img
             src={paymentMethodsFooter}
             alt="Métodos de pago aceptados"
+            loading="lazy"
+            decoding="async"
             className="h-12 sm:h-14 w-auto object-contain"
           />
         </div>
