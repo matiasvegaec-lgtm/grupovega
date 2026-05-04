@@ -206,6 +206,9 @@ function ProductDetailPage() {
               <img
                 src={product.image_url || feedImg}
                 alt={product.name}
+                loading="eager"
+                decoding="async"
+                fetchPriority="high"
                 className="w-full h-full object-contain p-8"
               />
             </motion.div>
@@ -395,6 +398,8 @@ function ProductDetailPage() {
                               <img
                                 src={p.image_url || feedImg}
                                 alt={p.name}
+                                loading="lazy"
+                                decoding="async"
                                 className="max-h-full max-w-full object-contain"
                               />
                             </div>
@@ -476,6 +481,8 @@ function ProductDetailPage() {
                       <img
                         src={p.image_url || feedImg}
                         alt={p.name}
+                        loading="lazy"
+                        decoding="async"
                         className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
                       />
                     </div>
