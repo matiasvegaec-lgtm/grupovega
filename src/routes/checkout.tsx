@@ -73,9 +73,10 @@ function CheckoutPage() {
     }
   }, [user, authLoading, navigate]);
 
-  // Cargar datos guardados + prellenar email
+  // Cargar datos guardados desde Supabase (perfil) + fallback localStorage + email del usuario
   useEffect(() => {
     if (typeof window === "undefined") return;
+    // 1. Fallback inmediato desde localStorage para UX
     try {
       const saved = localStorage.getItem(CUSTOMER_STORAGE_KEY);
       if (saved) {
@@ -86,6 +87,23 @@ function CheckoutPage() {
     if (user?.email) {
       setForm((f) => (f.customer_email ? f : { ...f, customer_email: user.email! }));
     }
+    // 2. Cargar perfil desde Supabase (fuente de verdad)
+    if (!user) return;
+    (async () => {
+      const { data } = await supabase
+        .from("profiles")
+        .select("full_name, phone, address, city, province, postal_code")
+        .eq("user_id", user.id)
+        .maybeSingle();
+      if (!data) return;
+      setForm((f) => ({
+        ...f,
+        customer_name: f.customer_name || data.full_name || "",
+        customer_phone: f.customer_phone || data.phone || "",
+        farm_name: f.farm_name || data.address || "",
+        reference: f.reference || data.city || "",
+      }));
+    })();
   }, [user]);
 
   const update = (k: keyof typeof form) => (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
@@ -188,13 +206,24 @@ function CheckoutPage() {
       const orderNumber = data.order_number;
       const waUrl = buildWhatsAppUrl(buildOrderSummaryText(orderNumber));
 
-      // Guardar datos del cliente para futuras compras
-      if (saveData && typeof window !== "undefined") {
-        try {
-          const { shipping_notes, ...toSave } = form;
-          localStorage.setItem(CUSTOMER_STORAGE_KEY, JSON.stringify(toSave));
-        } catch {}
-      } else if (!saveData && typeof window !== "undefined") {
+      // Guardar datos del cliente para futuras compras (Supabase + respaldo local)
+      if (saveData) {
+        if (user) {
+          await supabase.from("profiles").upsert({
+            user_id: user.id,
+            full_name: form.customer_name,
+            phone: form.customer_phone,
+            address: form.farm_name,
+            city: form.reference,
+          }, { onConflict: "user_id" });
+        }
+        if (typeof window !== "undefined") {
+          try {
+            const { shipping_notes, ...toSave } = form;
+            localStorage.setItem(CUSTOMER_STORAGE_KEY, JSON.stringify(toSave));
+          } catch {}
+        }
+      } else if (typeof window !== "undefined") {
         try { localStorage.removeItem(CUSTOMER_STORAGE_KEY); } catch {}
       }
 
