@@ -5,7 +5,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { useAuth } from "@/contexts/AuthContext";
 
-type RoleRow = { id: string; user_id: string; role: "admin" | "user"; created_at: string };
+type StaffRow = { role_id: string; user_id: string; email: string; full_name: string | null; role: "admin" | "employee"; created_at: string };
 
 export const Route = createFileRoute("/admin/usuarios")({
   component: AdminUsuarios,
@@ -13,17 +13,16 @@ export const Route = createFileRoute("/admin/usuarios")({
 
 function AdminUsuarios() {
   const { user } = useAuth();
-  const [admins, setAdmins] = useState<RoleRow[]>([]);
+  const [staff, setStaff] = useState<StaffRow[]>([]);
   const [loading, setLoading] = useState(true);
   const [inviteEmail, setInviteEmail] = useState("");
   const [inviting, setInviting] = useState(false);
 
   const load = async () => {
     setLoading(true);
-    const { data, error } = await supabase
-      .from("user_roles").select("*").eq("role", "admin").order("created_at");
+    const { data, error } = await supabase.rpc("admin_list_staff");
     if (error) toast.error(error.message);
-    else setAdmins((data ?? []) as RoleRow[]);
+    else setStaff((data ?? []) as StaffRow[]);
     setLoading(false);
   };
 
@@ -69,10 +68,10 @@ function AdminUsuarios() {
     }
   };
 
-  const revokeAdmin = async (row: RoleRow) => {
+  const revokeAdmin = async (row: StaffRow) => {
     if (row.user_id === user?.id) return toast.error("No puedes quitarte tu propio rol");
-    if (!confirm("¿Quitar permisos de admin a este usuario?")) return;
-    const { error } = await supabase.from("user_roles").delete().eq("id", row.id);
+    if (!confirm(`¿Quitar permisos de ${row.role} a ${row.email}?`)) return;
+    const { error } = await supabase.from("user_roles").delete().eq("id", row.role_id);
     if (error) toast.error(error.message);
     else { toast.success("Rol revocado"); await load(); }
   };
@@ -109,15 +108,20 @@ function AdminUsuarios() {
           <div className="overflow-x-auto"><table className="w-full text-sm min-w-[420px]">
             <thead className="bg-foam">
               <tr>
-                <th className="text-left p-3">User ID</th>
+                <th className="text-left p-3">Usuario</th>
+                <th className="text-left p-3">Rol</th>
                 <th className="text-left p-3">Desde</th>
                 <th className="text-right p-3">Acción</th>
               </tr>
             </thead>
             <tbody>
-              {admins.map((a) => (
-                <tr key={a.id} className="border-t border-border">
-                  <td className="p-3 font-mono text-xs">{a.user_id}{a.user_id === user?.id && <span className="ml-2 px-2 py-0.5 rounded bg-ocean/10 text-ocean text-xs">tú</span>}</td>
+              {staff.map((a) => (
+                <tr key={a.role_id} className="border-t border-border">
+                  <td className="p-3">
+                    <div className="font-semibold text-navy-deep">{a.full_name || "—"}{a.user_id === user?.id && <span className="ml-2 px-2 py-0.5 rounded bg-ocean/10 text-ocean text-xs">tú</span>}</div>
+                    <div className="text-xs text-muted-foreground">{a.email}</div>
+                  </td>
+                  <td className="p-3"><span className={`px-2 py-0.5 rounded text-xs font-semibold ${a.role === "admin" ? "bg-ocean/10 text-ocean" : "bg-foam text-navy-deep"}`}>{a.role}</span></td>
                   <td className="p-3 text-muted-foreground">{new Date(a.created_at).toLocaleDateString()}</td>
                   <td className="p-3 text-right">
                     <button disabled={a.user_id === user?.id} onClick={() => revokeAdmin(a)} className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg text-destructive hover:bg-destructive/10 text-xs font-semibold disabled:opacity-30 disabled:cursor-not-allowed">
