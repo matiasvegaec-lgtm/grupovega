@@ -6,4 +6,33 @@
 // You can pass additional config via defineConfig({ vite: { ... } }) if needed.
 import { defineConfig } from "@lovable.dev/vite-tanstack-config";
 
-export default defineConfig();
+export default defineConfig({
+  vite: {
+    build: {
+      chunkSizeWarningLimit: 1000,
+      rollupOptions: {
+        output: {
+          manualChunks: {
+            "react-vendor": ["react", "react-dom"],
+            "router-vendor": [
+              "@tanstack/react-router",
+              "@tanstack/react-start",
+            ],
+            "supabase-vendor": ["@supabase/supabase-js"],
+            "radix-vendor": [
+              "@radix-ui/react-dialog",
+              "@radix-ui/react-dropdown-menu",
+              "@radix-ui/react-popover",
+              "@radix-ui/react-select",
+              "@radix-ui/react-tabs",
+              "@radix-ui/react-toast",
+              "@radix-ui/react-tooltip",
+            ],
+            "form-vendor": ["react-hook-form", "zod", "@hookform/resolvers"],
+            "icons-vendor": ["lucide-react"],
+          },
+        },
+      },
+    },
+  },
+});
