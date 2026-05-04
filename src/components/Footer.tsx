@@ -78,12 +78,12 @@ export function Footer() {
         </div>
       </div>
 
-      <div className="relative bg-white py-5">
+      <div className="bg-white py-6">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 flex justify-center">
           <img
             src={paymentMethodsFooter}
             alt="Métodos de pago aceptados"
-            className="h-10 sm:h-12 w-auto object-contain"
+            className="h-20 sm:h-24 md:h-28 w-auto object-contain"
           />
         </div>
       </div>

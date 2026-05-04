@@ -323,16 +323,12 @@ function ProductDetailPage() {
                 </div>
               </div>
 
-              <div className="mb-3 group relative inline-block w-full">
-                <div className="absolute -inset-1 rounded-2xl bg-gradient-to-r from-turquoise/40 via-ocean/30 to-turquoise/40 opacity-60 blur-md group-hover:opacity-100 transition-opacity duration-500" />
-                <div className="relative rounded-full bg-slate-50 ring-1 ring-border px-4 py-2.5 shadow-md transition-transform duration-500 group-hover:-translate-y-0.5 overflow-hidden flex items-center justify-center">
-                  <div className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-1000 bg-gradient-to-r from-transparent via-white/70 to-transparent" />
-                  <img
-                    src={paymentMethods}
-                    alt="Métodos de pago aceptados: Visa, Diners Club, Mastercard, Discover, American Express, Alia"
-                    className="relative h-8 w-auto object-contain"
-                  />
-                </div>
+              <div className="mb-3 w-full bg-white rounded-2xl px-4 py-4 flex items-center justify-center">
+                <img
+                  src={paymentMethods}
+                  alt="Métodos de pago aceptados: Visa, Mastercard, American Express, Diners Club"
+                  className="h-16 sm:h-20 w-auto object-contain"
+                />
               </div>
 
               <div className="bg-foam rounded-2xl p-5 mb-6">
