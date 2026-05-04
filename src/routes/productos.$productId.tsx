@@ -323,11 +323,11 @@ function ProductDetailPage() {
                 </div>
               </div>
 
-              <div className="mb-3 w-full bg-white rounded-2xl px-4 py-4 flex items-center justify-center">
+              <div className="mb-3 w-full bg-white rounded-xl px-3 py-1.5 flex items-center justify-center">
                 <img
                   src={paymentMethods}
                   alt="Métodos de pago aceptados: Visa, Mastercard, American Express, Diners Club"
-                  className="h-16 sm:h-20 w-auto object-contain"
+                  className="h-10 sm:h-12 w-auto object-contain"
                 />
               </div>
 
