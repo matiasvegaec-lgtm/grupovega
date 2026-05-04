@@ -25,6 +25,7 @@ export default defineConfig({
               "@radix-ui/react-popover",
               "@radix-ui/react-select",
               "@radix-ui/react-tabs",
+              "@radix-ui/react-toast",
               "@radix-ui/react-tooltip",
             ],
             "form-vendor": ["react-hook-form", "zod", "@hookform/resolvers"],
