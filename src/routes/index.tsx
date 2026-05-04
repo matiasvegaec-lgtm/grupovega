@@ -551,15 +551,7 @@ function Index() {
               transition={{ duration: 0.6 }}
               className="rounded-2xl overflow-hidden shadow-elegant border border-white/20 lg:col-span-3 h-[240px] md:h-[280px] lg:h-auto lg:min-h-[320px]"
             >
-              <iframe
-                title="Ubicación Grupo Vega - Pedernales"
-                src="https://www.google.com/maps?q=Garc%C3%ADa+Moreno+y+3+de+Noviembre+Pedernales+Manab%C3%ADa+Ecuador&z=17&output=embed"
-                width="100%"
-                height="100%"
-                loading="lazy"
-                referrerPolicy="no-referrer-when-downgrade"
-                className="w-full h-full border-0"
-              />
+              <LazyMap />
             </motion.div>
           </div>
         </div>
