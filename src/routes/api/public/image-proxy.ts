@@ -35,7 +35,10 @@ export const Route = createFileRoute("/api/public/image-proxy")({
           return new Response("Invalid url", { status: 400 });
         }
 
-        if (!["http:", "https:"].includes(imageUrl.protocol) || isBlockedHostname(imageUrl.hostname)) {
+        if (
+          !["http:", "https:"].includes(imageUrl.protocol) ||
+          isBlockedHostname(imageUrl.hostname)
+        ) {
           return new Response("Unsupported image url", { status: 400 });
         }
 
@@ -46,10 +49,12 @@ export const Route = createFileRoute("/api/public/image-proxy")({
         if (!contentType.startsWith("image/")) return new Response("Not an image", { status: 415 });
 
         const contentLength = Number(imageResponse.headers.get("content-length") ?? 0);
-        if (contentLength > MAX_IMAGE_BYTES) return new Response("Image too large", { status: 413 });
+        if (contentLength > MAX_IMAGE_BYTES)
+          return new Response("Image too large", { status: 413 });
 
         const body = await imageResponse.arrayBuffer();
-        if (body.byteLength > MAX_IMAGE_BYTES) return new Response("Image too large", { status: 413 });
+        if (body.byteLength > MAX_IMAGE_BYTES)
+          return new Response("Image too large", { status: 413 });
 
         return new Response(body, {
           headers: {
