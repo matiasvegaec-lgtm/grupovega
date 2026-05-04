@@ -71,7 +71,13 @@ export const Route = createRootRoute({
         href: "https://fonts.gstatic.com/s/inter/v20/UcC73FwrK3iLTeHuS_nVMrMxCp50SjIa1ZL7W0Q5nw.woff2",
         crossOrigin: "anonymous",
       },
-      { rel: "stylesheet", href: "https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" },
+      // Load Google Fonts CSS non-render-blocking (media swap trick)
+      {
+        rel: "stylesheet",
+        href: "https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap",
+        media: "print",
+        onLoad: "this.media='all'",
+      } as any,
     ],
   }),
   shellComponent: RootShell,
