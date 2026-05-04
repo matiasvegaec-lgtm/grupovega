@@ -32,16 +32,19 @@ export const Route = createRootRoute({
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Grupo Vega — Soluciones Integrales para Camaroneras" },
-      { name: "description", content: "Insumos, alimento balanceado, asesoría técnica y tecnología para camaroneras de Ecuador y Latinoamérica." },
+      { title: "Grupo Vega | Nutrición y Suministros Acuícolas" },
+      { name: "description", content: "Grupo Vega: Soluciones integrales para la industria acuícola. Ofrecemos insumos de alta calidad, nutrición especializada y suministros técnicos para optimizar tu producción de camarón en Ecuador. Calidad y confianza en cada ciclo." },
       { name: "author", content: "Grupo Vega" },
-      { property: "og:title", content: "Grupo Vega — Industria Camaronera" },
-      { property: "og:description", content: "Soluciones integrales para acuicultura de camarón." },
+      { property: "og:title", content: "Grupo Vega | Nutrición y Suministros Acuícolas" },
+      { property: "og:description", content: "Soluciones integrales para la industria acuícola: insumos, nutrición especializada y suministros técnicos para optimizar tu producción de camarón en Ecuador." },
+      { property: "og:image", content: "/favicon.png" },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
       { name: "twitter:site", content: "@GrupoVega" },
     ],
     links: [
+      { rel: "icon", type: "image/png", href: "/favicon.png" },
+      { rel: "apple-touch-icon", href: "/favicon.png" },
       {
         rel: "stylesheet",
         href: appCss,
