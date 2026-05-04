@@ -209,7 +209,7 @@ function ProductosPage() {
             onClick={() => { setActive("Todos"); setActiveSub(null); }}
             className={`w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-sm font-medium transition ${
               active === "Todos"
-                ? "gradient-wave text-white shadow-glow"
+                ? "gradient-wave text-white"
                 : "text-navy-deep hover:bg-foam"
             }`}
           >
@@ -233,7 +233,7 @@ function ProductosPage() {
                   onClick={() => { setActive(c); setActiveSub(null); }}
                   className={`w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-sm font-medium transition ${
                     isActive
-                      ? "gradient-wave text-white shadow-glow"
+                      ? "gradient-wave text-white"
                       : "text-navy-deep hover:bg-foam"
                   }`}
                 >
@@ -353,7 +353,7 @@ function ProductosPage() {
               <div className="flex items-center gap-2 flex-wrap">
                 <button
                   onClick={() => setSidebarOpen(true)}
-                  className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full gradient-wave text-white text-sm font-semibold shadow-glow"
+                  className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full gradient-wave text-white text-sm font-semibold"
                 >
                   <Search className="w-4 h-4" /> Filtros
                 </button>
@@ -567,7 +567,7 @@ function ProductosPage() {
                                     openCartIfNeeded();
                                   }
                                 }}
-                                className="w-full inline-flex items-center justify-center gap-1.5 px-2 sm:px-4 py-2 sm:py-2.5 rounded-full gradient-wave text-white text-xs sm:text-sm font-semibold shadow-glow hover:scale-[1.02] transition-transform disabled:opacity-50 disabled:cursor-not-allowed"
+                                className="w-full inline-flex items-center justify-center gap-1.5 px-2 sm:px-4 py-2 sm:py-2.5 rounded-full gradient-wave text-white text-xs sm:text-sm font-semibold hover:scale-[1.02] transition-transform disabled:opacity-50 disabled:cursor-not-allowed"
                               >
                                 <ShoppingCart className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                                 <span className="sm:hidden">Agregar</span>
