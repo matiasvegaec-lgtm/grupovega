@@ -22,6 +22,40 @@ import provLarviva from "@/assets/proveedor-larviva.png";
 import provBiomar from "@/assets/proveedor-biomar.png";
 import { usePageHero } from "@/hooks/usePageHero";
 
+function LazyMap() {
+  const ref = useRef<HTMLDivElement | null>(null);
+  const [show, setShow] = useState(false);
+  useEffect(() => {
+    if (!ref.current || show) return;
+    const io = new IntersectionObserver(
+      (entries) => {
+        if (entries.some((e) => e.isIntersecting)) {
+          setShow(true);
+          io.disconnect();
+        }
+      },
+      { rootMargin: "300px" }
+    );
+    io.observe(ref.current);
+    return () => io.disconnect();
+  }, [show]);
+  return (
+    <div ref={ref} className="w-full h-full bg-muted">
+      {show && (
+        <iframe
+          title="Ubicación Grupo Vega - Pedernales"
+          src="https://www.google.com/maps?q=Garc%C3%ADa+Moreno+y+3+de+Noviembre+Pedernales+Manab%C3%ADa+Ecuador&z=17&output=embed"
+          width="100%"
+          height="100%"
+          loading="lazy"
+          referrerPolicy="no-referrer-when-downgrade"
+          className="w-full h-full border-0"
+        />
+      )}
+    </div>
+  );
+}
+
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
