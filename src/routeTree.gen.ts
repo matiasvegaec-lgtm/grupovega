@@ -28,6 +28,7 @@ import { Route as AdminPedidosRouteImport } from './routes/admin.pedidos'
 import { Route as AdminGaleriaRouteImport } from './routes/admin.galeria'
 import { Route as AdminClientesRouteImport } from './routes/admin.clientes'
 import { Route as AdminCategoriasRouteImport } from './routes/admin.categorias'
+import { Route as ApiPublicImageProxyRouteImport } from './routes/api/public/image-proxy'
 
 const QuienesSomosRoute = QuienesSomosRouteImport.update({
   id: '/quienes-somos',
@@ -124,6 +125,11 @@ const AdminCategoriasRoute = AdminCategoriasRouteImport.update({
   path: '/categorias',
   getParentRoute: () => AdminRoute,
 } as any)
+const ApiPublicImageProxyRoute = ApiPublicImageProxyRouteImport.update({
+  id: '/api/public/image-proxy',
+  path: '/api/public/image-proxy',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -145,6 +151,7 @@ export interface FileRoutesByFullPath {
   '/admin/usuarios': typeof AdminUsuariosRoute
   '/pedido/$orderNumber': typeof PedidoOrderNumberRoute
   '/productos/$productId': typeof ProductosProductIdRoute
+  '/api/public/image-proxy': typeof ApiPublicImageProxyRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -166,6 +173,7 @@ export interface FileRoutesByTo {
   '/admin/usuarios': typeof AdminUsuariosRoute
   '/pedido/$orderNumber': typeof PedidoOrderNumberRoute
   '/productos/$productId': typeof ProductosProductIdRoute
+  '/api/public/image-proxy': typeof ApiPublicImageProxyRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -188,6 +196,7 @@ export interface FileRoutesById {
   '/admin/usuarios': typeof AdminUsuariosRoute
   '/pedido/$orderNumber': typeof PedidoOrderNumberRoute
   '/productos/$productId': typeof ProductosProductIdRoute
+  '/api/public/image-proxy': typeof ApiPublicImageProxyRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -211,6 +220,7 @@ export interface FileRouteTypes {
     | '/admin/usuarios'
     | '/pedido/$orderNumber'
     | '/productos/$productId'
+    | '/api/public/image-proxy'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -232,6 +242,7 @@ export interface FileRouteTypes {
     | '/admin/usuarios'
     | '/pedido/$orderNumber'
     | '/productos/$productId'
+    | '/api/public/image-proxy'
   id:
     | '__root__'
     | '/'
@@ -253,6 +264,7 @@ export interface FileRouteTypes {
     | '/admin/usuarios'
     | '/pedido/$orderNumber'
     | '/productos/$productId'
+    | '/api/public/image-proxy'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -268,6 +280,7 @@ export interface RootRouteChildren {
   ProductosRoute: typeof ProductosRouteWithChildren
   QuienesSomosRoute: typeof QuienesSomosRoute
   PedidoOrderNumberRoute: typeof PedidoOrderNumberRoute
+  ApiPublicImageProxyRoute: typeof ApiPublicImageProxyRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -405,6 +418,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminCategoriasRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/api/public/image-proxy': {
+      id: '/api/public/image-proxy'
+      path: '/api/public/image-proxy'
+      fullPath: '/api/public/image-proxy'
+      preLoaderRoute: typeof ApiPublicImageProxyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -453,6 +473,7 @@ const rootRouteChildren: RootRouteChildren = {
   ProductosRoute: ProductosRouteWithChildren,
   QuienesSomosRoute: QuienesSomosRoute,
   PedidoOrderNumberRoute: PedidoOrderNumberRoute,
+  ApiPublicImageProxyRoute: ApiPublicImageProxyRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

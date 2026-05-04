@@ -518,6 +518,15 @@ function AdminProductos() {
               setUploading(true);
               const url = await uploadBlob(blob, "png");
               setForm((f) => ({ ...f, image_url: url }));
+              if (editing) {
+                const { error } = await supabase
+                  .from("products")
+                  .update({ image_url: url })
+                  .eq("id", editing.id);
+                if (error) throw error;
+                setEditing({ ...editing, image_url: url });
+                await load();
+              }
               toast.success("Imagen actualizada", { id: toastId });
               setAdjusterSrc(null);
             } catch (e: any) {
