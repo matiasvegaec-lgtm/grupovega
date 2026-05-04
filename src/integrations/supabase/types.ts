@@ -472,6 +472,17 @@ export type Database = {
           user_id: string
         }[]
       }
+      admin_list_staff: {
+        Args: never
+        Returns: {
+          created_at: string
+          email: string
+          full_name: string
+          role: Database["public"]["Enums"]["app_role"]
+          role_id: string
+          user_id: string
+        }[]
+      }
       admin_subscribe_customer: { Args: { _email: string }; Returns: boolean }
       admin_unsubscribe_customer: { Args: { _email: string }; Returns: boolean }
       has_role: {
