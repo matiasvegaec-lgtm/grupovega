@@ -63,6 +63,19 @@ const supplierLogosFallback: SupplierLogo[] = [
   { name: "BioMar", img: provBiomar },
 ];
 
+// Sirve versiones optimizadas (WebP + redimensionadas) para imágenes alojadas en Supabase Storage
+// usando el endpoint de transformación. Para URLs externas o locales, devuelve la URL original.
+function optimizedSupabaseImage(url: string, width: number, height?: number): string {
+  if (!url || !url.includes("/storage/v1/object/public/")) return url;
+  const transformed = url.replace("/storage/v1/object/public/", "/storage/v1/render/image/public/");
+  const params = new URLSearchParams();
+  params.set("width", String(width));
+  if (height) params.set("height", String(height));
+  params.set("resize", "contain");
+  params.set("quality", "75");
+  return `${transformed}?${params.toString()}`;
+}
+
 function Index() {
   const [featured, setFeatured] = useState<FeaturedItem[]>(featuredFallback);
   const [supplierLogos, setSupplierLogos] = useState<SupplierLogo[]>([]);
@@ -577,9 +590,11 @@ function Index() {
                 <div className="absolute inset-0 gradient-wave rounded-2xl opacity-0 group-hover:opacity-100 blur-xl transition duration-500" />
                 <div className="relative w-full h-full bg-white border border-border rounded-2xl flex items-center justify-center p-4 group-hover:border-ocean group-hover:shadow-elegant transition-all duration-300 overflow-hidden">
                   <img
-                    src={s.img}
+                    src={optimizedSupabaseImage(s.img, 400, 200)}
                     alt={s.name}
                     loading="lazy"
+                    width={224}
+                    height={112}
                     className="max-h-full max-w-full object-contain group-hover:scale-105 transition-transform duration-300"
                     style={{ transform: `scale(${(s.scale ?? 100) / 100})` }}
                   />
