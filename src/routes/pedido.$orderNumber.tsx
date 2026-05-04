@@ -40,10 +40,7 @@ function PedidoPage() {
     let mounted = true;
     (async () => {
       const { data, error } = await supabase
-        .from("orders")
-        .select("*")
-        .eq("order_number", orderNumber)
-        .maybeSingle();
+        .rpc("get_order_by_number", { _order_number: orderNumber });
       if (!mounted) return;
       if (error) setError(error.message);
       else if (!data) setError("Pedido no encontrado");
