@@ -590,9 +590,11 @@ function Index() {
                 <div className="absolute inset-0 gradient-wave rounded-2xl opacity-0 group-hover:opacity-100 blur-xl transition duration-500" />
                 <div className="relative w-full h-full bg-white border border-border rounded-2xl flex items-center justify-center p-4 group-hover:border-ocean group-hover:shadow-elegant transition-all duration-300 overflow-hidden">
                   <img
-                    src={s.img}
+                    src={optimizedSupabaseImage(s.img, 400, 200)}
                     alt={s.name}
                     loading="lazy"
+                    width={224}
+                    height={112}
                     className="max-h-full max-w-full object-contain group-hover:scale-105 transition-transform duration-300"
                     style={{ transform: `scale(${(s.scale ?? 100) / 100})` }}
                   />
