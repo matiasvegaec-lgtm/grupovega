@@ -63,6 +63,19 @@ const supplierLogosFallback: SupplierLogo[] = [
   { name: "BioMar", img: provBiomar },
 ];
 
+// Sirve versiones optimizadas (WebP + redimensionadas) para imágenes alojadas en Supabase Storage
+// usando el endpoint de transformación. Para URLs externas o locales, devuelve la URL original.
+function optimizedSupabaseImage(url: string, width: number, height?: number): string {
+  if (!url || !url.includes("/storage/v1/object/public/")) return url;
+  const transformed = url.replace("/storage/v1/object/public/", "/storage/v1/render/image/public/");
+  const params = new URLSearchParams();
+  params.set("width", String(width));
+  if (height) params.set("height", String(height));
+  params.set("resize", "contain");
+  params.set("quality", "75");
+  return `${transformed}?${params.toString()}`;
+}
+
 function Index() {
   const [featured, setFeatured] = useState<FeaturedItem[]>(featuredFallback);
   const [supplierLogos, setSupplierLogos] = useState<SupplierLogo[]>([]);
