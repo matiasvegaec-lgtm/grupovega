@@ -9,6 +9,7 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as QuienesSomosRouteImport } from './routes/quienes-somos'
 import { Route as ProductosRouteImport } from './routes/productos'
 import { Route as NotificacionesRouteImport } from './routes/notificaciones'
@@ -28,9 +29,13 @@ import { Route as AdminPedidosRouteImport } from './routes/admin.pedidos'
 import { Route as AdminGaleriaRouteImport } from './routes/admin.galeria'
 import { Route as AdminClientesRouteImport } from './routes/admin.clientes'
 import { Route as AdminCategoriasRouteImport } from './routes/admin.categorias'
-import { Route as ApiPublicSitemapDotxmlRouteImport } from './routes/api/public/sitemap[.]xml'
 import { Route as ApiPublicImageProxyRouteImport } from './routes/api/public/image-proxy'
 
+const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
+  id: '/sitemap.xml',
+  path: '/sitemap.xml',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const QuienesSomosRoute = QuienesSomosRouteImport.update({
   id: '/quienes-somos',
   path: '/quienes-somos',
@@ -126,11 +131,6 @@ const AdminCategoriasRoute = AdminCategoriasRouteImport.update({
   path: '/categorias',
   getParentRoute: () => AdminRoute,
 } as any)
-const ApiPublicSitemapDotxmlRoute = ApiPublicSitemapDotxmlRouteImport.update({
-  id: '/api/public/sitemap.xml',
-  path: '/api/public/sitemap.xml',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const ApiPublicImageProxyRoute = ApiPublicImageProxyRouteImport.update({
   id: '/api/public/image-proxy',
   path: '/api/public/image-proxy',
@@ -149,6 +149,7 @@ export interface FileRoutesByFullPath {
   '/notificaciones': typeof NotificacionesRoute
   '/productos': typeof ProductosRouteWithChildren
   '/quienes-somos': typeof QuienesSomosRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/admin/categorias': typeof AdminCategoriasRoute
   '/admin/clientes': typeof AdminClientesRoute
   '/admin/galeria': typeof AdminGaleriaRoute
@@ -158,7 +159,6 @@ export interface FileRoutesByFullPath {
   '/pedido/$orderNumber': typeof PedidoOrderNumberRoute
   '/productos/$productId': typeof ProductosProductIdRoute
   '/api/public/image-proxy': typeof ApiPublicImageProxyRoute
-  '/api/public/sitemap.xml': typeof ApiPublicSitemapDotxmlRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -172,6 +172,7 @@ export interface FileRoutesByTo {
   '/notificaciones': typeof NotificacionesRoute
   '/productos': typeof ProductosRouteWithChildren
   '/quienes-somos': typeof QuienesSomosRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/admin/categorias': typeof AdminCategoriasRoute
   '/admin/clientes': typeof AdminClientesRoute
   '/admin/galeria': typeof AdminGaleriaRoute
@@ -181,7 +182,6 @@ export interface FileRoutesByTo {
   '/pedido/$orderNumber': typeof PedidoOrderNumberRoute
   '/productos/$productId': typeof ProductosProductIdRoute
   '/api/public/image-proxy': typeof ApiPublicImageProxyRoute
-  '/api/public/sitemap.xml': typeof ApiPublicSitemapDotxmlRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -196,6 +196,7 @@ export interface FileRoutesById {
   '/notificaciones': typeof NotificacionesRoute
   '/productos': typeof ProductosRouteWithChildren
   '/quienes-somos': typeof QuienesSomosRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/admin/categorias': typeof AdminCategoriasRoute
   '/admin/clientes': typeof AdminClientesRoute
   '/admin/galeria': typeof AdminGaleriaRoute
@@ -205,7 +206,6 @@ export interface FileRoutesById {
   '/pedido/$orderNumber': typeof PedidoOrderNumberRoute
   '/productos/$productId': typeof ProductosProductIdRoute
   '/api/public/image-proxy': typeof ApiPublicImageProxyRoute
-  '/api/public/sitemap.xml': typeof ApiPublicSitemapDotxmlRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -221,6 +221,7 @@ export interface FileRouteTypes {
     | '/notificaciones'
     | '/productos'
     | '/quienes-somos'
+    | '/sitemap.xml'
     | '/admin/categorias'
     | '/admin/clientes'
     | '/admin/galeria'
@@ -230,7 +231,6 @@ export interface FileRouteTypes {
     | '/pedido/$orderNumber'
     | '/productos/$productId'
     | '/api/public/image-proxy'
-    | '/api/public/sitemap.xml'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -244,6 +244,7 @@ export interface FileRouteTypes {
     | '/notificaciones'
     | '/productos'
     | '/quienes-somos'
+    | '/sitemap.xml'
     | '/admin/categorias'
     | '/admin/clientes'
     | '/admin/galeria'
@@ -253,7 +254,6 @@ export interface FileRouteTypes {
     | '/pedido/$orderNumber'
     | '/productos/$productId'
     | '/api/public/image-proxy'
-    | '/api/public/sitemap.xml'
   id:
     | '__root__'
     | '/'
@@ -267,6 +267,7 @@ export interface FileRouteTypes {
     | '/notificaciones'
     | '/productos'
     | '/quienes-somos'
+    | '/sitemap.xml'
     | '/admin/categorias'
     | '/admin/clientes'
     | '/admin/galeria'
@@ -276,7 +277,6 @@ export interface FileRouteTypes {
     | '/pedido/$orderNumber'
     | '/productos/$productId'
     | '/api/public/image-proxy'
-    | '/api/public/sitemap.xml'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -291,13 +291,20 @@ export interface RootRouteChildren {
   NotificacionesRoute: typeof NotificacionesRoute
   ProductosRoute: typeof ProductosRouteWithChildren
   QuienesSomosRoute: typeof QuienesSomosRoute
+  SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   PedidoOrderNumberRoute: typeof PedidoOrderNumberRoute
   ApiPublicImageProxyRoute: typeof ApiPublicImageProxyRoute
-  ApiPublicSitemapDotxmlRoute: typeof ApiPublicSitemapDotxmlRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/sitemap.xml': {
+      id: '/sitemap.xml'
+      path: '/sitemap.xml'
+      fullPath: '/sitemap.xml'
+      preLoaderRoute: typeof SitemapDotxmlRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/quienes-somos': {
       id: '/quienes-somos'
       path: '/quienes-somos'
@@ -431,13 +438,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminCategoriasRouteImport
       parentRoute: typeof AdminRoute
     }
-    '/api/public/sitemap.xml': {
-      id: '/api/public/sitemap.xml'
-      path: '/api/public/sitemap.xml'
-      fullPath: '/api/public/sitemap.xml'
-      preLoaderRoute: typeof ApiPublicSitemapDotxmlRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/api/public/image-proxy': {
       id: '/api/public/image-proxy'
       path: '/api/public/image-proxy'
@@ -492,9 +492,9 @@ const rootRouteChildren: RootRouteChildren = {
   NotificacionesRoute: NotificacionesRoute,
   ProductosRoute: ProductosRouteWithChildren,
   QuienesSomosRoute: QuienesSomosRoute,
+  SitemapDotxmlRoute: SitemapDotxmlRoute,
   PedidoOrderNumberRoute: PedidoOrderNumberRoute,
   ApiPublicImageProxyRoute: ApiPublicImageProxyRoute,
-  ApiPublicSitemapDotxmlRoute: ApiPublicSitemapDotxmlRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
