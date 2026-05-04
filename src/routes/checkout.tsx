@@ -11,6 +11,7 @@ import { toast } from "sonner";
 export const Route = createFileRoute("/checkout")({
   head: () => ({
     meta: [
+      { name: "robots", content: "noindex, nofollow" },
       { title: "Checkout — Grupo Vega" },
       { name: "description", content: "Completa tus datos y elige tu método de pago." },
     ],

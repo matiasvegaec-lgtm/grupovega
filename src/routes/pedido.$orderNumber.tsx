@@ -23,6 +23,7 @@ type Order = {
 export const Route = createFileRoute("/pedido/$orderNumber")({
   head: ({ params }) => ({
     meta: [
+      { name: "robots", content: "noindex, nofollow" },
       { title: `Pedido ${params.orderNumber} — Grupo Vega` },
       { name: "description", content: "Confirmación de tu pedido." },
     ],

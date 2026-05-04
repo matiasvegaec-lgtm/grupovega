@@ -8,6 +8,7 @@ import { usePageHero } from "@/hooks/usePageHero";
 export const Route = createFileRoute("/carrito")({
   head: () => ({
     meta: [
+      { name: "robots", content: "noindex, nofollow" },
       { title: "Carrito — Grupo Vega" },
       { name: "description", content: "Revisa los productos en tu carrito antes de finalizar la compra." },
     ],

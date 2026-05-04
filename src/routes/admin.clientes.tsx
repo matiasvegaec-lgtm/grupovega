@@ -18,6 +18,7 @@ type Customer = {
 type Filter = "all" | "subscribed" | "not_subscribed" | "buyers";
 
 export const Route = createFileRoute("/admin/clientes")({
+  head: () => ({ meta: [{ title: "Admin · Clientes — Grupo Vega" }, { name: "robots", content: "noindex, nofollow" }] }),
   component: AdminClientes,
 });
 

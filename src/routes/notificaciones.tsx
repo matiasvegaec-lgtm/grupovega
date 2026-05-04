@@ -8,6 +8,7 @@ import { useAuth } from "@/contexts/AuthContext";
 export const Route = createFileRoute("/notificaciones")({
   head: () => ({
     meta: [
+      { name: "robots", content: "noindex, nofollow" },
       { title: "Notificaciones — Grupo Vega" },
       { name: "description", content: "Tus notificaciones recientes." },
     ],
