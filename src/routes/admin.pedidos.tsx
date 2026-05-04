@@ -42,6 +42,7 @@ const STATUS_COLOR: Record<string, string> = {
 };
 
 export const Route = createFileRoute("/admin/pedidos")({
+  head: () => ({ meta: [{ title: "Admin · Pedidos — Grupo Vega" }, { name: "robots", content: "noindex, nofollow" }] }),
   component: AdminPedidos,
 });
 

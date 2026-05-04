@@ -485,6 +485,35 @@ export type Database = {
       }
       admin_subscribe_customer: { Args: { _email: string }; Returns: boolean }
       admin_unsubscribe_customer: { Args: { _email: string }; Returns: boolean }
+      get_order_by_number: {
+        Args: { _order_number: string }
+        Returns: {
+          created_at: string
+          customer_email: string
+          customer_name: string
+          customer_phone: string
+          id: string
+          items: Json
+          order_number: string
+          shipping_address: string
+          shipping_city: string
+          shipping_country: string
+          shipping_notes: string | null
+          shipping_postal_code: string | null
+          shipping_province: string
+          status: string
+          subtotal: number
+          total: number
+          updated_at: string
+          user_id: string | null
+        }
+        SetofOptions: {
+          from: "*"
+          to: "orders"
+          isOneToOne: true
+          isSetofReturn: false
+        }
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]

@@ -5,6 +5,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/admin/galeria")({
+  head: () => ({ meta: [{ title: "Admin · Galería — Grupo Vega" }, { name: "robots", content: "noindex, nofollow" }] }),
   component: AdminGaleria,
 });
 

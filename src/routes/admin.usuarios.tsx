@@ -8,6 +8,7 @@ import { useAuth } from "@/contexts/AuthContext";
 type StaffRow = { role_id: string; user_id: string; email: string; full_name: string | null; role: "admin" | "employee"; created_at: string };
 
 export const Route = createFileRoute("/admin/usuarios")({
+  head: () => ({ meta: [{ title: "Admin · Usuarios — Grupo Vega" }, { name: "robots", content: "noindex, nofollow" }] }),
   component: AdminUsuarios,
 });
 

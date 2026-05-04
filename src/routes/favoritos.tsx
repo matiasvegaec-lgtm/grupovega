@@ -11,6 +11,7 @@ import { toast } from "sonner";
 export const Route = createFileRoute("/favoritos")({
   head: () => ({
     meta: [
+      { name: "robots", content: "noindex, nofollow" },
       { title: "Mis favoritos — Grupo Vega" },
       { name: "description", content: "Tus productos favoritos guardados." },
     ],

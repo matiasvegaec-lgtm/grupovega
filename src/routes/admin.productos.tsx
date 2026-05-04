@@ -26,6 +26,7 @@ type Category = { id: string; name: string };
 type Subcategory = { id: string; name: string; category_id: string };
 
 export const Route = createFileRoute("/admin/productos")({
+  head: () => ({ meta: [{ title: "Admin · Productos — Grupo Vega" }, { name: "robots", content: "noindex, nofollow" }] }),
   component: AdminProductos,
 });
 

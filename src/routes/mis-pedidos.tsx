@@ -9,6 +9,7 @@ import { supabase } from "@/integrations/supabase/client";
 export const Route = createFileRoute("/mis-pedidos")({
   head: () => ({
     meta: [
+      { name: "robots", content: "noindex, nofollow" },
       { title: "Mis pedidos — Grupo Vega" },
       { name: "description", content: "Historial de tus pedidos." },
     ],

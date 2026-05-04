@@ -11,6 +11,7 @@ import logoGrupoVega from "@/assets/logo-grupo-vega.png";
 export const Route = createFileRoute("/auth")({
   head: () => ({
     meta: [
+      { name: "robots", content: "noindex, nofollow" },
       { title: "Acceso — Grupo Vega" },
       { name: "description", content: "Inicia sesión o crea tu cuenta para comprar." },
     ],

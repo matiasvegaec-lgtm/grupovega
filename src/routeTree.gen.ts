@@ -9,6 +9,7 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as QuienesSomosRouteImport } from './routes/quienes-somos'
 import { Route as ProductosRouteImport } from './routes/productos'
 import { Route as NotificacionesRouteImport } from './routes/notificaciones'
@@ -30,6 +31,11 @@ import { Route as AdminClientesRouteImport } from './routes/admin.clientes'
 import { Route as AdminCategoriasRouteImport } from './routes/admin.categorias'
 import { Route as ApiPublicImageProxyRouteImport } from './routes/api/public/image-proxy'
 
+const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
+  id: '/sitemap.xml',
+  path: '/sitemap.xml',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const QuienesSomosRoute = QuienesSomosRouteImport.update({
   id: '/quienes-somos',
   path: '/quienes-somos',
@@ -143,6 +149,7 @@ export interface FileRoutesByFullPath {
   '/notificaciones': typeof NotificacionesRoute
   '/productos': typeof ProductosRouteWithChildren
   '/quienes-somos': typeof QuienesSomosRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/admin/categorias': typeof AdminCategoriasRoute
   '/admin/clientes': typeof AdminClientesRoute
   '/admin/galeria': typeof AdminGaleriaRoute
@@ -165,6 +172,7 @@ export interface FileRoutesByTo {
   '/notificaciones': typeof NotificacionesRoute
   '/productos': typeof ProductosRouteWithChildren
   '/quienes-somos': typeof QuienesSomosRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/admin/categorias': typeof AdminCategoriasRoute
   '/admin/clientes': typeof AdminClientesRoute
   '/admin/galeria': typeof AdminGaleriaRoute
@@ -188,6 +196,7 @@ export interface FileRoutesById {
   '/notificaciones': typeof NotificacionesRoute
   '/productos': typeof ProductosRouteWithChildren
   '/quienes-somos': typeof QuienesSomosRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/admin/categorias': typeof AdminCategoriasRoute
   '/admin/clientes': typeof AdminClientesRoute
   '/admin/galeria': typeof AdminGaleriaRoute
@@ -212,6 +221,7 @@ export interface FileRouteTypes {
     | '/notificaciones'
     | '/productos'
     | '/quienes-somos'
+    | '/sitemap.xml'
     | '/admin/categorias'
     | '/admin/clientes'
     | '/admin/galeria'
@@ -234,6 +244,7 @@ export interface FileRouteTypes {
     | '/notificaciones'
     | '/productos'
     | '/quienes-somos'
+    | '/sitemap.xml'
     | '/admin/categorias'
     | '/admin/clientes'
     | '/admin/galeria'
@@ -256,6 +267,7 @@ export interface FileRouteTypes {
     | '/notificaciones'
     | '/productos'
     | '/quienes-somos'
+    | '/sitemap.xml'
     | '/admin/categorias'
     | '/admin/clientes'
     | '/admin/galeria'
@@ -279,12 +291,20 @@ export interface RootRouteChildren {
   NotificacionesRoute: typeof NotificacionesRoute
   ProductosRoute: typeof ProductosRouteWithChildren
   QuienesSomosRoute: typeof QuienesSomosRoute
+  SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   PedidoOrderNumberRoute: typeof PedidoOrderNumberRoute
   ApiPublicImageProxyRoute: typeof ApiPublicImageProxyRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/sitemap.xml': {
+      id: '/sitemap.xml'
+      path: '/sitemap.xml'
+      fullPath: '/sitemap.xml'
+      preLoaderRoute: typeof SitemapDotxmlRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/quienes-somos': {
       id: '/quienes-somos'
       path: '/quienes-somos'
@@ -472,6 +492,7 @@ const rootRouteChildren: RootRouteChildren = {
   NotificacionesRoute: NotificacionesRoute,
   ProductosRoute: ProductosRouteWithChildren,
   QuienesSomosRoute: QuienesSomosRoute,
+  SitemapDotxmlRoute: SitemapDotxmlRoute,
   PedidoOrderNumberRoute: PedidoOrderNumberRoute,
   ApiPublicImageProxyRoute: ApiPublicImageProxyRoute,
 }
