@@ -514,23 +514,30 @@ function AdminProductos() {
           onCancel={() => setAdjusterSrc(null)}
           onConfirm={async (blob) => {
             const toastId = toast.loading("Subiendo imagen ajustada…");
+            const currentEditing = editing;
             try {
               setUploading(true);
               const url = await uploadBlob(blob, "png");
               setForm((f) => ({ ...f, image_url: url }));
-              if (editing) {
+              if (currentEditing) {
                 const { error } = await supabase
                   .from("products")
                   .update({ image_url: url })
-                  .eq("id", editing.id);
+                  .eq("id", currentEditing.id);
                 if (error) throw error;
-                setEditing({ ...editing, image_url: url });
-                await load();
+                setEditing({ ...currentEditing, image_url: url });
               }
               toast.success("Imagen actualizada", { id: toastId });
               setAdjusterSrc(null);
+              // Refrescamos la lista en segundo plano para no bloquear el cierre
+              load().catch((err) => console.error("Error recargando productos:", err));
             } catch (e: any) {
-              toast.error(e.message, { id: toastId });
+              console.error("Error aplicando imagen ajustada:", e);
+              const msg =
+                e?.message ||
+                e?.error_description ||
+                (typeof e === "string" ? e : "No se pudo aplicar la imagen");
+              toast.error(msg, { id: toastId });
             } finally {
               setUploading(false);
             }
