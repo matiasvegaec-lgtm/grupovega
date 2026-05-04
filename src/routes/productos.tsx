@@ -541,7 +541,6 @@ function ProductosPage() {
                                         img: p.image_url || feedImg,
                                       }, 1);
                                       toast.success(`${p.name} agregado al carrito (${inCart + 1})`);
-                                      if (inCart === 0) openCartIfNeeded();
                                     }}
                                     className="w-8 h-8 rounded-full border border-border flex items-center justify-center hover:border-ocean hover:text-ocean transition"
                                     aria-label="Aumentar"

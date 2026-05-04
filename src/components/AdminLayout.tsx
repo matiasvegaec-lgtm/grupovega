@@ -69,7 +69,7 @@ export function AdminLayout() {
           <div className="absolute inset-0 bg-black/50" />
           <aside onClick={(e) => e.stopPropagation()} className="absolute left-0 top-0 bottom-0 w-72 max-w-[85vw] bg-card p-4 flex flex-col shadow-elegant animate-in slide-in-from-left">
             <div className="flex items-center justify-between mb-6">
-              <Link to="/" className="font-bold text-navy-deep">Grupo Vega Admin</Link>
+              <Link to="/" className="font-bold text-navy-deep">Dashboard Grupo Vega</Link>
               <button onClick={() => setMenuOpen(false)} className="p-2 -mr-2 rounded-lg hover:bg-foam"><X className="w-5 h-5" /></button>
             </div>
             <nav className="space-y-1 flex-1">
@@ -95,7 +95,7 @@ export function AdminLayout() {
 
       {/* Sidebar desktop */}
       <aside className="hidden md:flex w-60 bg-card border-r border-border p-4 flex-col">
-        <Link to="/" className="font-bold text-navy-deep text-lg mb-8 px-2">Grupo Vega Admin</Link>
+        <Link to="/" className="font-bold text-navy-deep text-lg mb-8 px-2">Dashboard Grupo Vega</Link>
         <nav className="space-y-1 flex-1">
           {links.map((l) => {
             const Icon = l.icon;
