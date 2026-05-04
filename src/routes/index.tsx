@@ -205,6 +205,8 @@ function Index() {
         <div className="absolute inset-0">
           <img src={homeHeroBg} alt="" className="w-full h-full object-cover opacity-40" width={1920} height={1080} loading="eager" decoding="async" fetchPriority="high" />
           <div className="absolute inset-0 gradient-deep opacity-70" />
+          {/* Difumina la línea de horizonte del fondo bajo el encabezado */}
+          <div className="absolute inset-x-0 top-0 h-48 bg-gradient-to-b from-[oklch(0.12_0.08_258)] to-transparent" />
         </div>
         <UnderwaterScene />
 
