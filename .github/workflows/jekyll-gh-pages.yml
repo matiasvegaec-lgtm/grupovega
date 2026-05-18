@@ -1,66 +1,9 @@
-name: Deploy to GitHub Pages
-
-on:
-  push:
-    branches: [ "main", "master" ] # Se activa ya sea que tu rama se llame main o master
-
-permissions:
-  contents: read
-  pages: write
-  id-token: write
-
-concurrency:
-  group: "pages"
-  cancel-in-progress: true
-
-jobs:
-  deploy:
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Setup Bun
-        uses: oven-sh/setup-bun@v1
-        with:
-          bun-version: latest
-
-      - name: Install dependencies
-        run: bun install
-
-      - name: Build
-        run: bun run build
-        env:
-          VITE_SUPABASE_URL: https://rlqnbzwrecjzppatqfil.supabase.co
-          VITE_SUPABASE_PROJECT_ID: rlqnbzwrecjzppatqfil
-          VITE_SUPABASE_PUBLISHABLE_KEY: ${{ secrets.VITE_SUPABASE_PUBLISHABLE_KEY }}
-
-          # Este paso inteligente detecta dónde guardó Lovable/Vinxi los archivos y crea el 404 automático
-      - name: Detect output directory and Fix 404
-        id: detect-path
-        run: |
-          if [ -d ".output/public" ]; then
-            echo "target_path=./.output/public" >> $GITHUB_OUTPUT
-            cp .output/public/index.html .output/public/404.html
-            echo "Carpeta detectada: .output/public"
-          elif [ -d "dist/client" ]; then
-            echo "target_path=./dist/client" >> $GITHUB_OUTPUT
-            cp dist/client/index.html dist/client/404.html
-            echo "Carpeta detectada: dist/client"
-          else
-            echo "target_path=./dist" >> $GITHUB_OUTPUT
-            cp dist/index.html dist/404.html
-            echo "Carpeta detectada: dist estándar"
-          fi
+- name: Fix 404 for SPA
+        # Cambiamos dist/client por .output/public
+        run: cp .output/public/index.html .output/public/404.html || cp dist/client/index.html dist/client/404.html
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: ${{ steps.detect-path.outputs.target_path }}
-
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v4
+          # Intentamos subir .output/public, si no existe subirá dist/client
+          path: './.output/public'
