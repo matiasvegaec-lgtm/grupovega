@@ -48,7 +48,7 @@ export function Footer() {
             <h4 className="font-semibold mb-4 text-turquoise">Categorías</h4>
             <ul className="space-y-2 text-sm text-white/70">
               {categories.length === 0 ? (
-                <li className="text-white/40">Cargando…</li>
+                <li className="text-white/75">Cargando…</li>
               ) : (
                 categories.map((c) => (
                   <li key={c.id}>
@@ -74,7 +74,7 @@ export function Footer() {
           </div>
         </div>
 
-        <div className="mt-12 pt-8 border-t border-white/10 flex flex-col md:flex-row justify-between gap-4 text-sm text-white/50">
+        <div className="mt-12 pt-8 border-t border-white/10 flex flex-col md:flex-row justify-between gap-4 text-sm text-white/80">
           <p>© {new Date().getFullYear()} Grupo Vega. Todos los derechos reservados.</p>
           <p>Hecho con <span className="text-turquoise">●</span> para camaroneras del Ecuador</p>
         </div>
