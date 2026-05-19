@@ -1,0 +1,10 @@
+# Grupo Vega
+
+> Distribuidor ecuatoriano de insumos para la industria camaronera: alimento balanceado, aditivos, probióticos, fertilizantes, vitaminas y equipos. Base en Pedernales, Manabí.
+
+## Pages
+
+- [Inicio](/): Resumen de productos, categorías y proveedores aliados.
+- [Productos](/productos): Catálogo completo filtrable por categoría, subcategoría y precio.
+- [Quiénes Somos](/quienes-somos): Principios, política de calidad, divisiones y mercados servidos.
+- [Contacto](/contacto): Datos de contacto, ubicación en Pedernales y formulario.

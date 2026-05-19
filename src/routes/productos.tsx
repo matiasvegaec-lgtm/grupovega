@@ -19,6 +19,22 @@ export const Route = createFileRoute("/productos")({
       { name: "description", content: "Catálogo completo de alimento balanceado, probióticos, fertilizantes y equipos para camaroneras." },
       { property: "og:title", content: "Productos Grupo Vega" },
       { property: "og:description", content: "Catálogo completo para camaroneras." },
+      { property: "og:url", content: "https://grupovega.lovable.app/productos" },
+    ],
+    links: [
+      { rel: "canonical", href: "https://grupovega.lovable.app/productos" },
+    ],
+    scripts: [
+      {
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "CollectionPage",
+          name: "Catálogo de productos Grupo Vega",
+          description: "Alimento balanceado, probióticos, fertilizantes, vitaminas y equipos para camaroneras.",
+          url: "https://grupovega.lovable.app/productos",
+        }),
+      },
     ],
   }),
   validateSearch: (search: Record<string, unknown>): { categoria?: string } => {
@@ -189,10 +205,11 @@ function ProductosPage() {
     <aside className="space-y-6">
       {/* Búsqueda */}
       <div>
-        <label className="text-xs font-semibold uppercase tracking-widest text-ocean mb-2 block">Buscar</label>
+        <label htmlFor="productos-buscar" className="text-xs font-semibold uppercase tracking-widest text-ocean mb-2 block">Buscar</label>
         <div className="relative">
           <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
           <input
+            id="productos-buscar"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder="Nombre del producto..."
@@ -384,7 +401,7 @@ function ProductosPage() {
                 <div className="absolute left-0 top-0 bottom-0 w-[85%] max-w-sm bg-background p-6 overflow-y-auto animate-slide-in-right">
                   <div className="flex items-center justify-between mb-4">
                     <h3 className="text-lg font-bold text-navy-deep">Filtros</h3>
-                    <button onClick={() => setSidebarOpen(false)} className="p-2 rounded-full hover:bg-foam">
+                    <button onClick={() => setSidebarOpen(false)} aria-label="Cerrar filtros" className="p-2 rounded-full hover:bg-foam">
                       <X className="w-5 h-5" />
                     </button>
                   </div>

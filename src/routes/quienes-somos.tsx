@@ -21,6 +21,10 @@ export const Route = createFileRoute("/quienes-somos")({
         property: "og:description",
         content: "Soluciones integrales para acuicultura de camarón en Ecuador y Latinoamérica.",
       },
+      { property: "og:url", content: "https://grupovega.lovable.app/quienes-somos" },
+    ],
+    links: [
+      { rel: "canonical", href: "https://grupovega.lovable.app/quienes-somos" },
     ],
   }),
   component: QuienesSomosPage,
