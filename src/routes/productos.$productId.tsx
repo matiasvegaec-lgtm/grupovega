@@ -36,20 +36,54 @@ export const Route = createFileRoute("/productos/$productId")({
     );
     const { data } = await supabase
       .from("products")
-      .select("name,description")
+      .select("name,description,price,image_url,category")
       .eq(isUuid ? "id" : "slug", params.productId)
       .maybeSingle();
-    return { name: data?.name ?? null, description: data?.description ?? null };
+    return {
+      name: data?.name ?? null,
+      description: data?.description ?? null,
+      price: data?.price ?? null,
+      image: data?.image_url ?? null,
+      category: data?.category ?? null,
+    };
   },
-  head: ({ loaderData }) => {
+  head: ({ loaderData, params }) => {
     const name = loaderData?.name ?? "Producto";
     const desc = loaderData?.description ?? "Detalle del producto en Grupo Vega.";
+    const url = `https://grupovega.lovable.app/productos/${params.productId}`;
+    const ld: Record<string, unknown> = {
+      "@context": "https://schema.org",
+      "@type": "Product",
+      name,
+      description: desc.slice(0, 500),
+      url,
+    };
+    if (loaderData?.image) ld.image = loaderData.image;
+    if (loaderData?.category) ld.category = loaderData.category;
+    if (loaderData?.price != null) {
+      ld.offers = {
+        "@type": "Offer",
+        price: Number(loaderData.price).toFixed(2),
+        priceCurrency: "USD",
+        availability: "https://schema.org/InStock",
+        url,
+      };
+    }
     return {
       meta: [
         { title: `${name} — Grupo Vega` },
         { name: "description", content: desc.slice(0, 160) },
         { property: "og:title", content: `${name} — Grupo Vega` },
         { property: "og:description", content: desc.slice(0, 160) },
+        { property: "og:url", content: url },
+        { property: "og:type", content: "product" },
+        ...(loaderData?.image ? [{ property: "og:image", content: loaderData.image as string }] : []),
+      ],
+      links: [
+        { rel: "canonical", href: url },
+      ],
+      scripts: [
+        { type: "application/ld+json", children: JSON.stringify(ld) },
       ],
     };
   },

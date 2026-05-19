@@ -63,6 +63,10 @@ export const Route = createFileRoute("/")({
       { name: "description", content: "Alimentos, aceites y aditivos para la industria camaronera. Encuentra nuestro punto de venta en Ecuador." },
       { property: "og:title", content: "Grupo Vega — Industria Camaronera" },
       { property: "og:description", content: "Insumos y equipos para camaroneras del Ecuador." },
+      { property: "og:url", content: "https://grupovega.lovable.app/" },
+    ],
+    links: [
+      { rel: "canonical", href: "https://grupovega.lovable.app/" },
     ],
   }),
   component: Index,

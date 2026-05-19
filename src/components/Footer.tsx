@@ -67,9 +67,9 @@ export function Footer() {
               <li className="flex items-center gap-2"><Mail className="w-4 h-4 text-turquoise" /> grupovega.ec@outlook.com</li>
             </ul>
             <div className="flex gap-3 mt-4">
-              <a href="#" className="w-9 h-9 rounded-full glass flex items-center justify-center hover:bg-turquoise/30 transition"><Facebook className="w-4 h-4" /></a>
-              <a href="#" className="w-9 h-9 rounded-full glass flex items-center justify-center hover:bg-turquoise/30 transition"><Instagram className="w-4 h-4" /></a>
-              <a href="#" className="w-9 h-9 rounded-full glass flex items-center justify-center hover:bg-turquoise/30 transition"><Linkedin className="w-4 h-4" /></a>
+              <a href="#" aria-label="Facebook" className="w-9 h-9 rounded-full glass flex items-center justify-center hover:bg-turquoise/30 transition"><Facebook className="w-4 h-4" /></a>
+              <a href="#" aria-label="Instagram" className="w-9 h-9 rounded-full glass flex items-center justify-center hover:bg-turquoise/30 transition"><Instagram className="w-4 h-4" /></a>
+              <a href="#" aria-label="LinkedIn" className="w-9 h-9 rounded-full glass flex items-center justify-center hover:bg-turquoise/30 transition"><Linkedin className="w-4 h-4" /></a>
             </div>
           </div>
         </div>
