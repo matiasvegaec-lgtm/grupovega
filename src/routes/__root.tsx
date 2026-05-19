@@ -35,6 +35,7 @@ export const Route = createRootRoute({
       { title: "Grupo Vega | Nutrición y Suministros Acuícolas" },
       { name: "description", content: "Grupo Vega: insumos, nutrición y suministros técnicos para camaroneras del Ecuador. Calidad y asesoría especializada." },
       { name: "author", content: "Grupo Vega" },
+      { name: "google-site-verification", content: "RIJtNncWfVNlEcp5SqGeTnkzQL-Lc3QeRg3yZmOwsIM" },
       { property: "og:title", content: "Grupo Vega | Nutrición y Suministros Acuícolas" },
       { property: "og:description", content: "Insumos, nutrición y suministros técnicos para camaroneras del Ecuador." },
       { property: "og:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/5f5XTXezHfbqfnSknv41Q2zwlNT2/social-images/social-1777859714361-imagen_bodega_grupo_vega.webp" },
