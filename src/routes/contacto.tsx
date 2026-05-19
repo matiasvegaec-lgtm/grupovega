@@ -13,6 +13,30 @@ export const Route = createFileRoute("/contacto")({
       { name: "description", content: "Habla con nuestro equipo de Grupo Vega. Estamos en Pedernales, Manabí — Ecuador." },
       { property: "og:title", content: "Contacto Grupo Vega" },
       { property: "og:description", content: "Estamos cerca de tu camaronera." },
+      { property: "og:url", content: "https://grupovega.lovable.app/contacto" },
+    ],
+    links: [
+      { rel: "canonical", href: "https://grupovega.lovable.app/contacto" },
+    ],
+    scripts: [
+      {
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "LocalBusiness",
+          name: "Grupo Vega",
+          telephone: "+593-99-773-8026",
+          email: "grupovega.ec@outlook.com",
+          address: {
+            "@type": "PostalAddress",
+            streetAddress: "Pedernales",
+            addressLocality: "Pedernales",
+            addressRegion: "Manabí",
+            addressCountry: "EC",
+          },
+          url: "https://grupovega.lovable.app/contacto",
+        }),
+      },
     ],
   }),
   component: ContactoPage,
@@ -47,7 +71,7 @@ function ContactoPage() {
               {sent ? (
                 <div className="text-center py-12">
                   <CheckCircle2 className="w-16 h-16 text-ocean mx-auto mb-4" />
-                  <h3 className="text-2xl font-bold text-navy-deep mb-2">¡Mensaje enviado!</h3>
+                  <h2 className="text-2xl font-bold text-navy-deep mb-2">¡Mensaje enviado!</h2>
                   <p className="text-muted-foreground">Te contactaremos pronto.</p>
                 </div>
               ) : (
@@ -58,28 +82,28 @@ function ContactoPage() {
                   }}
                   className="space-y-5"
                 >
-                  <h3 className="text-2xl font-bold text-navy-deep mb-6">Envíanos un mensaje</h3>
+                  <h2 className="text-2xl font-bold text-navy-deep mb-6">Envíanos un mensaje</h2>
                   <div className="grid sm:grid-cols-2 gap-4">
                     <div>
-                      <label className="block text-sm font-semibold text-navy-deep mb-2">Nombre</label>
-                      <input required className="w-full px-4 py-3 rounded-xl bg-foam border border-border focus:border-ocean focus:outline-none focus:ring-2 focus:ring-ocean/20" />
+                      <label htmlFor="contact-nombre" className="block text-sm font-semibold text-navy-deep mb-2">Nombre</label>
+                      <input id="contact-nombre" name="nombre" required className="w-full px-4 py-3 rounded-xl bg-foam border border-border focus:border-ocean focus:outline-none focus:ring-2 focus:ring-ocean/20" />
                     </div>
                     <div>
-                      <label className="block text-sm font-semibold text-navy-deep mb-2">Empresa</label>
-                      <input className="w-full px-4 py-3 rounded-xl bg-foam border border-border focus:border-ocean focus:outline-none focus:ring-2 focus:ring-ocean/20" />
+                      <label htmlFor="contact-empresa" className="block text-sm font-semibold text-navy-deep mb-2">Empresa</label>
+                      <input id="contact-empresa" name="empresa" className="w-full px-4 py-3 rounded-xl bg-foam border border-border focus:border-ocean focus:outline-none focus:ring-2 focus:ring-ocean/20" />
                     </div>
                   </div>
                   <div>
-                    <label className="block text-sm font-semibold text-navy-deep mb-2">Email</label>
-                    <input type="email" required className="w-full px-4 py-3 rounded-xl bg-foam border border-border focus:border-ocean focus:outline-none focus:ring-2 focus:ring-ocean/20" />
+                    <label htmlFor="contact-email" className="block text-sm font-semibold text-navy-deep mb-2">Email</label>
+                    <input id="contact-email" name="email" type="email" required className="w-full px-4 py-3 rounded-xl bg-foam border border-border focus:border-ocean focus:outline-none focus:ring-2 focus:ring-ocean/20" />
                   </div>
                   <div>
-                    <label className="block text-sm font-semibold text-navy-deep mb-2">Hectáreas</label>
-                    <input type="number" className="w-full px-4 py-3 rounded-xl bg-foam border border-border focus:border-ocean focus:outline-none focus:ring-2 focus:ring-ocean/20" />
+                    <label htmlFor="contact-hectareas" className="block text-sm font-semibold text-navy-deep mb-2">Hectáreas</label>
+                    <input id="contact-hectareas" name="hectareas" type="number" className="w-full px-4 py-3 rounded-xl bg-foam border border-border focus:border-ocean focus:outline-none focus:ring-2 focus:ring-ocean/20" />
                   </div>
                   <div>
-                    <label className="block text-sm font-semibold text-navy-deep mb-2">Mensaje</label>
-                    <textarea rows={4} className="w-full px-4 py-3 rounded-xl bg-foam border border-border focus:border-ocean focus:outline-none focus:ring-2 focus:ring-ocean/20" />
+                    <label htmlFor="contact-mensaje" className="block text-sm font-semibold text-navy-deep mb-2">Mensaje</label>
+                    <textarea id="contact-mensaje" name="mensaje" rows={4} className="w-full px-4 py-3 rounded-xl bg-foam border border-border focus:border-ocean focus:outline-none focus:ring-2 focus:ring-ocean/20" />
                   </div>
                   <button type="submit" className="w-full inline-flex items-center justify-center gap-2 px-6 py-4 rounded-xl gradient-wave text-white font-semibold shadow-glow hover:scale-[1.02] transition">
                     Enviar mensaje <Send className="w-4 h-4" />
@@ -95,7 +119,7 @@ function ContactoPage() {
               className="space-y-6"
             >
               <div className="bg-card rounded-3xl p-8 shadow-card">
-                <h3 className="text-2xl font-bold text-navy-deep mb-6">Información de contacto</h3>
+                <h2 className="text-2xl font-bold text-navy-deep mb-6">Información de contacto</h2>
                 <div className="space-y-4">
                   <div className="flex gap-3"><Mail className="w-5 h-5 text-ocean shrink-0 mt-0.5" /><span className="text-muted-foreground">grupovega.ec@outlook.com</span></div>
                   <div className="flex gap-3"><Phone className="w-5 h-5 text-ocean shrink-0 mt-0.5" /><span className="text-muted-foreground">+593 99 773 8026</span></div>
