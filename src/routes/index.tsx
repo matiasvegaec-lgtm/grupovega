@@ -538,7 +538,7 @@ function Index() {
                     <MapPin className="w-4 h-4" />
                   </div>
                   <div className="min-w-0">
-                    <div className="text-white/60 text-xs uppercase tracking-widest font-semibold">Dirección</div>
+                    <div className="text-white/85 text-xs uppercase tracking-widest font-semibold">Dirección</div>
                     <div className="text-sm leading-snug">García Moreno y 3 de Noviembre, frente al cementerio — Pedernales, Manabí</div>
                   </div>
                 </li>
@@ -547,7 +547,7 @@ function Index() {
                     <Phone className="w-4 h-4" />
                   </div>
                   <div className="min-w-0">
-                    <div className="text-white/60 text-xs uppercase tracking-widest font-semibold">Teléfono</div>
+                    <div className="text-white/85 text-xs uppercase tracking-widest font-semibold">Teléfono</div>
                     <div className="text-sm">+593 99 773 8026</div>
                   </div>
                 </li>
@@ -556,7 +556,7 @@ function Index() {
                     <Mail className="w-4 h-4" />
                   </div>
                   <div className="min-w-0">
-                    <div className="text-white/60 text-xs uppercase tracking-widest font-semibold">Email</div>
+                    <div className="text-white/85 text-xs uppercase tracking-widest font-semibold">Email</div>
                     <div className="text-sm break-all">grupovega.ec@outlook.com</div>
                   </div>
                 </li>
@@ -565,7 +565,7 @@ function Index() {
                     <Clock className="w-4 h-4" />
                   </div>
                   <div className="min-w-0">
-                    <div className="text-white/60 text-xs uppercase tracking-widest font-semibold">Horario</div>
+                    <div className="text-white/85 text-xs uppercase tracking-widest font-semibold">Horario</div>
                     <div className="text-sm">Lun – Vie: 8:00 – 18:00 · Sáb: 8:00 – 13:00</div>
                   </div>
                 </li>
