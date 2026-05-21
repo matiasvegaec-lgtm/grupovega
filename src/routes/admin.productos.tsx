@@ -314,7 +314,7 @@ function AdminProductos() {
           ) : filteredList.map((p) => (
             <div key={p.id} className="bg-card rounded-2xl shadow-card p-3 flex gap-3">
               {p.image_url ? (
-                <img src={p.image_url} alt={p.name} className="w-20 h-20 rounded-xl object-cover shrink-0 bg-white border border-border" />
+                <ProductImage src={p.image_url} alt={p.name} className="w-20 h-20 rounded-xl object-contain shrink-0 bg-transparent" />
               ) : (
                 <div className="w-20 h-20 rounded-xl bg-foam shrink-0" />
               )}
@@ -370,7 +370,7 @@ function AdminProductos() {
               ) : filteredList.map((p) => (
                 <tr key={p.id} className="border-t border-border">
                   <td className="p-3">
-                    {p.image_url ? <img src={p.image_url} alt={p.name} className="w-12 h-12 rounded-lg object-cover bg-white border border-border" /> : <div className="w-12 h-12 rounded-lg bg-foam" />}
+                    {p.image_url ? <ProductImage src={p.image_url} alt={p.name} className="w-12 h-12 rounded-lg object-contain bg-transparent" /> : <div className="w-12 h-12 rounded-lg bg-foam" />}
                   </td>
                   <td className="p-3 font-semibold text-navy-deep">{p.name}</td>
                   <td className="p-3 text-muted-foreground">{p.category}</td>
@@ -531,10 +531,10 @@ function AdminProductos() {
                 <label className="text-xs font-semibold text-navy-deep">Imagen</label>
                 <div className="flex gap-3 items-start">
                   {form.image_url && (
-                    <img
+                    <ProductImage
                       src={form.image_url}
                       alt=""
-                      className="w-20 h-20 rounded-lg object-cover bg-white border border-border"
+                      className="w-20 h-20 rounded-lg object-contain bg-transparent"
                     />
                   )}
                   <div className="flex-1">
