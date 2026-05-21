@@ -3,6 +3,7 @@ import { useState, FormEvent, useEffect } from "react";
 import { Loader2, CreditCard, ShoppingBag, Building2, Banknote, Send, Lock, Clock, ChevronLeft, ChevronRight, Check, User, MapPin, Wallet, FileText } from "lucide-react";
 import { Layout } from "@/components/Layout";
 import { PageHero } from "@/components/PageHero";
+import { ProductImage } from "@/components/ProductImage";
 import { useCart } from "@/contexts/CartContext";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
@@ -471,7 +472,7 @@ function CheckoutPage() {
               <div className="space-y-3 max-h-64 overflow-auto mb-4">
                 {items.map((i) => (
                   <div key={i.id} className="flex gap-3 text-sm">
-                    <img src={i.img} alt={i.name} className="w-12 h-12 rounded-lg object-cover" />
+                    <ProductImage src={i.img} alt={i.name} className="w-12 h-12 rounded-lg object-contain" />
                     <div className="flex-1">
                       <p className="font-semibold text-navy-deep line-clamp-1">{i.name}</p>
                       <p className="text-muted-foreground">x{i.quantity}</p>
