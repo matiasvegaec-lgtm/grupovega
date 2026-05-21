@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import { Loader2, ShoppingBag, ChevronDown, ChevronUp, MessageCircle, Search, Calendar, X } from "lucide-react";
+import { ProductImage } from "@/components/ProductImage";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 
@@ -217,7 +218,7 @@ function AdminPedidos() {
                       <div className="space-y-2">
                         {o.items.map((i, idx) => (
                           <div key={idx} className="flex items-center gap-3 bg-card rounded-lg p-2">
-                            {i.img && <img src={i.img} alt={i.name} className="w-10 h-10 rounded object-cover" />}
+                            {i.img && <ProductImage src={i.img} alt={i.name} className="w-10 h-10 rounded object-contain" />}
                             <div className="flex-1 text-sm">
                               <p className="font-semibold text-navy-deep">{i.name}</p>
                               <p className="text-xs text-muted-foreground">${i.price.toFixed(2)} × {i.quantity}</p>
