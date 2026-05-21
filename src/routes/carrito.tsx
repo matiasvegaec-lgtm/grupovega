@@ -2,6 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { Minus, Plus, Trash2, ShoppingBag, ArrowRight } from "lucide-react";
 import { Layout } from "@/components/Layout";
 import { PageHero } from "@/components/PageHero";
+import { ProductImage } from "@/components/ProductImage";
 import { useCart } from "@/contexts/CartContext";
 import { usePageHero } from "@/hooks/usePageHero";
 
@@ -42,7 +43,7 @@ function CarritoPage() {
               <div className="lg:col-span-2 space-y-4">
                 {items.map((item) => (
                   <div key={item.id} className="bg-card rounded-2xl p-4 shadow-card flex gap-4">
-                    <img src={item.img} alt={item.name} className="w-24 h-24 rounded-xl object-cover" />
+                    <ProductImage src={item.img} alt={item.name} className="w-24 h-24 rounded-xl object-contain" />
                     <div className="flex-1">
                       <div className="flex justify-between items-start gap-2">
                         <div>
