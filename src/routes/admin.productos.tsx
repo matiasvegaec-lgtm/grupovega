@@ -529,7 +529,13 @@ function AdminProductos() {
               <div className="sm:col-span-2">
                 <label className="text-xs font-semibold text-navy-deep">Imagen</label>
                 <div className="flex gap-3 items-start">
-                  {form.image_url && <img src={form.image_url} alt="" className="w-20 h-20 rounded-lg object-cover" />}
+                  {form.image_url && (
+                    <img
+                      src={form.image_url}
+                      alt=""
+                      className="w-20 h-20 rounded-lg object-cover bg-white border border-border"
+                    />
+                  )}
                   <div className="flex-1">
                     <input value={form.image_url ?? ""} onChange={(e) => setForm({ ...form, image_url: e.target.value })} placeholder="URL de la imagen" className={inputCls + " mb-2"} />
                     <div className="flex flex-wrap gap-2">
@@ -545,6 +551,43 @@ function AdminProductos() {
                         >
                           <Crop className="w-4 h-4" /> Reajustar actual
                         </button>
+                      )}
+                      {form.image_url && (
+                        <div className="relative">
+                          <button
+                            type="button"
+                            disabled={removingBg}
+                            onClick={() => setBgMenuOpen((v) => !v)}
+                            className="inline-flex items-center gap-2 px-3 py-2 rounded-lg border border-border hover:bg-foam text-xs font-semibold text-navy-deep disabled:opacity-60"
+                          >
+                            {removingBg ? (
+                              <Loader2 className="w-4 h-4 animate-spin" />
+                            ) : (
+                              <Wand2 className="w-4 h-4" />
+                            )}{" "}
+                            Quitar fondo
+                          </button>
+                          {bgMenuOpen && !removingBg && (
+                            <div className="absolute z-20 mt-1 left-0 w-56 rounded-lg border border-border bg-card shadow-elegant p-1">
+                              <button
+                                type="button"
+                                onClick={() => removeBackground("white")}
+                                className="w-full text-left px-3 py-2 rounded-md hover:bg-foam text-xs font-semibold text-navy-deep"
+                              >
+                                Fondo blanco s\u00f3lido
+                                <span className="block text-[10px] font-normal text-muted-foreground">Sin cuadr\u00edcula gris, listo para catálogo</span>
+                              </button>
+                              <button
+                                type="button"
+                                onClick={() => removeBackground("transparent")}
+                                className="w-full text-left px-3 py-2 rounded-md hover:bg-foam text-xs font-semibold text-navy-deep"
+                              >
+                                Fondo transparente (PNG)
+                                <span className="block text-[10px] font-normal text-muted-foreground">Para usar sobre otros fondos</span>
+                              </button>
+                            </div>
+                          )}
+                        </div>
                       )}
                     </div>
                     <p className="text-[11px] text-muted-foreground mt-1.5">La imagen se procesa automáticamente al subirla y luego puedes reajustarla si necesitas moverla o acercarla.</p>
