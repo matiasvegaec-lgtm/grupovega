@@ -15,9 +15,7 @@ Deno.serve(async (req) => {
   try {
     // ---- AuthN/AuthZ: only staff (admin/employee) can call this ----
     const authHeader = req.headers.get("authorization") ?? "";
-    const token = authHeader.toLowerCase().startsWith("bearer ")
-      ? authHeader.slice(7).trim()
-      : "";
+    const token = authHeader.toLowerCase().startsWith("bearer ") ? authHeader.slice(7).trim() : "";
     if (!token) {
       return new Response(JSON.stringify({ error: "Unauthorized" }), {
         status: 401,
@@ -112,10 +110,13 @@ Deno.serve(async (req) => {
     if (!aiResponse.ok) {
       const errText = await aiResponse.text();
       if (aiResponse.status === 429) {
-        return new Response(JSON.stringify({ error: "Límite de uso alcanzado, intenta en unos minutos." }), {
-          status: 429,
-          headers: { ...corsHeaders, "Content-Type": "application/json" },
-        });
+        return new Response(
+          JSON.stringify({ error: "Límite de uso alcanzado, intenta en unos minutos." }),
+          {
+            status: 429,
+            headers: { ...corsHeaders, "Content-Type": "application/json" },
+          },
+        );
       }
       if (aiResponse.status === 402) {
         return new Response(JSON.stringify({ error: "Sin créditos de IA disponibles." }), {

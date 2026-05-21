@@ -58,7 +58,10 @@ const cleanImageBackground = async (src: string) => {
     const enqueueIfBackground = (index: number) => {
       if (visited[index]) return;
       const offset = index * 4;
-      if (!isRemovableBackground(data[offset], data[offset + 1], data[offset + 2], data[offset + 3])) return;
+      if (
+        !isRemovableBackground(data[offset], data[offset + 1], data[offset + 2], data[offset + 3])
+      )
+        return;
       visited[index] = 1;
       queue[tail++] = index;
     };
@@ -84,7 +87,9 @@ const cleanImageBackground = async (src: string) => {
     }
 
     ctx.putImageData(imageData, 0, 0);
-    const cleanedBlob = await new Promise<Blob | null>((resolve) => canvas.toBlob(resolve, "image/png"));
+    const cleanedBlob = await new Promise<Blob | null>((resolve) =>
+      canvas.toBlob(resolve, "image/png"),
+    );
     if (!cleanedBlob) throw new Error("No se pudo exportar la imagen");
     const cleanedUrl = URL.createObjectURL(cleanedBlob);
     processedCache.set(src, cleanedUrl);

@@ -5,7 +5,14 @@ import { Layout } from "@/components/Layout";
 import { ProductImage } from "@/components/ProductImage";
 import { supabase } from "@/integrations/supabase/client";
 
-type OrderItem = { id: string; name: string; price: number; quantity: number; img: string; category: string };
+type OrderItem = {
+  id: string;
+  name: string;
+  price: number;
+  quantity: number;
+  img: string;
+  category: string;
+};
 type Order = {
   order_number: string;
   customer_name: string;
@@ -41,15 +48,18 @@ function PedidoPage() {
   useEffect(() => {
     let mounted = true;
     (async () => {
-      const { data, error } = await supabase
-        .rpc("get_order_by_number", { _order_number: orderNumber });
+      const { data, error } = await supabase.rpc("get_order_by_number", {
+        _order_number: orderNumber,
+      });
       if (!mounted) return;
       if (error) setError(error.message);
       else if (!data) setError("Pedido no encontrado");
       else setOrder(data as unknown as Order);
       setLoading(false);
     })();
-    return () => { mounted = false; };
+    return () => {
+      mounted = false;
+    };
   }, [orderNumber]);
 
   return (
@@ -62,9 +72,14 @@ function PedidoPage() {
             </div>
           ) : error || !order ? (
             <div className="text-center py-20">
-              <h1 className="text-2xl font-bold text-navy-deep mb-2">No pudimos encontrar tu pedido</h1>
+              <h1 className="text-2xl font-bold text-navy-deep mb-2">
+                No pudimos encontrar tu pedido
+              </h1>
               <p className="text-muted-foreground mb-6">{error}</p>
-              <Link to="/productos" className="inline-flex items-center px-6 py-3 rounded-full gradient-wave text-white font-semibold">
+              <Link
+                to="/productos"
+                className="inline-flex items-center px-6 py-3 rounded-full gradient-wave text-white font-semibold"
+              >
                 Ir al catálogo
               </Link>
             </div>
@@ -74,10 +89,14 @@ function PedidoPage() {
                 <div className="w-20 h-20 mx-auto rounded-full gradient-wave flex items-center justify-center shadow-glow mb-4">
                   <CheckCircle2 className="w-10 h-10 text-white" />
                 </div>
-                <h1 className="text-3xl md:text-4xl font-bold text-navy-deep mb-2">¡Gracias por tu compra!</h1>
+                <h1 className="text-3xl md:text-4xl font-bold text-navy-deep mb-2">
+                  ¡Gracias por tu compra!
+                </h1>
                 <p className="text-muted-foreground">
-                  Pedido <span className="font-mono font-bold text-navy-deep">{order.order_number}</span> confirmado.
-                  Te enviamos un correo a <span className="font-semibold">{order.customer_email}</span>.
+                  Pedido{" "}
+                  <span className="font-mono font-bold text-navy-deep">{order.order_number}</span>{" "}
+                  confirmado. Te enviamos un correo a{" "}
+                  <span className="font-semibold">{order.customer_email}</span>.
                 </p>
               </div>
 
@@ -88,12 +107,20 @@ function PedidoPage() {
                 <div className="space-y-3">
                   {order.items.map((i) => (
                     <div key={i.id} className="flex gap-3 text-sm">
-                      <ProductImage src={i.img} alt={i.name} className="w-14 h-14 rounded-lg object-contain" />
+                      <ProductImage
+                        src={i.img}
+                        alt={i.name}
+                        className="w-14 h-14 rounded-lg object-contain"
+                      />
                       <div className="flex-1">
                         <p className="font-semibold text-navy-deep">{i.name}</p>
-                        <p className="text-muted-foreground">${i.price.toFixed(2)} x {i.quantity}</p>
+                        <p className="text-muted-foreground">
+                          ${i.price.toFixed(2)} x {i.quantity}
+                        </p>
                       </div>
-                      <span className="font-bold text-navy-deep">${(i.price * i.quantity).toFixed(2)}</span>
+                      <span className="font-bold text-navy-deep">
+                        ${(i.price * i.quantity).toFixed(2)}
+                      </span>
                     </div>
                   ))}
                 </div>
@@ -107,14 +134,19 @@ function PedidoPage() {
                 <h3 className="font-bold text-navy-deep mb-3">Dirección de envío</h3>
                 <p className="text-sm text-muted-foreground">
                   <span className="block font-semibold text-navy-deep">{order.customer_name}</span>
-                  {order.shipping_address}<br />
-                  {order.shipping_city}, {order.shipping_province}<br />
+                  {order.shipping_address}
+                  <br />
+                  {order.shipping_city}, {order.shipping_province}
+                  <br />
                   {order.shipping_country}
                 </p>
               </div>
 
               <div className="text-center">
-                <Link to="/productos" className="inline-flex items-center gap-2 px-6 py-3 rounded-full gradient-wave text-white font-semibold shadow-glow hover:scale-105 transition-transform">
+                <Link
+                  to="/productos"
+                  className="inline-flex items-center gap-2 px-6 py-3 rounded-full gradient-wave text-white font-semibold shadow-glow hover:scale-105 transition-transform"
+                >
                   Seguir comprando <ArrowRight className="w-4 h-4" />
                 </Link>
               </div>
