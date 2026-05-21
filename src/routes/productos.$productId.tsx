@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import { ArrowLeft, ChevronLeft, ChevronRight, ShoppingCart, Loader2, Check, Package, Tag } from "lucide-react";
 import useEmblaCarousel from "embla-carousel-react";
 import { Layout } from "@/components/Layout";
+import { ProductImage } from "@/components/ProductImage";
 import { useCart } from "@/contexts/CartContext";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
@@ -235,9 +236,9 @@ function ProductDetailPage() {
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.5 }}
-              className="relative bg-white rounded-3xl overflow-hidden shadow-elegant border border-border lg:sticky lg:top-24 lg:self-start aspect-square"
+              className="relative bg-transparent rounded-3xl overflow-hidden shadow-elegant border border-transparent lg:sticky lg:top-24 lg:self-start aspect-square"
             >
-              <img
+              <ProductImage
                 src={product.image_url || feedImg}
                 alt={product.name}
                 loading="eager"
@@ -428,8 +429,8 @@ function ProductDetailPage() {
                             <span className="absolute top-3 left-3 z-10 px-3 py-1 rounded-full gradient-wave text-white text-xs font-semibold">
                               {p.category}
                             </span>
-                            <div className="aspect-square bg-white flex items-center justify-center p-6">
-                              <img
+                            <div className="aspect-square bg-transparent flex items-center justify-center p-6">
+                              <ProductImage
                                 src={p.image_url || feedImg}
                                 alt={p.name}
                                 loading="lazy"
@@ -512,7 +513,7 @@ function ProductDetailPage() {
                     className="group bg-card rounded-2xl overflow-hidden shadow-card hover:shadow-elegant transition-all hover:-translate-y-2"
                   >
                     <div className="aspect-square overflow-hidden">
-                      <img
+                      <ProductImage
                         src={p.image_url || feedImg}
                         alt={p.name}
                         loading="lazy"
@@ -561,7 +562,7 @@ function ProductDetailPage() {
                 className="relative shrink-0 w-56 h-28 group"
               >
                 <div className="absolute inset-0 gradient-wave rounded-2xl opacity-0 group-hover:opacity-100 blur-xl transition duration-500" />
-                <div className="relative w-full h-full bg-white border border-border rounded-2xl flex items-center justify-center p-4 group-hover:border-ocean group-hover:shadow-elegant transition-all duration-300 overflow-hidden">
+                <div className="relative w-full h-full bg-transparent border border-transparent rounded-2xl flex items-center justify-center p-4 transition-all duration-300 overflow-hidden">
                   <img
                     src={s.img}
                     alt={s.name}
