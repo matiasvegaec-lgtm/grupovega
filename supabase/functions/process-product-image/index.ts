@@ -1,6 +1,6 @@
 // Edge function: process-product-image
-// Recibe una imagen base64 y devuelve la versión con fondo blanco limpio,
-// producto centrado en formato cuadrado, lista para el catálogo.
+// Recibe una imagen base64 y devuelve el producto centrado en formato cuadrado,
+// con fondo transparente por defecto para el catálogo.
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -15,9 +15,7 @@ Deno.serve(async (req) => {
   try {
     // ---- AuthN/AuthZ: only staff (admin/employee) can call this ----
     const authHeader = req.headers.get("authorization") ?? "";
-    const token = authHeader.toLowerCase().startsWith("bearer ")
-      ? authHeader.slice(7).trim()
-      : "";
+    const token = authHeader.toLowerCase().startsWith("bearer ") ? authHeader.slice(7).trim() : "";
     if (!token) {
       return new Response(JSON.stringify({ error: "Unauthorized" }), {
         status: 401,
@@ -80,7 +78,7 @@ Deno.serve(async (req) => {
     const promptText =
       bgMode === "white"
         ? "Remove the original background completely and replace it with a perfectly SOLID PURE WHITE background (#FFFFFF, no gradient, no shadow on the background, no texture). Keep ONLY the product, perfectly cut out with clean smooth edges (no halo or fringe). Center the product in a square 1:1 composition with about 8% padding on all sides. Preserve the product intact, sharp and well lit. Do not add any text, logos, decorations, watermarks, borders or extra objects. Output a PNG with a solid white background and only the product visible."
-        : "Remove the background completely so the result has a fully TRANSPARENT background (alpha channel, no white, no color, no checkerboard). Keep ONLY the product, perfectly cut out with clean smooth edges (no white halo or fringe). Center the product in a square 1:1 composition with about 8% padding on all sides. Preserve the product intact, sharp and well lit, including its natural soft shadow if any. Do not add any text, logos, decorations, watermarks, borders or extra objects. Output a transparent PNG with only the product visible.";
+        : "Remove the background completely so the result has a fully TRANSPARENT background (alpha channel only: no white, no color, no gray checkerboard, no baked transparency grid, no drop shadow). Keep ONLY the product, perfectly cut out with clean smooth edges (no white halo or fringe). Center the product in a square 1:1 composition with about 8% padding on all sides. Preserve the product intact and sharp. Do not add any text, logos, decorations, watermarks, borders, shadows or extra objects. Output a transparent PNG with only the product pixels visible and empty transparent pixels around it.";
 
     const aiResponse = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
       method: "POST",
@@ -112,10 +110,13 @@ Deno.serve(async (req) => {
     if (!aiResponse.ok) {
       const errText = await aiResponse.text();
       if (aiResponse.status === 429) {
-        return new Response(JSON.stringify({ error: "Límite de uso alcanzado, intenta en unos minutos." }), {
-          status: 429,
-          headers: { ...corsHeaders, "Content-Type": "application/json" },
-        });
+        return new Response(
+          JSON.stringify({ error: "Límite de uso alcanzado, intenta en unos minutos." }),
+          {
+            status: 429,
+            headers: { ...corsHeaders, "Content-Type": "application/json" },
+          },
+        );
       }
       if (aiResponse.status === 402) {
         return new Response(JSON.stringify({ error: "Sin créditos de IA disponibles." }), {

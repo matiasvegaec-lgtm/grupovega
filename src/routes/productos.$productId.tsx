@@ -1,9 +1,19 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
-import { ArrowLeft, ChevronLeft, ChevronRight, ShoppingCart, Loader2, Check, Package, Tag } from "lucide-react";
+import {
+  ArrowLeft,
+  ChevronLeft,
+  ChevronRight,
+  ShoppingCart,
+  Loader2,
+  Check,
+  Package,
+  Tag,
+} from "lucide-react";
 import useEmblaCarousel from "embla-carousel-react";
 import { Layout } from "@/components/Layout";
+import { ProductImage } from "@/components/ProductImage";
 import { useCart } from "@/contexts/CartContext";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
@@ -32,7 +42,7 @@ type Subcategory = { id: string; name: string };
 export const Route = createFileRoute("/productos/$productId")({
   loader: async ({ params }) => {
     const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(
-      params.productId
+      params.productId,
     );
     const { data } = await supabase
       .from("products")
@@ -77,14 +87,12 @@ export const Route = createFileRoute("/productos/$productId")({
         { property: "og:description", content: desc.slice(0, 160) },
         { property: "og:url", content: url },
         { property: "og:type", content: "product" },
-        ...(loaderData?.image ? [{ property: "og:image", content: loaderData.image as string }] : []),
+        ...(loaderData?.image
+          ? [{ property: "og:image", content: loaderData.image as string }]
+          : []),
       ],
-      links: [
-        { rel: "canonical", href: url },
-      ],
-      scripts: [
-        { type: "application/ld+json", children: JSON.stringify(ld) },
-      ],
+      links: [{ rel: "canonical", href: url }],
+      scripts: [{ type: "application/ld+json", children: JSON.stringify(ld) }],
     };
   },
   component: ProductDetailPage,
@@ -138,7 +146,7 @@ function ProductDetailPage() {
     (async () => {
       setLoading(true);
       const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(
-        productId
+        productId,
       );
       const { data } = await supabase
         .from("products")
@@ -151,7 +159,11 @@ function ProductDetailPage() {
       if (prod) {
         const [subRes, relRes] = await Promise.all([
           prod.subcategory_id
-            ? supabase.from("subcategories").select("id,name").eq("id", prod.subcategory_id).maybeSingle()
+            ? supabase
+                .from("subcategories")
+                .select("id,name")
+                .eq("id", prod.subcategory_id)
+                .maybeSingle()
             : Promise.resolve({ data: null }),
           supabase
             .from("products")
@@ -162,7 +174,7 @@ function ProductDetailPage() {
             .limit(20),
         ]);
         if (!alive) return;
-        setSubcategoryName(((subRes.data as Subcategory | null)?.name) ?? null);
+        setSubcategoryName((subRes.data as Subcategory | null)?.name ?? null);
         setRelated(((relRes as { data: Product[] | null }).data ?? []) as Product[]);
       } else {
         setSubcategoryName(null);
@@ -190,7 +202,9 @@ function ProductDetailPage() {
       <Layout>
         <div className="min-h-[60vh] flex flex-col items-center justify-center text-center px-4">
           <h1 className="text-3xl font-bold text-navy-deep mb-3">Producto no encontrado</h1>
-          <p className="text-muted-foreground mb-6">Este producto no existe o ya no está disponible.</p>
+          <p className="text-muted-foreground mb-6">
+            Este producto no existe o ya no está disponible.
+          </p>
           <Link
             to="/productos"
             className="inline-flex items-center gap-2 px-6 py-3 rounded-full gradient-wave text-white font-semibold"
@@ -235,9 +249,9 @@ function ProductDetailPage() {
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.5 }}
-              className="relative bg-white rounded-3xl overflow-hidden shadow-elegant border border-border lg:sticky lg:top-24 lg:self-start aspect-square"
+              className="relative bg-transparent rounded-3xl overflow-hidden shadow-elegant border border-transparent lg:sticky lg:top-24 lg:self-start aspect-square"
             >
-              <img
+              <ProductImage
                 src={product.image_url || feedImg}
                 alt={product.name}
                 loading="eager"
@@ -257,7 +271,8 @@ function ProductDetailPage() {
                 <Tag className="w-3 h-3" /> {product.category}
                 {subcategoryName && (
                   <span className="font-semibold normal-case tracking-normal opacity-80">
-                    {" · "}{subcategoryName}
+                    {" · "}
+                    {subcategoryName}
                   </span>
                 )}
               </span>
@@ -285,19 +300,29 @@ function ProductDetailPage() {
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-6">
                   {product.presentation && (
                     <div className="rounded-xl border border-border bg-card p-3">
-                      <p className="text-[11px] uppercase tracking-wider text-muted-foreground font-semibold">Presentación</p>
-                      <p className="text-base font-bold text-navy-deep mt-0.5">{product.presentation}</p>
+                      <p className="text-[11px] uppercase tracking-wider text-muted-foreground font-semibold">
+                        Presentación
+                      </p>
+                      <p className="text-base font-bold text-navy-deep mt-0.5">
+                        {product.presentation}
+                      </p>
                     </div>
                   )}
                   {product.protein_content && (
                     <div className="rounded-xl border border-border bg-card p-3">
-                      <p className="text-[11px] uppercase tracking-wider text-muted-foreground font-semibold">Proteína</p>
-                      <p className="text-base font-bold text-navy-deep mt-0.5">{product.protein_content}</p>
+                      <p className="text-[11px] uppercase tracking-wider text-muted-foreground font-semibold">
+                        Proteína
+                      </p>
+                      <p className="text-base font-bold text-navy-deep mt-0.5">
+                        {product.protein_content}
+                      </p>
                     </div>
                   )}
                   {product.price_card_3m && Number(product.price_card_3m) > 0 && (
                     <div className="rounded-xl border border-turquoise/40 bg-gradient-to-br from-turquoise/10 to-ocean/10 p-3 sm:col-span-2">
-                      <p className="text-[11px] uppercase tracking-wider text-ocean font-bold">Pago con tarjeta · 3 meses sin intereses</p>
+                      <p className="text-[11px] uppercase tracking-wider text-ocean font-bold">
+                        Pago con tarjeta · 3 meses sin intereses
+                      </p>
                       <div className="flex items-baseline gap-2 mt-0.5">
                         <p className="text-lg font-bold text-navy-deep">
                           3 × ${(Number(product.price_card_3m) / 3).toFixed(2)}
@@ -346,7 +371,9 @@ function ProductDetailPage() {
 
               <p className="text-sm text-navy-deep mb-6">
                 <span className="font-semibold">Referencia:</span>{" "}
-                <span className="text-muted-foreground">{product.id.slice(0, 8).toUpperCase()}</span>
+                <span className="text-muted-foreground">
+                  {product.id.slice(0, 8).toUpperCase()}
+                </span>
               </p>
 
               <div className="border-t border-border pt-6 mb-6">
@@ -372,17 +399,14 @@ function ProductDetailPage() {
                 <div className="flex items-center gap-3">
                   <Package className="w-5 h-5 text-ocean shrink-0" />
                   <div className="text-sm text-navy-deep">
-                    <strong>Despacho desde Pedernales.</strong>{" "}
-                    Coordinamos envíos para toda la zona perimetral de Pedernales.
+                    <strong>Despacho desde Pedernales.</strong> Coordinamos envíos para toda la zona
+                    perimetral de Pedernales.
                   </div>
                 </div>
               </div>
 
               <div className="flex flex-wrap items-center gap-3">
-                <Link
-                  to="/contacto"
-                  className="text-sm font-semibold text-ocean hover:underline"
-                >
+                <Link to="/contacto" className="text-sm font-semibold text-ocean hover:underline">
                   ¿Necesitas pedido al por mayor? Contáctanos →
                 </Link>
                 <a
@@ -392,8 +416,13 @@ function ProductDetailPage() {
                   className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#25D366] hover:bg-[#1ebe57] text-white text-sm font-semibold transition"
                   aria-label="Contactar por WhatsApp"
                 >
-                  <svg viewBox="0 0 24 24" className="w-4 h-4" fill="currentColor" aria-hidden="true">
-                    <path d="M20.52 3.48A11.86 11.86 0 0 0 12.04 0C5.5 0 .2 5.3.2 11.84c0 2.09.55 4.13 1.6 5.93L0 24l6.39-1.67a11.83 11.83 0 0 0 5.65 1.44h.01c6.54 0 11.84-5.3 11.84-11.84 0-3.16-1.23-6.13-3.37-8.45zM12.05 21.3h-.01a9.46 9.46 0 0 1-4.82-1.32l-.35-.21-3.79.99 1.01-3.69-.23-.38a9.45 9.45 0 0 1-1.46-5.05c0-5.23 4.26-9.49 9.49-9.49 2.54 0 4.92.99 6.71 2.78a9.42 9.42 0 0 1 2.78 6.71c0 5.23-4.26 9.46-9.49 9.46zm5.49-7.09c-.3-.15-1.78-.88-2.06-.98-.28-.1-.48-.15-.68.15-.2.3-.78.98-.96 1.18-.18.2-.35.22-.65.07-.3-.15-1.27-.47-2.42-1.49-.89-.79-1.49-1.77-1.66-2.07-.17-.3-.02-.46.13-.61.14-.13.3-.35.45-.52.15-.18.2-.3.3-.5.1-.2.05-.38-.02-.53-.07-.15-.68-1.63-.93-2.24-.24-.58-.49-.5-.68-.51l-.58-.01c-.2 0-.53.07-.81.38-.28.3-1.07 1.04-1.07 2.54 0 1.5 1.1 2.95 1.25 3.15.15.2 2.16 3.3 5.24 4.62.73.31 1.3.5 1.74.64.73.23 1.4.2 1.92.12.59-.09 1.78-.73 2.04-1.43.25-.7.25-1.3.18-1.43-.07-.12-.27-.2-.57-.35z"/>
+                  <svg
+                    viewBox="0 0 24 24"
+                    className="w-4 h-4"
+                    fill="currentColor"
+                    aria-hidden="true"
+                  >
+                    <path d="M20.52 3.48A11.86 11.86 0 0 0 12.04 0C5.5 0 .2 5.3.2 11.84c0 2.09.55 4.13 1.6 5.93L0 24l6.39-1.67a11.83 11.83 0 0 0 5.65 1.44h.01c6.54 0 11.84-5.3 11.84-11.84 0-3.16-1.23-6.13-3.37-8.45zM12.05 21.3h-.01a9.46 9.46 0 0 1-4.82-1.32l-.35-.21-3.79.99 1.01-3.69-.23-.38a9.45 9.45 0 0 1-1.46-5.05c0-5.23 4.26-9.49 9.49-9.49 2.54 0 4.92.99 6.71 2.78a9.42 9.42 0 0 1 2.78 6.71c0 5.23-4.26 9.46-9.49 9.46zm5.49-7.09c-.3-.15-1.78-.88-2.06-.98-.28-.1-.48-.15-.68.15-.2.3-.78.98-.96 1.18-.18.2-.35.22-.65.07-.3-.15-1.27-.47-2.42-1.49-.89-.79-1.49-1.77-1.66-2.07-.17-.3-.02-.46.13-.61.14-.13.3-.35.45-.52.15-.18.2-.3.3-.5.1-.2.05-.38-.02-.53-.07-.15-.68-1.63-.93-2.24-.24-.58-.49-.5-.68-.51l-.58-.01c-.2 0-.53.07-.81.38-.28.3-1.07 1.04-1.07 2.54 0 1.5 1.1 2.95 1.25 3.15.15.2 2.16 3.3 5.24 4.62.73.31 1.3.5 1.74.64.73.23 1.4.2 1.92.12.59-.09 1.78-.73 2.04-1.43.25-.7.25-1.3.18-1.43-.07-.12-.27-.2-.57-.35z" />
                   </svg>
                   WhatsApp
                 </a>
@@ -428,8 +457,8 @@ function ProductDetailPage() {
                             <span className="absolute top-3 left-3 z-10 px-3 py-1 rounded-full gradient-wave text-white text-xs font-semibold">
                               {p.category}
                             </span>
-                            <div className="aspect-square bg-white flex items-center justify-center p-6">
-                              <img
+                            <div className="aspect-square bg-transparent flex items-center justify-center p-6">
+                              <ProductImage
                                 src={p.image_url || feedImg}
                                 alt={p.name}
                                 loading="lazy"
@@ -512,12 +541,12 @@ function ProductDetailPage() {
                     className="group bg-card rounded-2xl overflow-hidden shadow-card hover:shadow-elegant transition-all hover:-translate-y-2"
                   >
                     <div className="aspect-square overflow-hidden">
-                      <img
+                      <ProductImage
                         src={p.image_url || feedImg}
                         alt={p.name}
                         loading="lazy"
                         decoding="async"
-                        className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+                        className="w-full h-full object-contain p-4 group-hover:scale-110 transition-transform duration-700"
                       />
                     </div>
                     <div className="p-4">
@@ -540,8 +569,12 @@ function ProductDetailPage() {
       <section className="py-20 bg-foam overflow-hidden">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 mb-12">
           <div className="text-center max-w-2xl mx-auto">
-            <p className="text-sm font-semibold uppercase tracking-widest text-ocean mb-3">Proveedores</p>
-            <h2 className="text-4xl md:text-5xl font-bold text-navy-deep">Marcas que distribuimos</h2>
+            <p className="text-sm font-semibold uppercase tracking-widest text-ocean mb-3">
+              Proveedores
+            </p>
+            <h2 className="text-4xl md:text-5xl font-bold text-navy-deep">
+              Marcas que distribuimos
+            </h2>
             <p className="text-muted-foreground mt-4">
               Trabajamos con los líderes mundiales en nutrición y sanidad acuícola.
             </p>
@@ -556,12 +589,9 @@ function ProductDetailPage() {
               const base = Array.from({ length: repeats }, () => suppliers).flat();
               return [...base, ...base];
             })().map((s, i) => (
-              <div
-                key={`${s.name}-${i}`}
-                className="relative shrink-0 w-56 h-28 group"
-              >
+              <div key={`${s.name}-${i}`} className="relative shrink-0 w-56 h-28 group">
                 <div className="absolute inset-0 gradient-wave rounded-2xl opacity-0 group-hover:opacity-100 blur-xl transition duration-500" />
-                <div className="relative w-full h-full bg-white border border-border rounded-2xl flex items-center justify-center p-4 group-hover:border-ocean group-hover:shadow-elegant transition-all duration-300 overflow-hidden">
+                <div className="relative w-full h-full bg-transparent border border-transparent rounded-2xl flex items-center justify-center p-4 transition-all duration-300 overflow-hidden">
                   <img
                     src={s.img}
                     alt={s.name}

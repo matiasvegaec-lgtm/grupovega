@@ -1,9 +1,26 @@
 import { createFileRoute, Link, Outlet, useLocation } from "@tanstack/react-router";
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { Search, ShoppingCart, Loader2, Wheat, Sprout, FlaskConical, Beaker, Pill, Droplet, Layers, X, Heart, Plus, Minus, CreditCard } from "lucide-react";
+import {
+  Search,
+  ShoppingCart,
+  Loader2,
+  Wheat,
+  Sprout,
+  FlaskConical,
+  Beaker,
+  Pill,
+  Droplet,
+  Layers,
+  X,
+  Heart,
+  Plus,
+  Minus,
+  CreditCard,
+} from "lucide-react";
 import { Layout } from "@/components/Layout";
 import { PageHero } from "@/components/PageHero";
+import { ProductImage } from "@/components/ProductImage";
 import { useCart } from "@/contexts/CartContext";
 import { useFavorites } from "@/contexts/FavoritesContext";
 import { toast } from "sonner";
@@ -16,14 +33,16 @@ export const Route = createFileRoute("/productos")({
   head: () => ({
     meta: [
       { title: "Productos — Grupo Vega" },
-      { name: "description", content: "Catálogo completo de alimento balanceado, probióticos, fertilizantes y equipos para camaroneras." },
+      {
+        name: "description",
+        content:
+          "Catálogo completo de alimento balanceado, probióticos, fertilizantes y equipos para camaroneras.",
+      },
       { property: "og:title", content: "Productos Grupo Vega" },
       { property: "og:description", content: "Catálogo completo para camaroneras." },
       { property: "og:url", content: "https://grupovega.lovable.app/productos" },
     ],
-    links: [
-      { rel: "canonical", href: "https://grupovega.lovable.app/productos" },
-    ],
+    links: [{ rel: "canonical", href: "https://grupovega.lovable.app/productos" }],
     scripts: [
       {
         type: "application/ld+json",
@@ -31,7 +50,8 @@ export const Route = createFileRoute("/productos")({
           "@context": "https://schema.org",
           "@type": "CollectionPage",
           name: "Catálogo de productos Grupo Vega",
-          description: "Alimento balanceado, probióticos, fertilizantes, vitaminas y equipos para camaroneras.",
+          description:
+            "Alimento balanceado, probióticos, fertilizantes, vitaminas y equipos para camaroneras.",
           url: "https://grupovega.lovable.app/productos",
         }),
       },
@@ -61,12 +81,12 @@ type Category = { id: string; name: string };
 type Subcategory = { id: string; name: string; category_id: string; display_order: number };
 
 const CATEGORY_META: Record<string, { icon: typeof Wheat; desc: string }> = {
-  "Alimentos": { icon: Wheat, desc: "Balanceados premium" },
-  "Fertilizantes": { icon: Sprout, desc: "Nutrientes para piscinas" },
-  "Aditivos": { icon: FlaskConical, desc: "Probióticos y mejoradores" },
-  "Insumos": { icon: Beaker, desc: "Químicos y equipos" },
-  "Vitaminas": { icon: Pill, desc: "Premix y suplementos" },
-  "Aceites": { icon: Droplet, desc: "Aceites de pescado" },
+  Alimentos: { icon: Wheat, desc: "Balanceados premium" },
+  Fertilizantes: { icon: Sprout, desc: "Nutrientes para piscinas" },
+  Aditivos: { icon: FlaskConical, desc: "Probióticos y mejoradores" },
+  Insumos: { icon: Beaker, desc: "Químicos y equipos" },
+  Vitaminas: { icon: Pill, desc: "Premix y suplementos" },
+  Aceites: { icon: Droplet, desc: "Aceites de pescado" },
 };
 
 type Supplier = { name: string; img: string; scale: number };
@@ -97,9 +117,18 @@ function ProductosPage() {
   useEffect(() => {
     (async () => {
       const [prodRes, catRes, subRes] = await Promise.all([
-        supabase.from("products").select("*").eq("active", true).order("display_order").order("created_at", { ascending: false }),
+        supabase
+          .from("products")
+          .select("*")
+          .eq("active", true)
+          .order("display_order")
+          .order("created_at", { ascending: false }),
         supabase.from("categories").select("id,name").eq("active", true).order("display_order"),
-        supabase.from("subcategories").select("id,name,category_id,display_order").eq("active", true).order("display_order"),
+        supabase
+          .from("subcategories")
+          .select("id,name,category_id,display_order")
+          .eq("active", true)
+          .order("display_order"),
       ]);
       if (!prodRes.error) {
         const list = (prodRes.data ?? []) as Product[];
@@ -168,7 +197,7 @@ function ProductosPage() {
         (!activeSub || p.subcategory_id === activeSub) &&
         p.name.toLowerCase().includes(query.toLowerCase()) &&
         (!stockOnly || p.stock > 0) &&
-        (maxPrice === 0 || Number(p.price) <= maxPrice)
+        (maxPrice === 0 || Number(p.price) <= maxPrice),
     )
     .sort((a, b) => {
       if (sort === "price-asc") return Number(a.price) - Number(b.price);
@@ -205,7 +234,12 @@ function ProductosPage() {
     <aside className="space-y-6">
       {/* Búsqueda */}
       <div>
-        <label htmlFor="productos-buscar" className="text-xs font-semibold uppercase tracking-widest text-ocean mb-2 block">Buscar</label>
+        <label
+          htmlFor="productos-buscar"
+          className="text-xs font-semibold uppercase tracking-widest text-ocean mb-2 block"
+        >
+          Buscar
+        </label>
         <div className="relative">
           <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
           <input
@@ -220,20 +254,25 @@ function ProductosPage() {
 
       {/* Categorías */}
       <div>
-        <label className="text-xs font-semibold uppercase tracking-widest text-ocean mb-3 block">Categorías</label>
+        <label className="text-xs font-semibold uppercase tracking-widest text-ocean mb-3 block">
+          Categorías
+        </label>
         <div className="space-y-1">
           <button
-            onClick={() => { setActive("Todos"); setActiveSub(null); }}
+            onClick={() => {
+              setActive("Todos");
+              setActiveSub(null);
+            }}
             className={`w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-sm font-medium transition ${
-              active === "Todos"
-                ? "gradient-wave text-white"
-                : "text-navy-deep hover:bg-foam"
+              active === "Todos" ? "gradient-wave text-white" : "text-navy-deep hover:bg-foam"
             }`}
           >
             <span className="flex items-center gap-2">
               <Layers className="w-4 h-4" /> Todos
             </span>
-            <span className={`text-xs ${active === "Todos" ? "text-white/80" : "text-muted-foreground"}`}>
+            <span
+              className={`text-xs ${active === "Todos" ? "text-white/80" : "text-muted-foreground"}`}
+            >
               {products.length}
             </span>
           </button>
@@ -247,17 +286,20 @@ function ProductosPage() {
             return (
               <div key={c}>
                 <button
-                  onClick={() => { setActive(c); setActiveSub(null); }}
+                  onClick={() => {
+                    setActive(c);
+                    setActiveSub(null);
+                  }}
                   className={`w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-sm font-medium transition ${
-                    isActive
-                      ? "gradient-wave text-white"
-                      : "text-navy-deep hover:bg-foam"
+                    isActive ? "gradient-wave text-white" : "text-navy-deep hover:bg-foam"
                   }`}
                 >
                   <span className="flex items-center gap-2">
                     <Icon className="w-4 h-4" /> {c}
                   </span>
-                  <span className={`text-xs ${isActive ? "text-white/80" : "text-muted-foreground"}`}>
+                  <span
+                    className={`text-xs ${isActive ? "text-white/80" : "text-muted-foreground"}`}
+                  >
                     {count}
                   </span>
                 </button>
@@ -266,7 +308,9 @@ function ProductosPage() {
                     <button
                       onClick={() => setActiveSub(null)}
                       className={`w-full text-left px-3 py-1.5 rounded-lg text-xs font-medium transition ${
-                        activeSub === null ? "bg-foam text-ocean" : "text-muted-foreground hover:bg-foam"
+                        activeSub === null
+                          ? "bg-foam text-ocean"
+                          : "text-muted-foreground hover:bg-foam"
                       }`}
                     >
                       Todas las subcategorías
@@ -276,7 +320,9 @@ function ProductosPage() {
                         key={s.id}
                         onClick={() => setActiveSub(s.id)}
                         className={`w-full text-left px-3 py-1.5 rounded-lg text-xs font-medium transition ${
-                          activeSub === s.id ? "bg-foam text-ocean" : "text-muted-foreground hover:bg-foam"
+                          activeSub === s.id
+                            ? "bg-foam text-ocean"
+                            : "text-muted-foreground hover:bg-foam"
                         }`}
                       >
                         {s.name}
@@ -324,7 +370,9 @@ function ProductosPage() {
 
       {/* Orden */}
       <div>
-        <label className="text-xs font-semibold uppercase tracking-widest text-ocean mb-2 block">Ordenar por</label>
+        <label className="text-xs font-semibold uppercase tracking-widest text-ocean mb-2 block">
+          Ordenar por
+        </label>
         <select
           value={sort}
           onChange={(e) => setSort(e.target.value as typeof sort)}
@@ -401,7 +449,11 @@ function ProductosPage() {
                 <div className="absolute left-0 top-0 bottom-0 w-[85%] max-w-sm bg-background p-6 overflow-y-auto animate-slide-in-right">
                   <div className="flex items-center justify-between mb-4">
                     <h3 className="text-lg font-bold text-navy-deep">Filtros</h3>
-                    <button onClick={() => setSidebarOpen(false)} aria-label="Cerrar filtros" className="p-2 rounded-full hover:bg-foam">
+                    <button
+                      onClick={() => setSidebarOpen(false)}
+                      aria-label="Cerrar filtros"
+                      className="p-2 rounded-full hover:bg-foam"
+                    >
                       <X className="w-5 h-5" />
                     </button>
                   </div>
@@ -426,7 +478,9 @@ function ProductosPage() {
                   <Loader2 className="w-8 h-8 animate-spin mx-auto text-ocean" />
                 </div>
               ) : filtered.length === 0 ? (
-                <p className="text-center text-muted-foreground py-16">No se encontraron productos.</p>
+                <p className="text-center text-muted-foreground py-16">
+                  No se encontraron productos.
+                </p>
               ) : (
                 <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6 md:gap-7">
                   {filtered.map((p, i) => (
@@ -441,9 +495,9 @@ function ProductosPage() {
                       <Link
                         to="/productos/$productId"
                         params={{ productId: p.slug || p.id }}
-                        className="block w-full h-36 sm:h-52 overflow-hidden relative text-left bg-white"
+                        className="block w-full h-36 sm:h-52 overflow-hidden relative text-left bg-transparent"
                       >
-                        <img
+                        <ProductImage
                           src={p.image_url || feedImg}
                           alt={p.name}
                           loading="lazy"
@@ -453,14 +507,15 @@ function ProductosPage() {
                           <span className="px-3 py-1 rounded-full bg-orange-500 text-white text-xs font-semibold shadow-md">
                             {p.category}
                           </span>
-                          {p.subcategory_id && (() => {
-                            const sub = subcategories.find((s) => s.id === p.subcategory_id);
-                            return sub ? (
-                              <span className="px-2 py-0.5 rounded-full bg-white/95 text-navy-deep text-[10px] font-semibold shadow-sm">
-                                {sub.name}
-                              </span>
-                            ) : null;
-                          })()}
+                          {p.subcategory_id &&
+                            (() => {
+                              const sub = subcategories.find((s) => s.id === p.subcategory_id);
+                              return sub ? (
+                                <span className="px-2 py-0.5 rounded-full bg-white/95 text-navy-deep text-[10px] font-semibold shadow-sm">
+                                  {sub.name}
+                                </span>
+                              ) : null;
+                            })()}
                         </div>
                       </Link>
                       <button
@@ -487,9 +542,7 @@ function ProductosPage() {
                       >
                         <Heart
                           className={`w-4 h-4 transition ${
-                            isFavorite(p.id)
-                              ? "fill-orange-500 text-orange-500"
-                              : "text-navy-deep"
+                            isFavorite(p.id) ? "fill-orange-500 text-orange-500" : "text-navy-deep"
                           }`}
                         />
                       </button>
@@ -508,8 +561,8 @@ function ProductosPage() {
                             </span>
                             {p.price_card_3m && Number(p.price_card_3m) > 0 && (
                               <span className="inline-flex items-center gap-1 text-[11px] text-muted-foreground mt-0.5">
-                                <CreditCard className="w-3 h-3" />
-                                ${Number(p.price_card_3m).toFixed(2)} c/tarjeta
+                                <CreditCard className="w-3 h-3" />$
+                                {Number(p.price_card_3m).toFixed(2)} c/tarjeta
                               </span>
                             )}
                           </div>
@@ -550,14 +603,19 @@ function ProductosPage() {
                                     type="button"
                                     onClick={() => {
                                       if (inCart >= p.stock) return;
-                                      addItem({
-                                        id: p.id,
-                                        name: p.name,
-                                        price: Number(p.price),
-                                        category: p.category,
-                                        img: p.image_url || feedImg,
-                                      }, 1);
-                                      toast.success(`${p.name} agregado al carrito (${inCart + 1})`);
+                                      addItem(
+                                        {
+                                          id: p.id,
+                                          name: p.name,
+                                          price: Number(p.price),
+                                          category: p.category,
+                                          img: p.image_url || feedImg,
+                                        },
+                                        1,
+                                      );
+                                      toast.success(
+                                        `${p.name} agregado al carrito (${inCart + 1})`,
+                                      );
                                     }}
                                     className="w-8 h-8 rounded-full border border-border flex items-center justify-center hover:border-ocean hover:text-ocean transition"
                                     aria-label="Aumentar"
@@ -570,13 +628,16 @@ function ProductosPage() {
                                 disabled={p.stock <= 0}
                                 onClick={() => {
                                   if (inCart === 0) {
-                                    addItem({
-                                      id: p.id,
-                                      name: p.name,
-                                      price: Number(p.price),
-                                      category: p.category,
-                                      img: p.image_url || feedImg,
-                                    }, 1);
+                                    addItem(
+                                      {
+                                        id: p.id,
+                                        name: p.name,
+                                        price: Number(p.price),
+                                        category: p.category,
+                                        img: p.image_url || feedImg,
+                                      },
+                                      1,
+                                    );
                                     toast.success(`${p.name} agregado al carrito (1)`);
                                     openCartIfNeeded();
                                   } else {
@@ -607,8 +668,12 @@ function ProductosPage() {
       <section className="py-20 bg-foam overflow-hidden">
         <div className="container mx-auto px-4 sm:px-6 md:px-10 lg:px-8 mb-12">
           <div className="text-center max-w-2xl mx-auto">
-            <p className="text-sm font-semibold uppercase tracking-widest text-ocean mb-3">Proveedores</p>
-            <h2 className="text-4xl md:text-5xl font-bold text-navy-deep">Marcas que distribuimos</h2>
+            <p className="text-sm font-semibold uppercase tracking-widest text-ocean mb-3">
+              Proveedores
+            </p>
+            <h2 className="text-4xl md:text-5xl font-bold text-navy-deep">
+              Marcas que distribuimos
+            </h2>
             <p className="text-muted-foreground mt-4">
               Trabajamos con los líderes mundiales en nutrición y sanidad acuícola.
             </p>
@@ -619,12 +684,9 @@ function ProductosPage() {
           <div className="pointer-events-none absolute right-0 top-0 bottom-0 w-32 z-10 bg-gradient-to-l from-foam to-transparent" />
           <div className="flex gap-6 animate-marquee-slow w-max hover:[animation-play-state:paused]">
             {supplierItems.map((s, i) => (
-              <div
-                key={`${s.name}-${i}`}
-                className="relative shrink-0 w-56 h-28 group"
-              >
+              <div key={`${s.name}-${i}`} className="relative shrink-0 w-56 h-28 group">
                 <div className="absolute inset-0 gradient-wave rounded-2xl opacity-0 group-hover:opacity-100 blur-xl transition duration-500" />
-                <div className="relative w-full h-full bg-white border border-border rounded-2xl flex items-center justify-center p-4 group-hover:border-ocean group-hover:shadow-elegant transition-all duration-300 overflow-hidden">
+                <div className="relative w-full h-full bg-transparent border border-transparent rounded-2xl flex items-center justify-center p-4 transition-all duration-300 overflow-hidden">
                   <img
                     src={s.img}
                     alt={s.name}

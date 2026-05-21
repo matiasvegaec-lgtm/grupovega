@@ -2,6 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { Minus, Plus, Trash2, ShoppingBag, ArrowRight } from "lucide-react";
 import { Layout } from "@/components/Layout";
 import { PageHero } from "@/components/PageHero";
+import { ProductImage } from "@/components/ProductImage";
 import { useCart } from "@/contexts/CartContext";
 import { usePageHero } from "@/hooks/usePageHero";
 
@@ -10,7 +11,10 @@ export const Route = createFileRoute("/carrito")({
     meta: [
       { name: "robots", content: "noindex, nofollow" },
       { title: "Carrito — Grupo Vega" },
-      { name: "description", content: "Revisa los productos en tu carrito antes de finalizar la compra." },
+      {
+        name: "description",
+        content: "Revisa los productos en tu carrito antes de finalizar la compra.",
+      },
     ],
   }),
   component: CarritoPage,
@@ -22,14 +26,21 @@ function CarritoPage() {
 
   return (
     <Layout>
-      <PageHero eyebrow="Tu compra" title="Carrito" description="Revisa, ajusta cantidades y procede al pago." backgroundImage={heroBg} />
+      <PageHero
+        eyebrow="Tu compra"
+        title="Carrito"
+        description="Revisa, ajusta cantidades y procede al pago."
+        backgroundImage={heroBg}
+      />
       <section className="py-16 bg-background">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-5xl">
           {items.length === 0 ? (
             <div className="text-center py-20">
               <ShoppingBag className="w-16 h-16 mx-auto text-muted-foreground mb-4" />
               <h2 className="text-2xl font-bold text-navy-deep mb-2">Tu carrito está vacío</h2>
-              <p className="text-muted-foreground mb-6">Explora nuestro catálogo y agrega productos.</p>
+              <p className="text-muted-foreground mb-6">
+                Explora nuestro catálogo y agrega productos.
+              </p>
               <Link
                 to="/productos"
                 className="inline-flex items-center gap-2 px-6 py-3 rounded-full gradient-wave text-white font-semibold shadow-glow hover:scale-105 transition-transform"
@@ -42,7 +53,11 @@ function CarritoPage() {
               <div className="lg:col-span-2 space-y-4">
                 {items.map((item) => (
                   <div key={item.id} className="bg-card rounded-2xl p-4 shadow-card flex gap-4">
-                    <img src={item.img} alt={item.name} className="w-24 h-24 rounded-xl object-cover" />
+                    <ProductImage
+                      src={item.img}
+                      alt={item.name}
+                      className="w-24 h-24 rounded-xl object-contain"
+                    />
                     <div className="flex-1">
                       <div className="flex justify-between items-start gap-2">
                         <div>
