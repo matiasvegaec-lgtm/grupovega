@@ -4,6 +4,7 @@ import { ArrowRight, Wheat, FlaskConical, Sprout, Beaker, MapPin, Phone, Mail, C
 import { useEffect, useRef, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Layout } from "@/components/Layout";
+import { ProductImage } from "@/components/ProductImage";
 import { UnderwaterScene } from "@/components/UnderwaterScene";
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious, type CarouselApi } from "@/components/ui/carousel";
 import Autoplay from "embla-carousel-autoplay";
@@ -447,7 +448,7 @@ function Index() {
                     <div className="absolute inset-0 rounded-full bg-gradient-to-br from-white via-foam to-ocean/20 shadow-[0_10px_30px_-10px_rgba(0,80,140,0.25)] ring-1 ring-ocean/10" />
                     <div className="absolute inset-4 rounded-full gradient-wave opacity-0 group-hover:opacity-40 blur-2xl transition-all duration-700 group-hover:scale-110" />
                     <div className="absolute inset-0 rounded-full border-2 border-dashed border-ocean/0 group-hover:border-ocean/30 group-hover:rotate-180 transition-all duration-1000" />
-                    <img src={p.img} alt={p.name} loading="lazy" className="relative z-10 w-44 h-44 object-contain group-hover:scale-110 group-hover:-translate-y-2 group-hover:-rotate-3 transition-all duration-500 drop-shadow-2xl" />
+                    <ProductImage src={p.img} alt={p.name} loading="lazy" className="relative z-10 w-44 h-44 object-contain group-hover:scale-110 group-hover:-translate-y-2 group-hover:-rotate-3 transition-all duration-500 drop-shadow-2xl" />
                   </div>
                   <p className="mt-4 text-base font-semibold text-navy-deep text-center group-hover:text-ocean transition-colors px-1">{p.name}</p>
                   <span className="destacado-label text-xs text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity duration-300 mt-1">Destacado ⭐</span>
@@ -476,7 +477,7 @@ function Index() {
                       >
                         <div className="relative w-44 h-44 md:w-56 md:h-56 flex items-center justify-center">
                           <div className="absolute inset-0 rounded-full bg-gradient-to-br from-white via-foam to-ocean/20 shadow-[0_10px_30px_-10px_rgba(0,80,140,0.25)] ring-1 ring-ocean/10" />
-                          <img src={p.img} alt={p.name} loading="lazy" className="relative z-10 w-36 h-36 md:w-44 md:h-44 object-contain drop-shadow-xl transition-transform duration-500" />
+                          <ProductImage src={p.img} alt={p.name} loading="lazy" className="relative z-10 w-36 h-36 md:w-44 md:h-44 object-contain drop-shadow-xl transition-transform duration-500" />
                         </div>
                         <p className="mt-3 text-sm md:text-base font-semibold text-navy-deep text-center px-1">{p.name}</p>
                         {isActive && <span className="text-xs text-muted-foreground mt-1">Destacado ⭐</span>}
@@ -618,7 +619,7 @@ function Index() {
                 className="relative shrink-0 w-56 h-28 group"
               >
                 <div className="absolute inset-0 gradient-wave rounded-2xl opacity-0 group-hover:opacity-100 blur-xl transition duration-500" />
-                <div className="relative w-full h-full bg-white border border-border rounded-2xl flex items-center justify-center p-4 group-hover:border-ocean group-hover:shadow-elegant transition-all duration-300 overflow-hidden">
+                <div className="relative w-full h-full bg-transparent border border-transparent rounded-2xl flex items-center justify-center p-4 transition-all duration-300 overflow-hidden">
                   <img
                     src={optimizedSupabaseImage(s.img, 400, 200)}
                     alt={s.name}
