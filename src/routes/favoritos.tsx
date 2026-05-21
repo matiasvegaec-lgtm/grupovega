@@ -3,6 +3,7 @@ import { useEffect } from "react";
 import { Heart, Trash2, ShoppingCart } from "lucide-react";
 import { Layout } from "@/components/Layout";
 import { PageHero } from "@/components/PageHero";
+import { ProductImage } from "@/components/ProductImage";
 import { useAuth } from "@/contexts/AuthContext";
 import { useFavorites } from "@/contexts/FavoritesContext";
 import { useCart } from "@/contexts/CartContext";
@@ -69,9 +70,9 @@ function FavoritosPage() {
                   <Link
                     to="/productos/$productId"
                     params={{ productId: p.slug || p.id }}
-                    className="block aspect-square overflow-hidden bg-white"
+                    className="block aspect-square overflow-hidden bg-transparent"
                   >
-                    <img src={p.img} alt={p.name} className="w-full h-full object-contain p-4" />
+                    <ProductImage src={p.img} alt={p.name} className="w-full h-full object-contain p-4" />
                   </Link>
                   <div className="p-4">
                     <p className="text-xs uppercase tracking-wider text-ocean font-semibold mb-1">{p.category}</p>
