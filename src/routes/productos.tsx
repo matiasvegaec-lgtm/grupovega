@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import { Search, ShoppingCart, Loader2, Wheat, Sprout, FlaskConical, Beaker, Pill, Droplet, Layers, X, Heart, Plus, Minus, CreditCard } from "lucide-react";
 import { Layout } from "@/components/Layout";
 import { PageHero } from "@/components/PageHero";
+import { ProductImage } from "@/components/ProductImage";
 import { useCart } from "@/contexts/CartContext";
 import { useFavorites } from "@/contexts/FavoritesContext";
 import { toast } from "sonner";
@@ -441,9 +442,9 @@ function ProductosPage() {
                       <Link
                         to="/productos/$productId"
                         params={{ productId: p.slug || p.id }}
-                        className="block w-full h-36 sm:h-52 overflow-hidden relative text-left bg-white"
+                        className="block w-full h-36 sm:h-52 overflow-hidden relative text-left bg-transparent"
                       >
-                        <img
+                        <ProductImage
                           src={p.image_url || feedImg}
                           alt={p.name}
                           loading="lazy"
@@ -624,7 +625,7 @@ function ProductosPage() {
                 className="relative shrink-0 w-56 h-28 group"
               >
                 <div className="absolute inset-0 gradient-wave rounded-2xl opacity-0 group-hover:opacity-100 blur-xl transition duration-500" />
-                <div className="relative w-full h-full bg-white border border-border rounded-2xl flex items-center justify-center p-4 group-hover:border-ocean group-hover:shadow-elegant transition-all duration-300 overflow-hidden">
+                <div className="relative w-full h-full bg-transparent border border-transparent rounded-2xl flex items-center justify-center p-4 transition-all duration-300 overflow-hidden">
                   <img
                     src={s.img}
                     alt={s.name}
