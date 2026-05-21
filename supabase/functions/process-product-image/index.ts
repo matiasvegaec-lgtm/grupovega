@@ -58,7 +58,7 @@ Deno.serve(async (req) => {
       });
     }
 
-    const { imageBase64, mimeType } = await req.json();
+    const { imageBase64, mimeType, background } = await req.json();
     if (!imageBase64) {
       return new Response(JSON.stringify({ error: "imageBase64 requerido" }), {
         status: 400,
@@ -76,6 +76,12 @@ Deno.serve(async (req) => {
 
     const dataUrl = `data:${mimeType ?? "image/png"};base64,${imageBase64}`;
 
+    const bgMode: "transparent" | "white" = background === "white" ? "white" : "transparent";
+    const promptText =
+      bgMode === "white"
+        ? "Remove the original background completely and replace it with a perfectly SOLID PURE WHITE background (#FFFFFF, no gradient, no shadow on the background, no texture). Keep ONLY the product, perfectly cut out with clean smooth edges (no halo or fringe). Center the product in a square 1:1 composition with about 8% padding on all sides. Preserve the product intact, sharp and well lit. Do not add any text, logos, decorations, watermarks, borders or extra objects. Output a PNG with a solid white background and only the product visible."
+        : "Remove the background completely so the result has a fully TRANSPARENT background (alpha channel, no white, no color, no checkerboard). Keep ONLY the product, perfectly cut out with clean smooth edges (no white halo or fringe). Center the product in a square 1:1 composition with about 8% padding on all sides. Preserve the product intact, sharp and well lit, including its natural soft shadow if any. Do not add any text, logos, decorations, watermarks, borders or extra objects. Output a transparent PNG with only the product visible.";
+
     const aiResponse = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
       method: "POST",
       headers: {
@@ -90,7 +96,7 @@ Deno.serve(async (req) => {
             content: [
               {
                 type: "text",
-                text: "Remove the background completely so the result has a fully TRANSPARENT background (alpha channel, no white, no color, no checkerboard). Keep ONLY the product, perfectly cut out with clean smooth edges (no white halo or fringe). Center the product in a square 1:1 composition with about 8% padding on all sides. Preserve the product intact, sharp and well lit, including its natural soft shadow if any. Do not add any text, logos, decorations, watermarks, borders or extra objects. Output a transparent PNG with only the product visible.",
+                text: promptText,
               },
               {
                 type: "image_url",
