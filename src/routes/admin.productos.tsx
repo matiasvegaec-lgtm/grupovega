@@ -572,14 +572,6 @@ function AdminProductos() {
                             <div className="absolute z-20 mt-1 left-0 w-56 rounded-lg border border-border bg-card shadow-elegant p-1">
                               <button
                                 type="button"
-                                onClick={() => removeBackground("white")}
-                                className="w-full text-left px-3 py-2 rounded-md hover:bg-foam text-xs font-semibold text-navy-deep"
-                              >
-                                Fondo blanco sólido
-                                <span className="block text-[10px] font-normal text-muted-foreground">Sin cuadrícula gris, listo para catálogo</span>
-                              </button>
-                              <button
-                                type="button"
                                 onClick={() => removeBackground("transparent")}
                                 className="w-full text-left px-3 py-2 rounded-md hover:bg-foam text-xs font-semibold text-navy-deep"
                               >
@@ -617,6 +609,7 @@ function AdminProductos() {
       {adjusterSrc && (
         <ImageAdjuster
           src={adjusterSrc}
+          backgroundColor="transparent"
           onCancel={() => setAdjusterSrc(null)}
           onConfirm={async (blob) => {
             const toastId = toast.loading("Subiendo imagen ajustada…");
