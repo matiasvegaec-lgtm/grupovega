@@ -4,6 +4,7 @@ import { Plus, Pencil, Trash2, Loader2, X, Upload, Eye, EyeOff, Star, Crop, Sear
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { ImageAdjuster } from "@/components/ImageAdjuster";
+import { ProductImage } from "@/components/ProductImage";
 
 type Product = {
   id: string;
@@ -111,7 +112,7 @@ function AdminProductos() {
 
   const handleUpload = async (file: File) => {
     setUploading(true);
-    const toastId = toast.loading("Procesando imagen con IA (fondo blanco + cuadrado)…");
+    const toastId = toast.loading("Procesando imagen con IA (fondo transparente)…");
     try {
       // 1. Convertir archivo a base64
       const base64: string = await new Promise((resolve, reject) => {
@@ -129,7 +130,7 @@ function AdminProductos() {
       let finalExt = "png";
       try {
         const { data: aiData, error: aiErr } = await supabase.functions.invoke("process-product-image", {
-          body: { imageBase64: base64, mimeType: file.type || "image/png" },
+          body: { imageBase64: base64, mimeType: file.type || "image/png", background: "transparent" },
         });
         if (aiErr) throw aiErr;
         if (!aiData?.imageDataUrl) throw new Error("Sin respuesta de IA");
