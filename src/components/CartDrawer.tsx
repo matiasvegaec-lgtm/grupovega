@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import * as SheetPrimitive from "@radix-ui/react-dialog";
 import { X } from "lucide-react";
 import { useCart } from "@/contexts/CartContext";
+import { ProductImage } from "@/components/ProductImage";
 
 type CartDrawerProps = {
   open: boolean;
@@ -74,10 +75,10 @@ export function CartDrawer({ open, onOpenChange }: CartDrawerProps) {
                   key={item.id}
                   className="flex gap-3 bg-card rounded-xl p-3 shadow-sm border border-border"
                 >
-                  <img
+                  <ProductImage
                     src={item.img}
                     alt={item.name}
-                    className="w-16 h-16 rounded-lg object-cover flex-shrink-0"
+                    className="w-16 h-16 rounded-lg object-contain flex-shrink-0"
                   />
                   <div className="flex-1 min-w-0">
                     <div className="flex justify-between gap-2">
