@@ -1,6 +1,6 @@
 // Edge function: process-product-image
-// Recibe una imagen base64 y devuelve la versión con fondo blanco limpio,
-// producto centrado en formato cuadrado, lista para el catálogo.
+// Recibe una imagen base64 y devuelve el producto centrado en formato cuadrado,
+// con fondo transparente por defecto para el catálogo.
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
