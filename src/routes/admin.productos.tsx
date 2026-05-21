@@ -220,13 +220,11 @@ function AdminProductos() {
     }
   };
 
-  const removeBackground = async (mode: "transparent" | "white") => {
+  const removeBackground = async (mode: "transparent") => {
     if (!form.image_url || removingBg) return;
     setBgMenuOpen(false);
     setRemovingBg(true);
-    const toastId = toast.loading(
-      mode === "white" ? "Quitando fondo (fondo blanco)…" : "Quitando fondo (transparente)…",
-    );
+    const toastId = toast.loading("Quitando fondo (transparente)…");
     const currentEditing = editing;
     try {
       // 1. Descargar la imagen actual vía proxy para evitar CORS
