@@ -181,9 +181,11 @@ export function ImageAdjuster({
       const ctx = canvas.getContext("2d");
       if (!ctx) throw new Error("Canvas no disponible");
 
-      // Fondo
-      ctx.fillStyle = backgroundColor;
-      ctx.fillRect(0, 0, outputSize, outputSize);
+      // Fondo (omitir si se quiere transparencia)
+      if (backgroundColor && backgroundColor !== "transparent") {
+        ctx.fillStyle = backgroundColor;
+        ctx.fillRect(0, 0, outputSize, outputSize);
+      }
 
       // Escalar la transformación de previsualización a la salida real
       const ratio = outputSize / PREVIEW;

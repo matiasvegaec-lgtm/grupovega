@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useMemo, useState, FormEvent } from "react";
-import { Plus, Pencil, Trash2, Loader2, X, Upload, Eye, EyeOff, Star, Crop, Search } from "lucide-react";
+import { Plus, Pencil, Trash2, Loader2, X, Upload, Eye, EyeOff, Star, Crop, Search, Wand2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { ImageAdjuster } from "@/components/ImageAdjuster";
@@ -70,6 +70,8 @@ function AdminProductos() {
   const [subcategories, setSubcategories] = useState<Subcategory[]>([]);
   const [adjusterSrc, setAdjusterSrc] = useState<string | null>(null);
   const [searchName, setSearchName] = useState("");
+  const [bgMenuOpen, setBgMenuOpen] = useState(false);
+  const [removingBg, setRemovingBg] = useState(false);
 
   const load = async () => {
     setLoading(true);
@@ -149,6 +151,65 @@ function AdminProductos() {
       toast.error(e.message, { id: toastId });
     } finally {
       setUploading(false);
+    }
+  };
+
+  const removeBackground = async (mode: "transparent" | "white") => {
+    if (!form.image_url || removingBg) return;
+    setBgMenuOpen(false);
+    setRemovingBg(true);
+    const toastId = toast.loading(
+      mode === "white" ? "Quitando fondo (fondo blanco)…" : "Quitando fondo (transparente)…",
+    );
+    const currentEditing = editing;
+    try {
+      // 1. Descargar la imagen actual vía proxy para evitar CORS
+      const proxied = `/api/public/image-proxy?url=${encodeURIComponent(form.image_url)}`;
+      const imgRes = await fetch(proxied, { cache: "no-cache" });
+      if (!imgRes.ok) throw new Error("No se pudo leer la imagen actual");
+      const srcBlob = await imgRes.blob();
+      const mimeType = srcBlob.type || "image/png";
+
+      // 2. Convertir a base64
+      const base64: string = await new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => {
+          const result = reader.result as string;
+          resolve(result.split(",")[1]);
+        };
+        reader.onerror = reject;
+        reader.readAsDataURL(srcBlob);
+      });
+
+      // 3. Invocar la edge function con el modo elegido
+      const { data: aiData, error: aiErr } = await supabase.functions.invoke("process-product-image", {
+        body: { imageBase64: base64, mimeType, background: mode },
+      });
+      if (aiErr) throw aiErr;
+      if (!aiData?.imageDataUrl) throw new Error("Sin respuesta de IA");
+
+      const outRes = await fetch(aiData.imageDataUrl);
+      const outBlob = await outRes.blob();
+
+      // 4. Subir y actualizar
+      const url = await uploadBlob(outBlob, "png");
+      setForm((f) => ({ ...f, image_url: url }));
+      if (currentEditing) {
+        const { error } = await supabase
+          .from("products")
+          .update({ image_url: url })
+          .eq("id", currentEditing.id);
+        if (error) throw error;
+        setEditing({ ...currentEditing, image_url: url });
+      }
+      toast.success("Fondo eliminado", { id: toastId });
+      load().catch((err) => console.error("Error recargando productos:", err));
+    } catch (e: unknown) {
+      const msg =
+        e instanceof Error ? e.message : typeof e === "string" ? e : "No se pudo quitar el fondo";
+      toast.error(msg, { id: toastId });
+    } finally {
+      setRemovingBg(false);
     }
   };
 
@@ -468,7 +529,13 @@ function AdminProductos() {
               <div className="sm:col-span-2">
                 <label className="text-xs font-semibold text-navy-deep">Imagen</label>
                 <div className="flex gap-3 items-start">
-                  {form.image_url && <img src={form.image_url} alt="" className="w-20 h-20 rounded-lg object-cover" />}
+                  {form.image_url && (
+                    <img
+                      src={form.image_url}
+                      alt=""
+                      className="w-20 h-20 rounded-lg object-cover bg-white border border-border"
+                    />
+                  )}
                   <div className="flex-1">
                     <input value={form.image_url ?? ""} onChange={(e) => setForm({ ...form, image_url: e.target.value })} placeholder="URL de la imagen" className={inputCls + " mb-2"} />
                     <div className="flex flex-wrap gap-2">
@@ -484,6 +551,43 @@ function AdminProductos() {
                         >
                           <Crop className="w-4 h-4" /> Reajustar actual
                         </button>
+                      )}
+                      {form.image_url && (
+                        <div className="relative">
+                          <button
+                            type="button"
+                            disabled={removingBg}
+                            onClick={() => setBgMenuOpen((v) => !v)}
+                            className="inline-flex items-center gap-2 px-3 py-2 rounded-lg border border-border hover:bg-foam text-xs font-semibold text-navy-deep disabled:opacity-60"
+                          >
+                            {removingBg ? (
+                              <Loader2 className="w-4 h-4 animate-spin" />
+                            ) : (
+                              <Wand2 className="w-4 h-4" />
+                            )}{" "}
+                            Quitar fondo
+                          </button>
+                          {bgMenuOpen && !removingBg && (
+                            <div className="absolute z-20 mt-1 left-0 w-56 rounded-lg border border-border bg-card shadow-elegant p-1">
+                              <button
+                                type="button"
+                                onClick={() => removeBackground("white")}
+                                className="w-full text-left px-3 py-2 rounded-md hover:bg-foam text-xs font-semibold text-navy-deep"
+                              >
+                                Fondo blanco sólido
+                                <span className="block text-[10px] font-normal text-muted-foreground">Sin cuadrícula gris, listo para catálogo</span>
+                              </button>
+                              <button
+                                type="button"
+                                onClick={() => removeBackground("transparent")}
+                                className="w-full text-left px-3 py-2 rounded-md hover:bg-foam text-xs font-semibold text-navy-deep"
+                              >
+                                Fondo transparente (PNG)
+                                <span className="block text-[10px] font-normal text-muted-foreground">Para usar sobre otros fondos</span>
+                              </button>
+                            </div>
+                          )}
+                        </div>
                       )}
                     </div>
                     <p className="text-[11px] text-muted-foreground mt-1.5">La imagen se procesa automáticamente al subirla y luego puedes reajustarla si necesitas moverla o acercarla.</p>
