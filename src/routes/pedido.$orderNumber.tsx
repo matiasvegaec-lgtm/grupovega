@@ -2,6 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { CheckCircle2, Package, ArrowRight, Loader2 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Layout } from "@/components/Layout";
+import { ProductImage } from "@/components/ProductImage";
 import { supabase } from "@/integrations/supabase/client";
 
 type OrderItem = { id: string; name: string; price: number; quantity: number; img: string; category: string };
@@ -87,7 +88,7 @@ function PedidoPage() {
                 <div className="space-y-3">
                   {order.items.map((i) => (
                     <div key={i.id} className="flex gap-3 text-sm">
-                      <img src={i.img} alt={i.name} className="w-14 h-14 rounded-lg object-cover" />
+                      <ProductImage src={i.img} alt={i.name} className="w-14 h-14 rounded-lg object-contain" />
                       <div className="flex-1">
                         <p className="font-semibold text-navy-deep">{i.name}</p>
                         <p className="text-muted-foreground">${i.price.toFixed(2)} x {i.quantity}</p>
