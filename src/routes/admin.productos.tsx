@@ -574,8 +574,8 @@ function AdminProductos() {
                                 onClick={() => removeBackground("white")}
                                 className="w-full text-left px-3 py-2 rounded-md hover:bg-foam text-xs font-semibold text-navy-deep"
                               >
-                                Fondo blanco s\u00f3lido
-                                <span className="block text-[10px] font-normal text-muted-foreground">Sin cuadr\u00edcula gris, listo para catálogo</span>
+                                Fondo blanco sólido
+                                <span className="block text-[10px] font-normal text-muted-foreground">Sin cuadrícula gris, listo para catálogo</span>
                               </button>
                               <button
                                 type="button"
