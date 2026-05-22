@@ -1,13 +1,12 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
-import { Loader2, TrendingUp, Eye, Users, Clock, Globe, Smartphone, Monitor, FileText } from "lucide-react";
+import { Loader2, ChevronDown } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import {
   AreaChart,
   Area,
   XAxis,
   YAxis,
-  CartesianGrid,
   Tooltip,
   ResponsiveContainer,
 } from "recharts";
@@ -36,6 +35,16 @@ const RANGE_LABEL: Record<Range, string> = {
   "90d": "Últimos 90 días",
 };
 
+// Paleta inspirada en el dashboard analítico de Lovable
+type CardTone = "teal" | "navy" | "cyan" | "orange" | "purple";
+const TONES: Record<CardTone, { bg: string; wave: string; accent: string }> = {
+  teal:   { bg: "linear-gradient(135deg,#0d4a5c 0%,#0a3a4a 100%)", wave: "#15b3c4", accent: "#5ee0e8" },
+  navy:   { bg: "linear-gradient(135deg,#0e2f4a 0%,#0a2438 100%)", wave: "#1d6fa5", accent: "#4ea3d8" },
+  cyan:   { bg: "linear-gradient(135deg,#0a6e7a 0%,#085560 100%)", wave: "#22c8cf", accent: "#6df0f0" },
+  orange: { bg: "linear-gradient(135deg,#c25a1a 0%,#a8430f 100%)", wave: "#ff8b3d", accent: "#ffc28a" },
+  purple: { bg: "linear-gradient(135deg,#3b3473 0%,#2a2657 100%)", wave: "#6a5fbf", accent: "#9d92e8" },
+};
+
 function startOfDay(d: Date) {
   const x = new Date(d);
   x.setHours(0, 0, 0, 0);
@@ -44,6 +53,29 @@ function startOfDay(d: Date) {
 
 function formatDayLabel(d: Date) {
   return d.toLocaleDateString("es-EC", { day: "2-digit", month: "short" });
+}
+
+function formatDuration(seconds: number) {
+  if (!seconds || !isFinite(seconds)) return "0s";
+  const m = Math.floor(seconds / 60);
+  const s = Math.round(seconds % 60);
+  if (m === 0) return `${s}s`;
+  return `${m}m ${s}s`;
+}
+
+const COUNTRY_NAMES: Record<string, string> = {
+  EC: "Ecuador", US: "EE. UU. Estados Unidos", CO: "Colombia", IT: "Italia",
+  MX: "México", ES: "España", AR: "Argentina", PE: "Perú", CL: "Chile",
+  VE: "Venezuela", BR: "Brasil", CA: "Canadá", FR: "Francia", DE: "Alemania",
+  GB: "Reino Unido",
+};
+function countryFlag(code: string) {
+  if (!code || code.length !== 2) return "🌐";
+  const A = 0x1f1e6;
+  return String.fromCodePoint(...[...code.toUpperCase()].map((c) => A + c.charCodeAt(0) - 65));
+}
+function countryName(code: string) {
+  return COUNTRY_NAMES[code?.toUpperCase()] ?? code ?? "Desconocido";
 }
 
 function AnaliticaPage() {
@@ -89,6 +121,18 @@ function AnaliticaPage() {
     let bounced = 0;
     bySession.forEach((c) => { if (c === 1) bounced++; });
     const bounceRate = sessions > 0 ? (bounced / sessions) * 100 : 0;
+
+    // Duración promedio de sesión (segundos)
+    const sessionTimes = new Map<string, { min: number; max: number }>();
+    rows.forEach((r) => {
+      const t = new Date(r.created_at).getTime();
+      const cur = sessionTimes.get(r.session_id);
+      if (!cur) sessionTimes.set(r.session_id, { min: t, max: t });
+      else { cur.min = Math.min(cur.min, t); cur.max = Math.max(cur.max, t); }
+    });
+    let totalSec = 0, counted = 0;
+    sessionTimes.forEach((v) => { totalSec += (v.max - v.min) / 1000; counted++; });
+    const avgSessionSec = counted > 0 ? totalSec / counted : 0;
 
     // Serie temporal por día
     const today = startOfDay(new Date());
@@ -146,30 +190,32 @@ function AnaliticaPage() {
     })();
 
     return {
-      pageviews, sessions, uniquePaths, pvPerSession, bounceRate,
+      pageviews, sessions, uniquePaths, pvPerSession, bounceRate, avgSessionSec,
       series, topPaths, topCountries, devices, browsers, referrers,
     };
   }, [rows, range]);
 
   return (
     <div className="p-4 md:p-8 max-w-7xl mx-auto">
-      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">
-        <div>
-          <h1 className="text-2xl md:text-3xl font-bold text-navy-deep">Analítica</h1>
-          <p className="text-sm text-muted-foreground mt-1">Métricas de visitas de tu sitio público.</p>
+      <div className="flex items-center justify-end gap-4 mb-5">
+        <div className="flex items-center gap-2 text-sm text-navy-deep/80">
+          <span className="relative flex h-2.5 w-2.5">
+            <span className="absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-60 animate-ping" />
+            <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500" />
+          </span>
+          <span className="font-medium">0 visitantes actuales</span>
         </div>
-        <div className="inline-flex rounded-full bg-card border border-border p-1 self-start">
-          {(Object.keys(RANGE_LABEL) as Range[]).map((r) => (
-            <button
-              key={r}
-              onClick={() => setRange(r)}
-              className={`px-4 py-1.5 text-xs font-semibold rounded-full transition ${
-                range === r ? "gradient-wave text-white" : "text-navy-deep hover:bg-foam"
-              }`}
-            >
-              {RANGE_LABEL[r]}
-            </button>
-          ))}
+        <div className="relative">
+          <select
+            value={range}
+            onChange={(e) => setRange(e.target.value as Range)}
+            className="appearance-none bg-card border border-border rounded-full pl-4 pr-9 py-1.5 text-sm font-semibold text-navy-deep hover:bg-foam transition cursor-pointer"
+          >
+            {(Object.keys(RANGE_LABEL) as Range[]).map((r) => (
+              <option key={r} value={r}>{RANGE_LABEL[r]}</option>
+            ))}
+          </select>
+          <ChevronDown className="w-4 h-4 absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-navy-deep/60" />
         </div>
       </div>
 
@@ -186,49 +232,54 @@ function AnaliticaPage() {
       )}
 
       {stats && !loading && (
-        <div className="space-y-6">
-          {/* Tarjetas KPI */}
+        <div className="space-y-5">
+          {/* Tarjetas KPI estilo Lovable */}
           <div className="grid grid-cols-2 md:grid-cols-5 gap-3 md:gap-4">
-            <KpiCard icon={Eye} label="Páginas vistas" value={stats.pageviews.toLocaleString("es-EC")} />
-            <KpiCard icon={Users} label="Visitantes únicos" value={stats.sessions.toLocaleString("es-EC")} />
-            <KpiCard icon={TrendingUp} label="Páginas / visita" value={stats.pvPerSession.toFixed(2)} />
-            <KpiCard icon={Clock} label="Tasa de rebote" value={`${stats.bounceRate.toFixed(0)}%`} />
-            <KpiCard icon={FileText} label="Páginas únicas" value={stats.uniquePaths.toLocaleString("es-EC")} />
+            <KpiCard tone="teal"   label="Visitantes"        value={stats.sessions.toLocaleString("es-EC")} />
+            <KpiCard tone="navy"   label="Vistas de página"  value={stats.pageviews.toLocaleString("es-EC")} />
+            <KpiCard tone="cyan"   label="Vistas por visita" value={stats.pvPerSession.toFixed(2)} />
+            <KpiCard tone="orange" label="Duración de la visita" value={formatDuration(stats.avgSessionSec)} />
+            <KpiCard tone="navy"   label="Tasa de rebote"    value={`${stats.bounceRate.toFixed(0)}%`} />
           </div>
 
-          {/* Gráfico */}
-          <div className="bg-card border border-border rounded-xl p-4 md:p-6">
-            <h2 className="font-bold text-navy-deep mb-4">Tendencia de visitas</h2>
-            <div className="h-64 md:h-72">
+          {/* Gráfico principal */}
+          <div className="rounded-2xl p-4 md:p-6 bg-[#eef6fb] border border-[#dbe9f2]">
+            <div className="h-64 md:h-80">
               <ResponsiveContainer width="100%" height="100%">
-                <AreaChart data={stats.series} margin={{ top: 5, right: 10, left: -10, bottom: 0 }}>
+                <AreaChart data={stats.series} margin={{ top: 20, right: 30, left: 0, bottom: 0 }}>
                   <defs>
-                    <linearGradient id="gradVisitas" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor="hsl(var(--ocean, 200 80% 45%))" stopOpacity={0.4} />
-                      <stop offset="95%" stopColor="hsl(var(--ocean, 200 80% 45%))" stopOpacity={0} />
+                    <linearGradient id="gradMain" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="0%" stopColor="#22d3ee" stopOpacity={0.55} />
+                      <stop offset="100%" stopColor="#22d3ee" stopOpacity={0} />
                     </linearGradient>
                   </defs>
-                  <CartesianGrid strokeDasharray="3 3" className="stroke-border" />
-                  <XAxis dataKey="label" tick={{ fontSize: 11 }} />
-                  <YAxis tick={{ fontSize: 11 }} allowDecimals={false} />
+                  <XAxis dataKey="label" tick={{ fontSize: 11, fill: "#475569" }} axisLine={false} tickLine={false} />
+                  <YAxis tick={{ fontSize: 11, fill: "#475569" }} axisLine={false} tickLine={false} allowDecimals={false} width={30} />
                   <Tooltip
-                    contentStyle={{ borderRadius: 8, border: "1px solid hsl(var(--border))", fontSize: 12 }}
-                    labelStyle={{ fontWeight: 600 }}
-                    formatter={(v: number, name: string) => [v, name === "visitas" ? "Páginas vistas" : "Visitantes"]}
+                    contentStyle={{ borderRadius: 10, border: "none", fontSize: 12, boxShadow: "0 6px 24px rgba(0,0,0,.12)" }}
+                    labelStyle={{ fontWeight: 600, color: "#0f172a" }}
+                    formatter={(v: number) => [v, "Visitantes"]}
                   />
-                  <Area type="monotone" dataKey="visitas" stroke="hsl(var(--ocean, 200 80% 45%))" fill="url(#gradVisitas)" strokeWidth={2} name="visitas" />
+                  <Area
+                    type="monotone"
+                    dataKey="visitas"
+                    stroke="#0ea5b7"
+                    strokeWidth={2.5}
+                    fill="url(#gradMain)"
+                    dot={{ r: 3, fill: "#0ea5b7", stroke: "#fff", strokeWidth: 1.5 }}
+                    activeDot={{ r: 5 }}
+                  />
                 </AreaChart>
               </ResponsiveContainer>
             </div>
           </div>
 
-          {/* Listas */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <ListCard icon={FileText} title="Páginas más visitadas" items={stats.topPaths} />
-            <ListCard icon={Globe} title="Países" items={stats.topCountries} />
-            <ListCard icon={Smartphone} title="Dispositivos" items={stats.devices} />
-            <ListCard icon={Monitor} title="Navegadores" items={stats.browsers} />
-            <ListCard icon={TrendingUp} title="Fuentes de tráfico" items={stats.referrers} className="md:col-span-2" />
+          {/* Listas estilo Lovable */}
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-3 md:gap-4">
+            <ListCard tone="teal"   title="Fuente"     keyLabel="Fuente"     items={stats.referrers} />
+            <ListCard tone="purple" title="Página"     keyLabel="Página"     items={stats.topPaths} />
+            <ListCard tone="cyan"   title="País"       keyLabel="País"       items={stats.topCountries} mode="country" />
+            <ListCard tone="orange" title="Dispositivo" keyLabel="Dispositivo" items={stats.devices} mode="percent" />
           </div>
 
           {stats.pageviews === 0 && (
@@ -242,51 +293,84 @@ function AnaliticaPage() {
   );
 }
 
-function KpiCard({ icon: Icon, label, value }: { icon: React.ComponentType<{ className?: string }>; label: string; value: string }) {
+function WaveBg({ color }: { color: string }) {
   return (
-    <div className="bg-card border border-border rounded-xl p-4">
-      <div className="flex items-center gap-2 text-muted-foreground mb-2">
-        <Icon className="w-4 h-4" />
-        <span className="text-xs font-semibold uppercase tracking-wide">{label}</span>
+    <svg className="absolute inset-x-0 bottom-0 w-full h-16 pointer-events-none" viewBox="0 0 400 80" preserveAspectRatio="none">
+      <path d="M0 50 Q 50 20 100 40 T 200 40 T 300 40 T 400 40 V80 H0 Z" fill={color} fillOpacity="0.35" />
+      <path d="M0 60 Q 50 35 100 55 T 200 55 T 300 55 T 400 55 V80 H0 Z" fill={color} fillOpacity="0.55" />
+    </svg>
+  );
+}
+
+function KpiCard({ tone, label, value }: { tone: CardTone; label: string; value: string }) {
+  const t = TONES[tone];
+  return (
+    <div className="relative overflow-hidden rounded-2xl p-4 md:p-5 text-white shadow-md min-h-[110px]" style={{ background: t.bg }}>
+      <div className="relative z-10">
+        <div className="text-[13px] font-medium text-white/85">{label}</div>
+        <div className="text-3xl md:text-[34px] font-bold tracking-tight mt-1 leading-none">{value}</div>
       </div>
-      <div className="text-2xl md:text-3xl font-bold text-navy-deep">{value}</div>
+      <WaveBg color={t.wave} />
     </div>
   );
 }
 
 function ListCard({
-  icon: Icon, title, items, className = "",
+  tone, title, keyLabel, items, mode,
 }: {
-  icon: React.ComponentType<{ className?: string }>;
+  tone: CardTone;
   title: string;
+  keyLabel: string;
   items: { label: string; value: number }[];
-  className?: string;
+  mode?: "country" | "percent";
 }) {
+  const t = TONES[tone];
+  const total = items.reduce((s, i) => s + i.value, 0) || 1;
   const max = items.reduce((m, i) => Math.max(m, i.value), 0) || 1;
   return (
-    <div className={`bg-card border border-border rounded-xl p-4 md:p-6 ${className}`}>
-      <div className="flex items-center gap-2 mb-4">
-        <Icon className="w-4 h-4 text-ocean" />
-        <h3 className="font-bold text-navy-deep">{title}</h3>
+    <div className="relative overflow-hidden rounded-2xl p-4 md:p-5 text-white shadow-md min-h-[260px]" style={{ background: t.bg }}>
+      <div className="relative z-10">
+        <div className="text-lg font-bold mb-3">{title}</div>
+        <div className="flex items-center justify-between text-[11px] uppercase tracking-wide text-white/70 mb-2 pb-2 border-b border-white/10">
+          <span>{keyLabel}</span>
+          <span>Visitantes</span>
+        </div>
+        {items.length === 0 ? (
+          <p className="text-sm text-white/70">Sin datos.</p>
+        ) : (
+          <ul className="space-y-2.5">
+            {items.slice(0, 5).map((it) => {
+              const display =
+                mode === "country"
+                  ? `${countryFlag(it.label)} ${countryName(it.label)}`
+                  : mode === "percent"
+                  ? it.label.charAt(0).toUpperCase() + it.label.slice(1).replace("desktop", "")
+                  : it.label;
+              const right =
+                mode === "percent"
+                  ? `${((it.value / total) * 100).toFixed(1)}%`
+                  : it.value.toLocaleString("es-EC");
+              const pct = (it.value / max) * 100;
+              return (
+                <li key={it.label}>
+                  <div className="flex items-center justify-between text-sm">
+                    <span className="truncate font-medium">
+                      {mode === "percent"
+                        ? (it.label === "desktop" ? "Escritorio" : it.label === "mobile" ? "Móvil" : it.label === "tablet" ? "Tablet" : display)
+                        : display}
+                    </span>
+                    <span className="tabular-nums font-semibold">{right}</span>
+                  </div>
+                  <div className="mt-1 h-1.5 rounded-full bg-white/10 overflow-hidden">
+                    <div className="h-full rounded-full" style={{ width: `${pct}%`, background: t.accent }} />
+                  </div>
+                </li>
+              );
+            })}
+          </ul>
+        )}
       </div>
-      {items.length === 0 ? (
-        <p className="text-sm text-muted-foreground">Sin datos.</p>
-      ) : (
-        <ul className="space-y-2">
-          {items.map((it) => (
-            <li key={it.label} className="relative">
-              <div className="flex items-center justify-between gap-2 text-sm relative z-10 px-2 py-1.5">
-                <span className="truncate text-navy-deep font-medium">{it.label}</span>
-                <span className="text-muted-foreground tabular-nums font-semibold">{it.value.toLocaleString("es-EC")}</span>
-              </div>
-              <div
-                className="absolute inset-y-0 left-0 bg-foam rounded-md"
-                style={{ width: `${(it.value / max) * 100}%` }}
-              />
-            </li>
-          ))}
-        </ul>
-      )}
+      <WaveBg color={t.wave} />
     </div>
   );
 }
