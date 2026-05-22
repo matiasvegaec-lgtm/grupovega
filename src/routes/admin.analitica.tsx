@@ -236,11 +236,11 @@ function AnaliticaPage() {
         <div className="space-y-5">
           {/* Tarjetas KPI estilo Lovable */}
           <div className="grid grid-cols-2 md:grid-cols-5 gap-3 md:gap-4">
-            <KpiCard tone="ocean"     label="Visitantes"            value={stats.sessions.toLocaleString("es-EC")} />
-            <KpiCard tone="navy"      label="Vistas de página"      value={stats.pageviews.toLocaleString("es-EC")} />
-            <KpiCard tone="turquoise" label="Vistas por visita"     value={stats.pvPerSession.toFixed(2)} />
-            <KpiCard tone="sky"       label="Duración de la visita" value={formatDuration(stats.avgSessionSec)} />
-            <KpiCard tone="slate"     label="Tasa de rebote"        value={`${stats.bounceRate.toFixed(0)}%`} />
+            <KpiCard tone="cream" label="Visitantes"            value={stats.sessions.toLocaleString("es-EC")} />
+            <KpiCard tone="ocean" label="Vistas de página"      value={stats.pageviews.toLocaleString("es-EC")} />
+            <KpiCard tone="dark"  label="Vistas por visita"     value={stats.pvPerSession.toFixed(2)} />
+            <KpiCard tone="cyan"  label="Duración de la visita" value={formatDuration(stats.avgSessionSec)} />
+            <KpiCard tone="foam"  label="Tasa de rebote"        value={`${stats.bounceRate.toFixed(0)}%`} />
           </div>
 
           {/* Gráfico principal */}
@@ -277,10 +277,10 @@ function AnaliticaPage() {
 
           {/* Listas estilo Lovable */}
           <div className="grid grid-cols-1 md:grid-cols-4 gap-3 md:gap-4">
-            <ListCard tone="ocean"     title="Fuente"      keyLabel="Fuente"      items={stats.referrers} />
-            <ListCard tone="navy"      title="Página"      keyLabel="Página"      items={stats.topPaths} />
-            <ListCard tone="turquoise" title="País"        keyLabel="País"        items={stats.topCountries} mode="country" />
-            <ListCard tone="sky"       title="Dispositivo" keyLabel="Dispositivo" items={stats.devices} mode="percent" />
+            <ListCard tone="cream" title="Fuente"      keyLabel="Fuente"      items={stats.referrers} />
+            <ListCard tone="ocean" title="Página"      keyLabel="Página"      items={stats.topPaths} />
+            <ListCard tone="cyan"  title="País"        keyLabel="País"        items={stats.topCountries} mode="country" />
+            <ListCard tone="dark"  title="Dispositivo" keyLabel="Dispositivo" items={stats.devices} mode="percent" />
           </div>
 
           {stats.pageviews === 0 && (
