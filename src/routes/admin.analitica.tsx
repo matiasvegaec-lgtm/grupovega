@@ -297,10 +297,25 @@ function AnaliticaPage() {
 function KpiCard({ tone, label, value }: { tone: CardTone; label: string; value: string }) {
   const t = TONES[tone];
   return (
-    <div className="relative overflow-hidden rounded-xl bg-card border border-border/70 p-4 shadow-sm hover:shadow-md transition-shadow">
-      <div className="absolute left-0 top-0 bottom-0 w-1" style={{ background: t.accent }} />
-      <div className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">{label}</div>
-      <div className="mt-2 text-2xl md:text-[26px] font-bold tracking-tight text-navy-deep leading-tight">{value}</div>
+    <div
+      className="relative overflow-hidden rounded-3xl p-5 flex flex-col justify-between aspect-square min-h-[150px]"
+      style={{ background: t.bg, color: t.text }}
+    >
+      <div className="text-[12px] font-medium leading-snug" style={{ color: t.sub }}>
+        {label}
+      </div>
+      <div className="flex items-end justify-between">
+        <div className="text-[34px] md:text-[38px] font-bold tracking-tight leading-none">{value}</div>
+        <div
+          className="w-9 h-9 rounded-full flex items-center justify-center"
+          style={{ background: t.accent, opacity: tone === "dark" ? 1 : 0.95 }}
+        >
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke={tone === "dark" ? "#0e2f4a" : "#fff"} strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M7 17 L17 7" />
+            <path d="M9 7 L17 7 L17 15" />
+          </svg>
+        </div>
+      </div>
     </div>
   );
 }
@@ -318,16 +333,26 @@ function ListCard({
   const total = items.reduce((s, i) => s + i.value, 0) || 1;
   const max = items.reduce((m, i) => Math.max(m, i.value), 0) || 1;
   return (
-    <div className="relative overflow-hidden rounded-xl bg-card border border-border/70 p-4 md:p-5 shadow-sm min-h-[260px]">
-      <div className="text-base font-semibold text-navy-deep mb-3">{title}</div>
-      <div className="flex items-center justify-between text-[10px] uppercase tracking-wider text-muted-foreground mb-2 pb-2 border-b border-border">
+    <div
+      className="relative overflow-hidden rounded-3xl p-5 md:p-6 min-h-[280px]"
+      style={{ background: t.bg, color: t.text }}
+    >
+      <div className="flex items-center justify-between mb-4">
+        <div className="text-base font-semibold">{title}</div>
+        <div className="w-7 h-7 rounded-full flex items-center justify-center" style={{ background: t.accent }}>
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke={tone === "dark" ? "#0e2f4a" : "#fff"} strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M7 17 L17 7" /><path d="M9 7 L17 7 L17 15" />
+          </svg>
+        </div>
+      </div>
+      <div className="flex items-center justify-between text-[10px] uppercase tracking-wider mb-3 pb-2 border-b" style={{ color: t.sub, borderColor: t.track }}>
         <span>{keyLabel}</span>
         <span>Visitantes</span>
       </div>
       {items.length === 0 ? (
-        <p className="text-sm text-muted-foreground">Sin datos.</p>
+        <p className="text-sm" style={{ color: t.sub }}>Sin datos.</p>
       ) : (
-        <ul className="space-y-2.5">
+        <ul className="space-y-3">
             {items.slice(0, 5).map((it) => {
               const display =
                 mode === "country"
@@ -342,15 +367,15 @@ function ListCard({
               const pct = (it.value / max) * 100;
               return (
                 <li key={it.label}>
-                  <div className="flex items-center justify-between text-sm text-navy-deep">
+                  <div className="flex items-center justify-between text-sm">
                     <span className="truncate font-medium">
                       {mode === "percent"
                         ? (it.label === "desktop" ? "Escritorio" : it.label === "mobile" ? "Móvil" : it.label === "tablet" ? "Tablet" : display)
                         : display}
                     </span>
-                    <span className="tabular-nums font-semibold text-muted-foreground">{right}</span>
+                    <span className="tabular-nums font-semibold" style={{ color: t.sub }}>{right}</span>
                   </div>
-                  <div className="mt-1 h-1.5 rounded-full bg-muted overflow-hidden">
+                  <div className="mt-1.5 h-1.5 rounded-full overflow-hidden" style={{ background: t.track }}>
                     <div className="h-full rounded-full" style={{ width: `${pct}%`, background: t.accent }} />
                   </div>
                 </li>
