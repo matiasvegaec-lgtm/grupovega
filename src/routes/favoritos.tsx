@@ -3,7 +3,6 @@ import { useEffect } from "react";
 import { Heart, Trash2, ShoppingCart } from "lucide-react";
 import { Layout } from "@/components/Layout";
 import { PageHero } from "@/components/PageHero";
-import { ProductImage } from "@/components/ProductImage";
 import { useAuth } from "@/contexts/AuthContext";
 import { useFavorites } from "@/contexts/FavoritesContext";
 import { useCart } from "@/contexts/CartContext";
@@ -52,9 +51,7 @@ function FavoritosPage() {
           {items.length === 0 ? (
             <div className="text-center py-20">
               <Heart className="w-16 h-16 mx-auto text-muted-foreground mb-4" />
-              <p className="text-lg text-muted-foreground mb-6">
-                No tienes productos favoritos aún.
-              </p>
+              <p className="text-lg text-muted-foreground mb-6">No tienes productos favoritos aún.</p>
               <Link
                 to="/productos"
                 className="inline-flex items-center px-6 py-3 rounded-full gradient-wave text-white font-semibold shadow-glow"
@@ -72,30 +69,18 @@ function FavoritosPage() {
                   <Link
                     to="/productos/$productId"
                     params={{ productId: p.slug || p.id }}
-                    className="block aspect-square overflow-hidden bg-transparent"
+                    className="block aspect-square overflow-hidden bg-white"
                   >
-                    <ProductImage
-                      src={p.img}
-                      alt={p.name}
-                      className="w-full h-full object-contain p-4"
-                    />
+                    <img src={p.img} alt={p.name} className="w-full h-full object-contain p-4" />
                   </Link>
                   <div className="p-4">
-                    <p className="text-xs uppercase tracking-wider text-ocean font-semibold mb-1">
-                      {p.category}
-                    </p>
+                    <p className="text-xs uppercase tracking-wider text-ocean font-semibold mb-1">{p.category}</p>
                     <h3 className="font-bold text-navy-deep mb-2 line-clamp-2">{p.name}</h3>
                     <p className="text-lg font-bold text-navy-deep mb-3">${p.price.toFixed(2)}</p>
                     <div className="flex gap-2">
                       <button
                         onClick={() => {
-                          addItem({
-                            id: p.id,
-                            name: p.name,
-                            price: p.price,
-                            category: p.category,
-                            img: p.img,
-                          });
+                          addItem({ id: p.id, name: p.name, price: p.price, category: p.category, img: p.img });
                           toast.success(`${p.name} agregado al carrito`);
                         }}
                         className="flex-1 inline-flex items-center justify-center gap-1 px-3 py-2 rounded-full gradient-wave text-white text-xs font-semibold"

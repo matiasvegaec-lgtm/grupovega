@@ -1,29 +1,11 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { motion } from "framer-motion";
-import {
-  ArrowRight,
-  Wheat,
-  FlaskConical,
-  Sprout,
-  Beaker,
-  MapPin,
-  Phone,
-  Mail,
-  Clock,
-} from "lucide-react";
+import { ArrowRight, Wheat, FlaskConical, Sprout, Beaker, MapPin, Phone, Mail, Clock } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Layout } from "@/components/Layout";
-import { ProductImage } from "@/components/ProductImage";
 import { UnderwaterScene } from "@/components/UnderwaterScene";
-import {
-  Carousel,
-  CarouselContent,
-  CarouselItem,
-  CarouselNext,
-  CarouselPrevious,
-  type CarouselApi,
-} from "@/components/ui/carousel";
+import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious, type CarouselApi } from "@/components/ui/carousel";
 import Autoplay from "embla-carousel-autoplay";
 import heroImg from "@/assets/hero-shrimp-farm.jpg";
 import pBalanceado from "@/assets/p-balanceado.png";
@@ -52,7 +34,7 @@ function LazyMap() {
           io.disconnect();
         }
       },
-      { rootMargin: "300px" },
+      { rootMargin: "300px" }
     );
     io.observe(ref.current);
     return () => io.disconnect();
@@ -78,49 +60,23 @@ export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
       { title: "Grupo Vega — Insumos para Camaroneras del Ecuador" },
-      {
-        name: "description",
-        content:
-          "Alimentos, aceites y aditivos para la industria camaronera. Encuentra nuestro punto de venta en Ecuador.",
-      },
+      { name: "description", content: "Alimentos, aceites y aditivos para la industria camaronera. Encuentra nuestro punto de venta en Ecuador." },
       { property: "og:title", content: "Grupo Vega — Industria Camaronera" },
       { property: "og:description", content: "Insumos y equipos para camaroneras del Ecuador." },
       { property: "og:url", content: "https://grupovega.lovable.app/" },
     ],
-    links: [{ rel: "canonical", href: "https://grupovega.lovable.app/" }],
+    links: [
+      { rel: "canonical", href: "https://grupovega.lovable.app/" },
+    ],
   }),
   component: Index,
 });
 
 const categories = [
-  {
-    icon: Wheat,
-    name: "Alimentos",
-    desc: "Balanceados premium para cada etapa de cultivo",
-    count: "20+ productos",
-    categoria: "Alimentos",
-  },
-  {
-    icon: Sprout,
-    name: "Fertilizantes",
-    desc: "Nutrientes que potencian la productividad de tus piscinas",
-    count: "12+ productos",
-    categoria: "Fertilizante",
-  },
-  {
-    icon: FlaskConical,
-    name: "Aditivos",
-    desc: "Probióticos, vitaminas y mejoradores de rendimiento",
-    count: "15+ productos",
-    categoria: "Aditivos",
-  },
-  {
-    icon: Beaker,
-    name: "Insumos",
-    desc: "Equipos y químicos para el manejo diario",
-    count: "30+ productos",
-    categoria: "Insumos",
-  },
+  { icon: Wheat, name: "Alimentos", desc: "Balanceados premium para cada etapa de cultivo", count: "20+ productos", categoria: "Alimentos" },
+  { icon: Sprout, name: "Fertilizantes", desc: "Nutrientes que potencian la productividad de tus piscinas", count: "12+ productos", categoria: "Fertilizante" },
+  { icon: FlaskConical, name: "Aditivos", desc: "Probióticos, vitaminas y mejoradores de rendimiento", count: "15+ productos", categoria: "Aditivos" },
+  { icon: Beaker, name: "Insumos", desc: "Equipos y químicos para el manejo diario", count: "30+ productos", categoria: "Insumos" },
 ];
 
 type FeaturedItem = { id: string; slug: string | null; name: string; img: string };
@@ -163,7 +119,7 @@ function Index() {
   const [supplierLogos, setSupplierLogos] = useState<SupplierLogo[]>([]);
   const homeHeroBg = usePageHero("home", heroImg);
   const mobileAutoplay = useRef(
-    Autoplay({ delay: 2200, stopOnInteraction: false, stopOnMouseEnter: false }),
+    Autoplay({ delay: 2200, stopOnInteraction: false, stopOnMouseEnter: false })
   );
   const marqueeRef = useRef<HTMLDivElement>(null);
   const [featuredApi, setFeaturedApi] = useState<CarouselApi | null>(null);
@@ -171,7 +127,7 @@ function Index() {
   const [categoriesApi, setCategoriesApi] = useState<CarouselApi | null>(null);
   const [categoriesSelected, setCategoriesSelected] = useState(0);
   const categoriesAutoplay = useRef(
-    Autoplay({ delay: 2600, stopOnInteraction: false, stopOnMouseEnter: false }),
+    Autoplay({ delay: 2600, stopOnInteraction: false, stopOnMouseEnter: false })
   );
 
   useEffect(() => {
@@ -210,7 +166,7 @@ function Index() {
           setFeatured(
             data
               .map((p) => ({ id: p.id, slug: p.slug, name: p.name, img: p.image_url || "" }))
-              .filter((p) => p.img),
+              .filter((p) => p.img)
           );
         }
       });
@@ -286,7 +242,10 @@ function Index() {
   // ser EXACTAMENTE el set base duplicado (la animación traslada -50%).
   // 1) Construimos un set base con suficientes logos para llenar la pantalla.
   // 2) Lo duplicamos una sola vez para crear el loop sin saltos.
-  const supplierBaseRepeats = Math.max(1, Math.ceil(minItems / Math.max(supplierLogos.length, 1)));
+  const supplierBaseRepeats = Math.max(
+    1,
+    Math.ceil(minItems / Math.max(supplierLogos.length, 1)),
+  );
   const supplierBase = Array.from({ length: supplierBaseRepeats }, () => supplierLogos).flat();
   const supplierItems = [...supplierBase, ...supplierBase];
 
@@ -295,16 +254,7 @@ function Index() {
       {/* HERO */}
       <section className="relative min-h-[85vh] md:min-h-[80vh] flex items-center overflow-hidden gradient-deep">
         <div className="absolute inset-0">
-          <img
-            src={homeHeroBg}
-            alt=""
-            className="w-full h-full object-cover opacity-40"
-            width={1920}
-            height={1080}
-            loading="eager"
-            decoding="async"
-            fetchPriority="high"
-          />
+          <img src={homeHeroBg} alt="" className="w-full h-full object-cover opacity-40" width={1920} height={1080} loading="eager" decoding="async" fetchPriority="high" />
           <div className="absolute inset-0 gradient-deep opacity-70" />
           {/* Difumina la línea de horizonte del fondo bajo el encabezado */}
           <div className="absolute inset-x-0 top-0 h-48 bg-gradient-to-b from-[oklch(0.12_0.08_258)] to-transparent" />
@@ -336,8 +286,7 @@ function Index() {
               transition={{ duration: 0.7, delay: 0.2 }}
               className="text-lg sm:text-xl md:text-2xl text-white/80 mb-8 max-w-2xl md:max-w-3xl md:mx-auto lg:mx-0 leading-relaxed"
             >
-              Alimento balanceado, aceites, aditivos y más insumos premium con distribución en toda
-              la costa ecuatoriana.
+              Alimento balanceado, aceites, aditivos y más insumos premium con distribución en toda la costa ecuatoriana.
             </motion.p>
             <motion.div
               initial={{ opacity: 0, y: 30 }}
@@ -349,8 +298,7 @@ function Index() {
                 to="/productos"
                 className="group inline-flex items-center gap-2 px-7 md:px-8 py-4 md:py-5 rounded-full gradient-wave text-white font-semibold md:text-lg shadow-glow hover:scale-105 transition-transform"
               >
-                Ver productos{" "}
-                <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition" />
+                Ver productos <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition" />
               </Link>
               <Link
                 to="/contacto"
@@ -364,10 +312,7 @@ function Index() {
 
         <div className="absolute bottom-[-1px] left-0 right-0 leading-[0]">
           <svg viewBox="0 0 1440 120" className="block w-full h-auto" preserveAspectRatio="none">
-            <path
-              d="M0,64L80,69.3C160,75,320,85,480,80C640,75,800,53,960,48C1120,43,1280,53,1360,58.7L1440,64L1440,120L0,120Z"
-              style={{ fill: "var(--background)" }}
-            />
+            <path d="M0,64L80,69.3C160,75,320,85,480,80C640,75,800,53,960,48C1120,43,1280,53,1360,58.7L1440,64L1440,120L0,120Z" style={{ fill: "var(--background)" }} />
           </svg>
         </div>
       </section>
@@ -376,15 +321,10 @@ function Index() {
       <section className="py-20 md:py-24 bg-background">
         <div className="container mx-auto px-4 sm:px-6 md:px-10 lg:px-8">
           <div className="text-center max-w-2xl md:max-w-3xl mx-auto mb-14 md:mb-16">
-            <p className="text-sm md:text-base font-semibold uppercase tracking-widest text-ocean mb-3">
-              Categorías
-            </p>
-            <h2 className="text-4xl md:text-6xl font-bold text-navy-deep mb-4">
-              Líneas de producto
-            </h2>
+            <p className="text-sm md:text-base font-semibold uppercase tracking-widest text-ocean mb-3">Categorías</p>
+            <h2 className="text-4xl md:text-6xl font-bold text-navy-deep mb-4">Líneas de producto</h2>
             <p className="text-muted-foreground text-lg md:text-xl">
-              Descubre nuestro catálogo organizado por categorías para encontrar exactamente lo que
-              tu camaronera necesita.
+              Descubre nuestro catálogo organizado por categorías para encontrar exactamente lo que tu camaronera necesita.
             </p>
           </div>
           {/* Desktop: grid 4 columnas */}
@@ -406,9 +346,7 @@ function Index() {
                       <c.icon className="w-10 h-10 text-white" strokeWidth={1.6} />
                     </div>
                     <span className="font-bold text-lg text-navy-deep mb-1">{c.name}</span>
-                    <span className="text-xs font-semibold uppercase tracking-wider text-ocean mb-3">
-                      {c.count}
-                    </span>
+                    <span className="text-xs font-semibold uppercase tracking-wider text-ocean mb-3">{c.count}</span>
                     <p className="text-sm text-muted-foreground leading-relaxed flex-1">{c.desc}</p>
                     <div className="mt-4 inline-flex items-center gap-1 text-ocean font-semibold text-sm opacity-0 group-hover:opacity-100 group-hover:gap-2 transition-all duration-300">
                       Explorar <ArrowRight className="w-4 h-4" />
@@ -431,10 +369,7 @@ function Index() {
                 {categories.map((c, idx) => {
                   const isActive = idx === categoriesSelected;
                   return (
-                    <CarouselItem
-                      key={c.name}
-                      className="basis-[70%] md:basis-[55%] flex justify-center"
-                    >
+                    <CarouselItem key={c.name} className="basis-[70%] md:basis-[55%] flex justify-center">
                       <Link
                         to="/productos"
                         search={{ categoria: c.categoria }}
@@ -442,20 +377,11 @@ function Index() {
                       >
                         <div className="relative h-full bg-card border border-border rounded-2xl p-5 md:p-7 flex flex-col items-center text-center hover:border-ocean transition-all duration-300 overflow-hidden">
                           <div className="relative w-16 h-16 md:w-20 md:h-20 rounded-2xl gradient-wave flex items-center justify-center shadow-glow mb-3 md:mb-4">
-                            <c.icon
-                              className="w-8 h-8 md:w-10 md:h-10 text-white"
-                              strokeWidth={1.6}
-                            />
+                            <c.icon className="w-8 h-8 md:w-10 md:h-10 text-white" strokeWidth={1.6} />
                           </div>
-                          <span className="font-bold text-base md:text-lg text-navy-deep mb-1">
-                            {c.name}
-                          </span>
-                          <span className="text-[11px] md:text-xs font-semibold uppercase tracking-wider text-ocean mb-2 md:mb-3">
-                            {c.count}
-                          </span>
-                          <p className="text-xs md:text-sm text-muted-foreground leading-relaxed flex-1">
-                            {c.desc}
-                          </p>
+                          <span className="font-bold text-base md:text-lg text-navy-deep mb-1">{c.name}</span>
+                          <span className="text-[11px] md:text-xs font-semibold uppercase tracking-wider text-ocean mb-2 md:mb-3">{c.count}</span>
+                          <p className="text-xs md:text-sm text-muted-foreground leading-relaxed flex-1">{c.desc}</p>
                         </div>
                       </Link>
                     </CarouselItem>
@@ -474,10 +400,7 @@ function Index() {
         {/* fondo decorativo inmersivo */}
         <div className="absolute inset-0 pointer-events-none">
           <div className="absolute -top-32 -left-32 w-96 h-96 rounded-full bg-ocean/10 blur-3xl animate-float-slow" />
-          <div
-            className="absolute -bottom-32 -right-32 w-96 h-96 rounded-full bg-turquoise/15 blur-3xl animate-float-slow"
-            style={{ animationDelay: "2s" }}
-          />
+          <div className="absolute -bottom-32 -right-32 w-96 h-96 rounded-full bg-turquoise/15 blur-3xl animate-float-slow" style={{ animationDelay: "2s" }} />
           <div className="absolute top-1/3 left-1/2 w-72 h-72 rounded-full bg-primary/10 blur-3xl animate-float" />
         </div>
 
@@ -489,8 +412,7 @@ function Index() {
               viewport={{ once: true }}
               className="inline-flex items-center gap-2 text-sm md:text-base font-semibold uppercase tracking-widest text-ocean mb-3"
             >
-              <span className="w-8 h-px bg-ocean" /> Destacados{" "}
-              <span className="w-8 h-px bg-ocean" />
+              <span className="w-8 h-px bg-ocean" /> Destacados <span className="w-8 h-px bg-ocean" />
             </motion.p>
             <motion.h2
               initial={{ opacity: 0, y: 20 }}
@@ -508,8 +430,7 @@ function Index() {
               transition={{ delay: 0.2 }}
               className="text-muted-foreground text-lg md:text-xl"
             >
-              Los favoritos de los camaroneros ecuatorianos, seleccionados por calidad y
-              rendimiento.
+              Los favoritos de los camaroneros ecuatorianos, seleccionados por calidad y rendimiento.
             </motion.p>
           </div>
         </div>
@@ -519,34 +440,17 @@ function Index() {
           <div className="relative hidden lg:block">
             <div className="pointer-events-none absolute left-0 top-0 bottom-0 w-24 z-10 bg-gradient-to-r from-foam to-transparent" />
             <div className="pointer-events-none absolute right-0 top-0 bottom-0 w-24 z-10 bg-gradient-to-l from-foam to-transparent" />
-            <div
-              ref={marqueeRef}
-              className="flex gap-12 w-max animate-marquee hover:[animation-play-state:paused]"
-            >
+            <div ref={marqueeRef} className="flex gap-12 w-max animate-marquee hover:[animation-play-state:paused]">
               {carouselItems.map((p, i) => (
-                <Link
-                  key={`${p.name}-${i}`}
-                  to="/productos/$productId"
-                  params={{ productId: p.slug || p.id }}
-                  className="marquee-item group flex flex-col items-center w-56 shrink-0 cursor-pointer"
-                >
+                <Link key={`${p.name}-${i}`} to="/productos/$productId" params={{ productId: p.slug || p.id }} className="marquee-item group flex flex-col items-center w-56 shrink-0 cursor-pointer">
                   <div className="relative w-56 h-56 flex items-center justify-center">
                     <div className="absolute inset-0 rounded-full bg-gradient-to-br from-white via-foam to-ocean/20 shadow-[0_10px_30px_-10px_rgba(0,80,140,0.25)] ring-1 ring-ocean/10" />
                     <div className="absolute inset-4 rounded-full gradient-wave opacity-0 group-hover:opacity-40 blur-2xl transition-all duration-700 group-hover:scale-110" />
                     <div className="absolute inset-0 rounded-full border-2 border-dashed border-ocean/0 group-hover:border-ocean/30 group-hover:rotate-180 transition-all duration-1000" />
-                    <ProductImage
-                      src={p.img}
-                      alt={p.name}
-                      loading="lazy"
-                      className="relative z-10 w-44 h-44 object-contain group-hover:scale-110 group-hover:-translate-y-2 group-hover:-rotate-3 transition-all duration-500 drop-shadow-2xl"
-                    />
+                    <img src={p.img} alt={p.name} loading="lazy" className="relative z-10 w-44 h-44 object-contain group-hover:scale-110 group-hover:-translate-y-2 group-hover:-rotate-3 transition-all duration-500 drop-shadow-2xl" />
                   </div>
-                  <p className="mt-4 text-base font-semibold text-navy-deep text-center group-hover:text-ocean transition-colors px-1">
-                    {p.name}
-                  </p>
-                  <span className="destacado-label text-xs text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity duration-300 mt-1">
-                    Destacado ⭐
-                  </span>
+                  <p className="mt-4 text-base font-semibold text-navy-deep text-center group-hover:text-ocean transition-colors px-1">{p.name}</p>
+                  <span className="destacado-label text-xs text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity duration-300 mt-1">Destacado ⭐</span>
                 </Link>
               ))}
             </div>
@@ -564,10 +468,7 @@ function Index() {
                 {featured.map((p, idx) => {
                   const isActive = idx === featuredSelected;
                   return (
-                    <CarouselItem
-                      key={p.id}
-                      className="basis-[60%] md:basis-[45%] flex justify-center"
-                    >
+                    <CarouselItem key={p.id} className="basis-[60%] md:basis-[45%] flex justify-center">
                       <Link
                         to="/productos/$productId"
                         params={{ productId: p.slug || p.id }}
@@ -575,19 +476,10 @@ function Index() {
                       >
                         <div className="relative w-44 h-44 md:w-56 md:h-56 flex items-center justify-center">
                           <div className="absolute inset-0 rounded-full bg-gradient-to-br from-white via-foam to-ocean/20 shadow-[0_10px_30px_-10px_rgba(0,80,140,0.25)] ring-1 ring-ocean/10" />
-                          <ProductImage
-                            src={p.img}
-                            alt={p.name}
-                            loading="lazy"
-                            className="relative z-10 w-36 h-36 md:w-44 md:h-44 object-contain drop-shadow-xl transition-transform duration-500"
-                          />
+                          <img src={p.img} alt={p.name} loading="lazy" className="relative z-10 w-36 h-36 md:w-44 md:h-44 object-contain drop-shadow-xl transition-transform duration-500" />
                         </div>
-                        <p className="mt-3 text-sm md:text-base font-semibold text-navy-deep text-center px-1">
-                          {p.name}
-                        </p>
-                        {isActive && (
-                          <span className="text-xs text-muted-foreground mt-1">Destacado ⭐</span>
-                        )}
+                        <p className="mt-3 text-sm md:text-base font-semibold text-navy-deep text-center px-1">{p.name}</p>
+                        {isActive && <span className="text-xs text-muted-foreground mt-1">Destacado ⭐</span>}
                       </Link>
                     </CarouselItem>
                   );
@@ -621,15 +513,10 @@ function Index() {
 
       {/* PUNTO DE VENTA — info izquierda + mapa derecha */}
       <section className="py-12 md:py-20 gradient-hero text-white relative overflow-hidden">
-        <div
-          className="absolute inset-0 opacity-30"
-          style={{ background: "var(--gradient-glow)" }}
-        />
+        <div className="absolute inset-0 opacity-30" style={{ background: "var(--gradient-glow)" }} />
         <div className="relative container mx-auto px-4 sm:px-6 md:px-10 lg:px-8">
           <div className="text-center max-w-2xl md:max-w-3xl mx-auto mb-8 md:mb-12">
-            <p className="text-sm md:text-base font-semibold uppercase tracking-widest text-turquoise mb-2">
-              Punto de venta
-            </p>
+            <p className="text-sm md:text-base font-semibold uppercase tracking-widest text-turquoise mb-2">Punto de venta</p>
             <h2 className="text-3xl md:text-5xl font-bold">Visítanos</h2>
           </div>
 
@@ -643,9 +530,7 @@ function Index() {
               className="glass rounded-2xl p-6 md:p-7 flex flex-col justify-center lg:col-span-2"
             >
               <h3 className="text-xl md:text-2xl font-bold mb-1">Grupo Vega — Pedernales</h3>
-              <p className="text-turquoise text-sm font-semibold mb-5">
-                Sede principal y centro de distribución
-              </p>
+              <p className="text-turquoise text-sm font-semibold mb-5">Sede principal y centro de distribución</p>
 
               <ul className="space-y-4">
                 <li className="flex gap-3">
@@ -653,12 +538,8 @@ function Index() {
                     <MapPin className="w-4 h-4" />
                   </div>
                   <div className="min-w-0">
-                    <div className="text-white/85 text-xs uppercase tracking-widest font-semibold">
-                      Dirección
-                    </div>
-                    <div className="text-sm leading-snug">
-                      García Moreno y 3 de Noviembre, frente al cementerio — Pedernales, Manabí
-                    </div>
+                    <div className="text-white/85 text-xs uppercase tracking-widest font-semibold">Dirección</div>
+                    <div className="text-sm leading-snug">García Moreno y 3 de Noviembre, frente al cementerio — Pedernales, Manabí</div>
                   </div>
                 </li>
                 <li className="flex gap-3">
@@ -666,9 +547,7 @@ function Index() {
                     <Phone className="w-4 h-4" />
                   </div>
                   <div className="min-w-0">
-                    <div className="text-white/85 text-xs uppercase tracking-widest font-semibold">
-                      Teléfono
-                    </div>
+                    <div className="text-white/85 text-xs uppercase tracking-widest font-semibold">Teléfono</div>
                     <div className="text-sm">+593 99 773 8026</div>
                   </div>
                 </li>
@@ -677,9 +556,7 @@ function Index() {
                     <Mail className="w-4 h-4" />
                   </div>
                   <div className="min-w-0">
-                    <div className="text-white/85 text-xs uppercase tracking-widest font-semibold">
-                      Email
-                    </div>
+                    <div className="text-white/85 text-xs uppercase tracking-widest font-semibold">Email</div>
                     <div className="text-sm break-all">grupovega.ec@outlook.com</div>
                   </div>
                 </li>
@@ -688,9 +565,7 @@ function Index() {
                     <Clock className="w-4 h-4" />
                   </div>
                   <div className="min-w-0">
-                    <div className="text-white/85 text-xs uppercase tracking-widest font-semibold">
-                      Horario
-                    </div>
+                    <div className="text-white/85 text-xs uppercase tracking-widest font-semibold">Horario</div>
                     <div className="text-sm">Lun – Vie: 8:00 – 18:00 · Sáb: 8:00 – 13:00</div>
                   </div>
                 </li>
@@ -724,15 +599,9 @@ function Index() {
       <section className="py-20 md:py-24 bg-background overflow-hidden">
         <div className="container mx-auto px-4 sm:px-6 md:px-10 lg:px-8 mb-12 md:mb-14">
           <div className="text-center max-w-2xl md:max-w-3xl mx-auto">
-            <p className="text-sm md:text-base font-semibold uppercase tracking-widest text-ocean mb-3">
-              Proveedores
-            </p>
-            <h2 className="text-4xl md:text-6xl font-bold text-navy-deep">
-              Marcas que distribuimos
-            </h2>
-            <p className="text-muted-foreground mt-4 md:text-lg">
-              Trabajamos con los líderes mundiales en nutrición y sanidad acuícola.
-            </p>
+            <p className="text-sm md:text-base font-semibold uppercase tracking-widest text-ocean mb-3">Proveedores</p>
+            <h2 className="text-4xl md:text-6xl font-bold text-navy-deep">Marcas que distribuimos</h2>
+            <p className="text-muted-foreground mt-4 md:text-lg">Trabajamos con los líderes mundiales en nutrición y sanidad acuícola.</p>
           </div>
         </div>
 
@@ -749,7 +618,7 @@ function Index() {
                 className="relative shrink-0 w-56 h-28 group"
               >
                 <div className="absolute inset-0 gradient-wave rounded-2xl opacity-0 group-hover:opacity-100 blur-xl transition duration-500" />
-                <div className="relative w-full h-full bg-transparent border border-transparent rounded-2xl flex items-center justify-center p-4 transition-all duration-300 overflow-hidden">
+                <div className="relative w-full h-full bg-white border border-border rounded-2xl flex items-center justify-center p-4 group-hover:border-ocean group-hover:shadow-elegant transition-all duration-300 overflow-hidden">
                   <img
                     src={optimizedSupabaseImage(s.img, 400, 200)}
                     alt={s.name}
