@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Loader2, ChevronDown, TrendingUp, TrendingDown, Minus, Check, Clock, CalendarRange, Download } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import jsPDF from "jspdf";
@@ -123,6 +123,8 @@ function AnaliticaPage() {
   const [compare, setCompare] = useState(true);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const chartRef = useRef<HTMLDivElement>(null);
+  const [exporting, setExporting] = useState(false);
 
   useEffect(() => {
     let cancelled = false;
@@ -290,14 +292,27 @@ function AnaliticaPage() {
         </div>
         <button
           type="button"
-          onClick={() => stats && exportAnalyticsPDF(stats, range, RANGE_LABEL[range])}
-          disabled={!stats || loading}
+          onClick={async () => {
+            if (!stats) return;
+            setExporting(true);
+            try {
+              const chartImg = await captureChartPNG(chartRef.current);
+              await exportAnalyticsPDF(stats, range, RANGE_LABEL[range], {
+                chartImg,
+                compare,
+                metric,
+              });
+            } finally {
+              setExporting(false);
+            }
+          }}
+          disabled={!stats || loading || exporting}
           className="inline-flex items-center gap-2 rounded-2xl px-3.5 py-2 text-sm font-semibold text-white shadow-[0_6px_18px_-8px_oklch(0.42_0.17_250/0.5)] hover:shadow-[0_10px_24px_-10px_oklch(0.42_0.17_250/0.6)] transition-all disabled:opacity-50 disabled:cursor-not-allowed"
           style={{ background: "linear-gradient(135deg, oklch(0.42 0.17 250) 0%, oklch(0.78 0.14 200) 100%)" }}
           title="Exportar a PDF"
         >
-          <Download className="w-4 h-4" />
-          <span className="hidden sm:inline">Exportar PDF</span>
+          {exporting ? <Loader2 className="w-4 h-4 animate-spin" /> : <Download className="w-4 h-4" />}
+          <span className="hidden sm:inline">{exporting ? "Generando…" : "Exportar PDF"}</span>
         </button>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
@@ -451,7 +466,7 @@ function AnaliticaPage() {
               )}
             </div>
 
-            <div className="h-64 md:h-80">
+            <div ref={chartRef} className="h-64 md:h-80 bg-white">
               <ResponsiveContainer width="100%" height="100%">
                 <AreaChart data={stats.series} margin={{ top: 10, right: 20, left: 0, bottom: 0 }}>
                   <defs>
@@ -688,7 +703,67 @@ type AnalyticsStats = {
   liveNow: number;
 };
 
-function exportAnalyticsPDF(stats: AnalyticsStats, rangeKey: string, rangeLabel: string) {
+async function captureChartPNG(
+  node: HTMLElement | null
+): Promise<{ dataUrl: string; width: number; height: number } | null> {
+  if (!node) return null;
+  const svg = node.querySelector("svg");
+  if (!svg) return null;
+
+  // Clonar y asegurar fondo blanco + namespace
+  const clone = svg.cloneNode(true) as SVGSVGElement;
+  const rect = svg.getBoundingClientRect();
+  const w = Math.max(1, Math.round(rect.width));
+  const h = Math.max(1, Math.round(rect.height));
+  clone.setAttribute("xmlns", "http://www.w3.org/2000/svg");
+  clone.setAttribute("width", String(w));
+  clone.setAttribute("height", String(h));
+
+  const bg = document.createElementNS("http://www.w3.org/2000/svg", "rect");
+  bg.setAttribute("width", "100%");
+  bg.setAttribute("height", "100%");
+  bg.setAttribute("fill", "#ffffff");
+  clone.insertBefore(bg, clone.firstChild);
+
+  const xml = new XMLSerializer().serializeToString(clone);
+  const svg64 = typeof window !== "undefined"
+    ? window.btoa(unescape(encodeURIComponent(xml)))
+    : "";
+  const src = `data:image/svg+xml;base64,${svg64}`;
+
+  return await new Promise((resolve) => {
+    const img = new Image();
+    img.onload = () => {
+      const scale = 2; // mejor nitidez en el PDF
+      const canvas = document.createElement("canvas");
+      canvas.width = w * scale;
+      canvas.height = h * scale;
+      const ctx = canvas.getContext("2d");
+      if (!ctx) return resolve(null);
+      ctx.fillStyle = "#ffffff";
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+      try {
+        resolve({ dataUrl: canvas.toDataURL("image/png"), width: w, height: h });
+      } catch {
+        resolve(null);
+      }
+    };
+    img.onerror = () => resolve(null);
+    img.src = src;
+  });
+}
+
+async function exportAnalyticsPDF(
+  stats: AnalyticsStats,
+  rangeKey: string,
+  rangeLabel: string,
+  opts: {
+    chartImg: { dataUrl: string; width: number; height: number } | null;
+    compare: boolean;
+    metric: "sesiones" | "visitas";
+  }
+) {
   const doc = new jsPDF({ unit: "pt", format: "a4" });
   const pageWidth = doc.internal.pageSize.getWidth();
   const margin = 40;
@@ -740,30 +815,81 @@ function exportAnalyticsPDF(stats: AnalyticsStats, rangeKey: string, rangeLabel:
   ];
 
   const cardW = (pageWidth - margin * 2 - 8 * 4) / 5;
-  const cardH = 60;
+  const cardH = 66;
   kpis.forEach((k, i) => {
     const x = margin + i * (cardW + 8);
-    doc.setFillColor(245, 248, 252);
+    // Sombra suave
+    doc.setFillColor(230, 237, 244);
+    doc.roundedRect(x + 1, y + 2, cardW, cardH, 8, 8, "F");
+    // Cuerpo
+    doc.setFillColor(255, 255, 255);
     doc.setDrawColor(220, 230, 240);
-    doc.roundedRect(x, y, cardW, cardH, 6, 6, "FD");
+    doc.roundedRect(x, y, cardW, cardH, 8, 8, "FD");
+    // Acento izquierdo (degradado ocean → cyan en dos bandas)
     doc.setFillColor(...ocean);
-    doc.rect(x, y, 3, cardH, "F");
-    doc.setFont("helvetica", "normal");
-    doc.setFontSize(7);
-    doc.setTextColor(...muted);
-    doc.text(k.label.toUpperCase(), x + 8, y + 14);
+    doc.roundedRect(x, y, 5, cardH, 2, 2, "F");
+    doc.setFillColor(...cyan);
+    doc.rect(x + 3, y + cardH * 0.45, 2, cardH * 0.55, "F");
+    // Etiqueta
     doc.setFont("helvetica", "bold");
-    doc.setFontSize(14);
+    doc.setFontSize(7);
+    doc.setTextColor(...ocean);
+    doc.text(k.label.toUpperCase(), x + 12, y + 16);
+    // Valor principal
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(15);
     doc.setTextColor(...navy);
-    doc.text(k.value, x + 8, y + 34);
+    doc.text(k.value, x + 12, y + 38);
+    // Delta
     if (k.delta) {
-      doc.setFont("helvetica", "normal");
+      const positive = k.delta.startsWith("▲");
+      const negative = k.delta.startsWith("▼");
+      doc.setFont("helvetica", "bold");
       doc.setFontSize(8);
+      if (positive) doc.setTextColor(22, 163, 74);
+      else if (negative) doc.setTextColor(220, 38, 38);
+      else doc.setTextColor(...muted);
+      doc.text(k.delta, x + 12, y + 54);
+      doc.setFont("helvetica", "normal");
       doc.setTextColor(...muted);
-      doc.text(k.delta, x + 8, y + 48);
+      doc.text("vs. anterior", x + 12 + doc.getTextWidth(k.delta) + 4, y + 54);
     }
   });
-  y += cardH + 22;
+  y += cardH + 24;
+
+  // Gráfico de visitantes
+  if (opts.chartImg) {
+    const availW = pageWidth - margin * 2;
+    const ratio = opts.chartImg.height / opts.chartImg.width;
+    const imgW = availW;
+    const imgH = Math.min(220, availW * ratio);
+    const titleH = 22;
+    if (y + imgH + titleH > doc.internal.pageSize.getHeight() - 60) {
+      doc.addPage();
+      y = margin;
+    }
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(11);
+    doc.setTextColor(...navy);
+    doc.text(
+      `Gráfico de ${opts.metric === "sesiones" ? "visitantes" : "vistas"}${opts.compare ? " · comparado con período anterior" : ""}`,
+      margin,
+      y
+    );
+    y += 8;
+    // Marco contenedor
+    doc.setFillColor(255, 255, 255);
+    doc.setDrawColor(225, 232, 240);
+    doc.roundedRect(margin, y, imgW, imgH + 10, 6, 6, "FD");
+    doc.setFillColor(...cyan);
+    doc.rect(margin, y, 4, imgH + 10, "F");
+    try {
+      doc.addImage(opts.chartImg.dataUrl, "PNG", margin + 8, y + 5, imgW - 16, imgH);
+    } catch {
+      /* ignore */
+    }
+    y += imgH + 10 + 18;
+  }
 
   // Resumen
   doc.setFont("helvetica", "bold");
