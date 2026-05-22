@@ -183,28 +183,22 @@ function CheckoutPage() {
       const status = method === "quote" ? "quote" : "pending";
       const notes = `Método: ${method}. Recibe: ${form.receiver_name}. RUC: ${form.customer_ruc}. ${form.shipping_notes || ""}`.trim();
 
-      const { data, error } = await supabase
-        .from("orders")
-        .insert({
-          customer_name: form.customer_name,
-          customer_email: form.customer_email,
-          customer_phone: form.customer_phone,
-          shipping_address: shippingAddress,
-          shipping_city: "—",
-          shipping_province: "—",
-          shipping_country: "Ecuador",
-          shipping_notes: notes,
-          items: items as any,
-          subtotal,
-          total: subtotal,
-          status,
-          user_id: user?.id ?? null,
-        })
-        .select("order_number")
-        .single();
+      const { data, error } = await supabase.rpc("create_order", {
+        _items: items.map((i) => ({ product_id: i.id, quantity: i.quantity })) as any,
+        _customer_name: form.customer_name,
+        _customer_email: form.customer_email,
+        _customer_phone: form.customer_phone,
+        _shipping_address: shippingAddress,
+        _shipping_city: "—",
+        _shipping_province: "—",
+        _shipping_country: "Ecuador",
+        _shipping_notes: notes,
+        _status: status,
+      });
 
       if (error) throw error;
-      const orderNumber = data.order_number;
+      const orderNumber = (data as any)?.[0]?.order_number ?? (data as any)?.order_number;
+      if (!orderNumber) throw new Error("No se pudo crear el pedido");
       const waUrl = buildWhatsAppUrl(buildOrderSummaryText(orderNumber));
 
       // Guardar datos del cliente para futuras compras (Supabase + respaldo local)
