@@ -4,7 +4,7 @@ import { Package, Users, LogOut, Loader2, ShieldAlert, ShoppingBag, FolderTree, 
 import { useAuth } from "@/contexts/AuthContext";
 
 export function AdminLayout() {
-  const { user, isAdmin, loading, signOut } = useAuth();
+  const { user, isAdmin, isEmployee, loading, signOut } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
   const [menuOpen, setMenuOpen] = useState(false);
@@ -16,6 +16,26 @@ export function AdminLayout() {
   // Cierra el drawer al cambiar de ruta
   useEffect(() => { setMenuOpen(false); }, [location.pathname]);
 
+  // Rutas permitidas por rol
+  const employeeAllowed = ["/admin/productos", "/admin/categorias", "/admin/pedidos", "/admin/clientes"];
+  const adminDefault = "/admin/analitica";
+  const employeeDefault = "/admin/productos";
+
+  // Redirecciones por rol: ruta raíz o ruta no permitida
+  useEffect(() => {
+    if (loading || !user) return;
+    if (!isAdmin && !isEmployee) return;
+    const path = location.pathname;
+    if (path === "/admin" || path === "/admin/") {
+      navigate({ to: isAdmin ? adminDefault : employeeDefault, replace: true });
+      return;
+    }
+    if (isEmployee && !isAdmin) {
+      const allowed = employeeAllowed.some((p) => path.startsWith(p));
+      if (!allowed) navigate({ to: employeeDefault, replace: true });
+    }
+  }, [loading, user, isAdmin, isEmployee, location.pathname, navigate]);
+
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background">
@@ -24,13 +44,13 @@ export function AdminLayout() {
     );
   }
 
-  if (user && !isAdmin) {
+  if (user && !isAdmin && !isEmployee) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background p-6">
         <div className="text-center max-w-md">
           <ShieldAlert className="w-12 h-12 mx-auto text-destructive mb-4" />
           <h1 className="text-2xl font-bold text-navy-deep mb-2">Acceso restringido</h1>
-          <p className="text-muted-foreground mb-6">Tu cuenta no tiene permisos de administrador.</p>
+          <p className="text-muted-foreground mb-6">Tu cuenta no tiene permisos para acceder al panel.</p>
           <button onClick={async () => { await signOut(); navigate({ to: "/auth", search: { redirect: "/" } }); }} className="px-6 py-3 rounded-full gradient-wave text-white font-semibold">Cerrar sesión</button>
         </div>
       </div>
@@ -39,7 +59,7 @@ export function AdminLayout() {
 
   if (!user) return null;
 
-  const links = [
+  const allLinks = [
     { to: "/admin/analitica", label: "Analítica", icon: BarChart3 },
     { to: "/admin/productos", label: "Productos", icon: Package },
     { to: "/admin/categorias", label: "Categorías", icon: FolderTree },
@@ -48,6 +68,9 @@ export function AdminLayout() {
     { to: "/admin/usuarios", label: "Usuarios", icon: Users },
     { to: "/admin/galeria", label: "Galería", icon: ImageIcon },
   ];
+  const links = isAdmin
+    ? allLinks
+    : allLinks.filter((l) => employeeAllowed.includes(l.to));
 
   const activeLink = links.find((l) => location.pathname.startsWith(l.to));
 
