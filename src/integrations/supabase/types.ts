@@ -521,6 +521,25 @@ export type Database = {
       }
       admin_subscribe_customer: { Args: { _email: string }; Returns: boolean }
       admin_unsubscribe_customer: { Args: { _email: string }; Returns: boolean }
+      create_order: {
+        Args: {
+          _customer_email: string
+          _customer_name: string
+          _customer_phone: string
+          _items: Json
+          _shipping_address: string
+          _shipping_city: string
+          _shipping_country?: string
+          _shipping_notes?: string
+          _shipping_postal_code?: string
+          _shipping_province: string
+          _status?: string
+        }
+        Returns: {
+          order_number: string
+          total: number
+        }[]
+      }
       get_order_by_number: {
         Args: { _order_number: string }
         Returns: {
