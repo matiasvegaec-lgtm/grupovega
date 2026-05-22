@@ -235,11 +235,11 @@ function AnaliticaPage() {
         <div className="space-y-5">
           {/* Tarjetas KPI estilo Lovable */}
           <div className="grid grid-cols-2 md:grid-cols-5 gap-3 md:gap-4">
-            <KpiCard tone="teal"   label="Visitantes"        value={stats.sessions.toLocaleString("es-EC")} />
-            <KpiCard tone="navy"   label="Vistas de página"  value={stats.pageviews.toLocaleString("es-EC")} />
-            <KpiCard tone="cyan"   label="Vistas por visita" value={stats.pvPerSession.toFixed(2)} />
-            <KpiCard tone="orange" label="Duración de la visita" value={formatDuration(stats.avgSessionSec)} />
-            <KpiCard tone="navy"   label="Tasa de rebote"    value={`${stats.bounceRate.toFixed(0)}%`} />
+            <KpiCard tone="ocean"     label="Visitantes"            value={stats.sessions.toLocaleString("es-EC")} />
+            <KpiCard tone="navy"      label="Vistas de página"      value={stats.pageviews.toLocaleString("es-EC")} />
+            <KpiCard tone="turquoise" label="Vistas por visita"     value={stats.pvPerSession.toFixed(2)} />
+            <KpiCard tone="sky"       label="Duración de la visita" value={formatDuration(stats.avgSessionSec)} />
+            <KpiCard tone="slate"     label="Tasa de rebote"        value={`${stats.bounceRate.toFixed(0)}%`} />
           </div>
 
           {/* Gráfico principal */}
@@ -276,10 +276,10 @@ function AnaliticaPage() {
 
           {/* Listas estilo Lovable */}
           <div className="grid grid-cols-1 md:grid-cols-4 gap-3 md:gap-4">
-            <ListCard tone="teal"   title="Fuente"     keyLabel="Fuente"     items={stats.referrers} />
-            <ListCard tone="purple" title="Página"     keyLabel="Página"     items={stats.topPaths} />
-            <ListCard tone="cyan"   title="País"       keyLabel="País"       items={stats.topCountries} mode="country" />
-            <ListCard tone="orange" title="Dispositivo" keyLabel="Dispositivo" items={stats.devices} mode="percent" />
+            <ListCard tone="ocean"     title="Fuente"      keyLabel="Fuente"      items={stats.referrers} />
+            <ListCard tone="navy"      title="Página"      keyLabel="Página"      items={stats.topPaths} />
+            <ListCard tone="turquoise" title="País"        keyLabel="País"        items={stats.topCountries} mode="country" />
+            <ListCard tone="sky"       title="Dispositivo" keyLabel="Dispositivo" items={stats.devices} mode="percent" />
           </div>
 
           {stats.pageviews === 0 && (
@@ -293,24 +293,13 @@ function AnaliticaPage() {
   );
 }
 
-function WaveBg({ color }: { color: string }) {
-  return (
-    <svg className="absolute inset-x-0 bottom-0 w-full h-16 pointer-events-none" viewBox="0 0 400 80" preserveAspectRatio="none">
-      <path d="M0 50 Q 50 20 100 40 T 200 40 T 300 40 T 400 40 V80 H0 Z" fill={color} fillOpacity="0.35" />
-      <path d="M0 60 Q 50 35 100 55 T 200 55 T 300 55 T 400 55 V80 H0 Z" fill={color} fillOpacity="0.55" />
-    </svg>
-  );
-}
-
 function KpiCard({ tone, label, value }: { tone: CardTone; label: string; value: string }) {
   const t = TONES[tone];
   return (
-    <div className="relative overflow-hidden rounded-2xl p-4 md:p-5 text-white shadow-md min-h-[110px]" style={{ background: t.bg }}>
-      <div className="relative z-10">
-        <div className="text-[13px] font-medium text-white/85">{label}</div>
-        <div className="text-3xl md:text-[34px] font-bold tracking-tight mt-1 leading-none">{value}</div>
-      </div>
-      <WaveBg color={t.wave} />
+    <div className="relative overflow-hidden rounded-xl bg-card border border-border/70 p-4 shadow-sm hover:shadow-md transition-shadow">
+      <div className="absolute left-0 top-0 bottom-0 w-1" style={{ background: t.accent }} />
+      <div className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">{label}</div>
+      <div className="mt-2 text-2xl md:text-[26px] font-bold tracking-tight text-navy-deep leading-tight">{value}</div>
     </div>
   );
 }
@@ -328,17 +317,16 @@ function ListCard({
   const total = items.reduce((s, i) => s + i.value, 0) || 1;
   const max = items.reduce((m, i) => Math.max(m, i.value), 0) || 1;
   return (
-    <div className="relative overflow-hidden rounded-2xl p-4 md:p-5 text-white shadow-md min-h-[260px]" style={{ background: t.bg }}>
-      <div className="relative z-10">
-        <div className="text-lg font-bold mb-3">{title}</div>
-        <div className="flex items-center justify-between text-[11px] uppercase tracking-wide text-white/70 mb-2 pb-2 border-b border-white/10">
-          <span>{keyLabel}</span>
-          <span>Visitantes</span>
-        </div>
-        {items.length === 0 ? (
-          <p className="text-sm text-white/70">Sin datos.</p>
-        ) : (
-          <ul className="space-y-2.5">
+    <div className="relative overflow-hidden rounded-xl bg-card border border-border/70 p-4 md:p-5 shadow-sm min-h-[260px]">
+      <div className="text-base font-semibold text-navy-deep mb-3">{title}</div>
+      <div className="flex items-center justify-between text-[10px] uppercase tracking-wider text-muted-foreground mb-2 pb-2 border-b border-border">
+        <span>{keyLabel}</span>
+        <span>Visitantes</span>
+      </div>
+      {items.length === 0 ? (
+        <p className="text-sm text-muted-foreground">Sin datos.</p>
+      ) : (
+        <ul className="space-y-2.5">
             {items.slice(0, 5).map((it) => {
               const display =
                 mode === "country"
@@ -353,24 +341,22 @@ function ListCard({
               const pct = (it.value / max) * 100;
               return (
                 <li key={it.label}>
-                  <div className="flex items-center justify-between text-sm">
+                  <div className="flex items-center justify-between text-sm text-navy-deep">
                     <span className="truncate font-medium">
                       {mode === "percent"
                         ? (it.label === "desktop" ? "Escritorio" : it.label === "mobile" ? "Móvil" : it.label === "tablet" ? "Tablet" : display)
                         : display}
                     </span>
-                    <span className="tabular-nums font-semibold">{right}</span>
+                    <span className="tabular-nums font-semibold text-muted-foreground">{right}</span>
                   </div>
-                  <div className="mt-1 h-1.5 rounded-full bg-white/10 overflow-hidden">
+                  <div className="mt-1 h-1.5 rounded-full bg-muted overflow-hidden">
                     <div className="h-full rounded-full" style={{ width: `${pct}%`, background: t.accent }} />
                   </div>
                 </li>
               );
             })}
-          </ul>
-        )}
-      </div>
-      <WaveBg color={t.wave} />
+        </ul>
+      )}
     </div>
   );
 }
