@@ -35,16 +35,39 @@ const RANGE_LABEL: Record<Range, string> = {
   "90d": "Últimos 90 días",
 };
 
-// Paleta estilo "Crextio" adaptada a marca (océano + cyan)
-// soft = fondo de tarjeta, accent = color de barra/acento
-type CardTone = "cream" | "ocean" | "cyan" | "foam" | "dark";
+// Paleta basada en los degradados de marca (navy → ocean → turquoise)
+type CardTone = "foam" | "wave" | "sky" | "hero" | "deep";
 const TONES: Record<CardTone, { bg: string; accent: string; text: string; sub: string; track: string }> = {
-  cream: { bg: "#f6efe4", accent: "#0ea5b7", text: "#0e2f4a", sub: "#0e2f4a99", track: "#0e2f4a14" },
-  ocean: { bg: "#dbe9f3", accent: "#1d6fa5", text: "#0e2f4a", sub: "#0e2f4a99", track: "#0e2f4a14" },
-  cyan:  { bg: "#d4ecef", accent: "#0a8b9c", text: "#0a3a4a", sub: "#0a3a4a99", track: "#0a3a4a14" },
-  foam:  { bg: "#eaf3f5", accent: "#0ea5b7", text: "#0e2f4a", sub: "#0e2f4a99", track: "#0e2f4a14" },
-  dark:  { bg: "#0e2f4a", accent: "#22d3ee", text: "#ffffff", sub: "#ffffffaa", track: "#ffffff1f" },
+  // Tarjetas claras con degradados suaves del foam/turquoise
+  foam: {
+    bg: "linear-gradient(135deg, oklch(0.98 0.015 220) 0%, oklch(0.94 0.04 210) 100%)",
+    accent: "linear-gradient(135deg, oklch(0.42 0.17 250), oklch(0.78 0.14 200))",
+    text: "oklch(0.22 0.1 258)", sub: "oklch(0.22 0.1 258 / 0.65)", track: "oklch(0.22 0.1 258 / 0.08)",
+  },
+  wave: {
+    bg: "linear-gradient(135deg, oklch(0.96 0.03 215) 0%, oklch(0.88 0.07 205) 100%)",
+    accent: "linear-gradient(135deg, oklch(0.78 0.14 200), oklch(0.65 0.15 230))",
+    text: "oklch(0.22 0.1 258)", sub: "oklch(0.22 0.1 258 / 0.65)", track: "oklch(0.22 0.1 258 / 0.08)",
+  },
+  sky: {
+    bg: "linear-gradient(135deg, oklch(0.95 0.04 230) 0%, oklch(0.85 0.09 235) 100%)",
+    accent: "linear-gradient(135deg, oklch(0.55 0.18 245), oklch(0.78 0.14 200))",
+    text: "oklch(0.22 0.1 258)", sub: "oklch(0.22 0.1 258 / 0.65)", track: "oklch(0.22 0.1 258 / 0.08)",
+  },
+  // Tarjetas oscuras con los degradados principales de la web
+  hero: {
+    bg: "linear-gradient(135deg, oklch(0.18 0.1 258) 0%, oklch(0.32 0.16 250) 50%, oklch(0.55 0.16 215) 100%)",
+    accent: "linear-gradient(135deg, oklch(0.78 0.14 200), oklch(0.88 0.12 195))",
+    text: "#ffffff", sub: "oklch(1 0 0 / 0.72)", track: "oklch(1 0 0 / 0.16)",
+  },
+  deep: {
+    bg: "linear-gradient(180deg, oklch(0.22 0.1 258) 0%, oklch(0.12 0.08 258) 100%)",
+    accent: "linear-gradient(135deg, oklch(0.65 0.15 230), oklch(0.78 0.14 200))",
+    text: "#ffffff", sub: "oklch(1 0 0 / 0.72)", track: "oklch(1 0 0 / 0.16)",
+  },
 };
+
+const isDarkTone = (tone: CardTone) => tone === "hero" || tone === "deep";
 
 function startOfDay(d: Date) {
   const x = new Date(d);
@@ -236,15 +259,18 @@ function AnaliticaPage() {
         <div className="space-y-5">
           {/* Tarjetas KPI estilo Lovable */}
           <div className="grid grid-cols-2 md:grid-cols-5 gap-3 md:gap-4">
-            <KpiCard tone="cream" label="Visitantes"            value={stats.sessions.toLocaleString("es-EC")} />
-            <KpiCard tone="ocean" label="Vistas de página"      value={stats.pageviews.toLocaleString("es-EC")} />
-            <KpiCard tone="dark"  label="Vistas por visita"     value={stats.pvPerSession.toFixed(2)} />
-            <KpiCard tone="cyan"  label="Duración de la visita" value={formatDuration(stats.avgSessionSec)} />
-            <KpiCard tone="foam"  label="Tasa de rebote"        value={`${stats.bounceRate.toFixed(0)}%`} />
+            <KpiCard tone="foam" label="Visitantes"            value={stats.sessions.toLocaleString("es-EC")} />
+            <KpiCard tone="wave" label="Vistas de página"      value={stats.pageviews.toLocaleString("es-EC")} />
+            <KpiCard tone="hero" label="Vistas por visita"     value={stats.pvPerSession.toFixed(2)} />
+            <KpiCard tone="sky"  label="Duración de la visita" value={formatDuration(stats.avgSessionSec)} />
+            <KpiCard tone="deep" label="Tasa de rebote"        value={`${stats.bounceRate.toFixed(0)}%`} />
           </div>
 
           {/* Gráfico principal */}
-          <div className="rounded-3xl p-4 md:p-6" style={{ background: "#f6efe4" }}>
+          <div
+            className="rounded-3xl p-4 md:p-6"
+            style={{ background: "linear-gradient(135deg, oklch(0.98 0.015 220) 0%, oklch(0.93 0.05 210) 100%)" }}
+          >
             <div className="h-64 md:h-80">
               <ResponsiveContainer width="100%" height="100%">
                 <AreaChart data={stats.series} margin={{ top: 20, right: 30, left: 0, bottom: 0 }}>
@@ -277,10 +303,10 @@ function AnaliticaPage() {
 
           {/* Listas estilo Lovable */}
           <div className="grid grid-cols-1 md:grid-cols-4 gap-3 md:gap-4">
-            <ListCard tone="cream" title="Fuente"      keyLabel="Fuente"      items={stats.referrers} />
-            <ListCard tone="ocean" title="Página"      keyLabel="Página"      items={stats.topPaths} />
-            <ListCard tone="cyan"  title="País"        keyLabel="País"        items={stats.topCountries} mode="country" />
-            <ListCard tone="dark"  title="Dispositivo" keyLabel="Dispositivo" items={stats.devices} mode="percent" />
+            <ListCard tone="foam" title="Fuente"      keyLabel="Fuente"      items={stats.referrers} />
+            <ListCard tone="wave" title="Página"      keyLabel="Página"      items={stats.topPaths} />
+            <ListCard tone="sky"  title="País"        keyLabel="País"        items={stats.topCountries} mode="country" />
+            <ListCard tone="hero" title="Dispositivo" keyLabel="Dispositivo" items={stats.devices} mode="percent" />
           </div>
 
           {stats.pageviews === 0 && (
@@ -296,9 +322,10 @@ function AnaliticaPage() {
 
 function KpiCard({ tone, label, value }: { tone: CardTone; label: string; value: string }) {
   const t = TONES[tone];
+  const dark = isDarkTone(tone);
   return (
     <div
-      className="relative overflow-hidden rounded-2xl p-3 md:p-4 flex flex-col justify-between gap-3 min-h-[110px]"
+      className="relative overflow-hidden rounded-2xl p-3 md:p-4 flex flex-col justify-between gap-3 min-h-[110px] shadow-[0_8px_24px_-12px_oklch(0.22_0.1_258/0.25)]"
       style={{ background: t.bg, color: t.text }}
     >
       <div className="text-[11px] md:text-[12px] font-medium leading-snug" style={{ color: t.sub }}>
@@ -308,9 +335,9 @@ function KpiCard({ tone, label, value }: { tone: CardTone; label: string; value:
         <div className="text-xl md:text-2xl lg:text-[26px] font-bold tracking-tight leading-none">{value}</div>
         <div
           className="w-7 h-7 rounded-full flex items-center justify-center shrink-0"
-          style={{ background: t.accent, opacity: tone === "dark" ? 1 : 0.95 }}
+          style={{ background: t.accent }}
         >
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke={tone === "dark" ? "#0e2f4a" : "#fff"} strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
             <path d="M7 17 L17 7" />
             <path d="M9 7 L17 7 L17 15" />
           </svg>
@@ -330,17 +357,18 @@ function ListCard({
   mode?: "country" | "percent";
 }) {
   const t = TONES[tone];
+  const dark = isDarkTone(tone);
   const total = items.reduce((s, i) => s + i.value, 0) || 1;
   const max = items.reduce((m, i) => Math.max(m, i.value), 0) || 1;
   return (
     <div
-      className="relative overflow-hidden rounded-3xl p-5 md:p-6 min-h-[280px]"
+      className="relative overflow-hidden rounded-3xl p-5 md:p-6 min-h-[280px] shadow-[0_10px_30px_-12px_oklch(0.22_0.1_258/0.25)]"
       style={{ background: t.bg, color: t.text }}
     >
       <div className="flex items-center justify-between mb-4">
         <div className="text-base font-semibold">{title}</div>
         <div className="w-7 h-7 rounded-full flex items-center justify-center" style={{ background: t.accent }}>
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke={tone === "dark" ? "#0e2f4a" : "#fff"} strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
             <path d="M7 17 L17 7" /><path d="M9 7 L17 7 L17 15" />
           </svg>
         </div>
