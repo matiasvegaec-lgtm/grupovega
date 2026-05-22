@@ -1,7 +1,9 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
-import { Loader2, ChevronDown, TrendingUp, TrendingDown, Minus, Check, Clock, CalendarRange } from "lucide-react";
+import { Loader2, ChevronDown, TrendingUp, TrendingDown, Minus, Check, Clock, CalendarRange, Download } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import jsPDF from "jspdf";
+import autoTable from "jspdf-autotable";
 import {
   DropdownMenu,
   DropdownMenuTrigger,
@@ -286,6 +288,17 @@ function AnaliticaPage() {
           </span>
           <span className="font-medium">{stats?.liveNow ?? 0} visitantes ahora</span>
         </div>
+        <button
+          type="button"
+          onClick={() => stats && exportAnalyticsPDF(stats, range, RANGE_LABEL[range])}
+          disabled={!stats || loading}
+          className="inline-flex items-center gap-2 rounded-2xl px-3.5 py-2 text-sm font-semibold text-white shadow-[0_6px_18px_-8px_oklch(0.42_0.17_250/0.5)] hover:shadow-[0_10px_24px_-10px_oklch(0.42_0.17_250/0.6)] transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+          style={{ background: "linear-gradient(135deg, oklch(0.42 0.17 250) 0%, oklch(0.78 0.14 200) 100%)" }}
+          title="Exportar a PDF"
+        >
+          <Download className="w-4 h-4" />
+          <span className="hidden sm:inline">Exportar PDF</span>
+        </button>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <button
