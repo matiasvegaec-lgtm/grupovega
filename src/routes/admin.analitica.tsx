@@ -298,19 +298,19 @@ function KpiCard({ tone, label, value }: { tone: CardTone; label: string; value:
   const t = TONES[tone];
   return (
     <div
-      className="relative overflow-hidden rounded-3xl p-5 flex flex-col justify-between aspect-square min-h-[150px]"
+      className="relative overflow-hidden rounded-2xl p-3 md:p-4 flex flex-col justify-between gap-3 min-h-[110px]"
       style={{ background: t.bg, color: t.text }}
     >
-      <div className="text-[12px] font-medium leading-snug" style={{ color: t.sub }}>
+      <div className="text-[11px] md:text-[12px] font-medium leading-snug" style={{ color: t.sub }}>
         {label}
       </div>
       <div className="flex items-end justify-between">
-        <div className="text-[34px] md:text-[38px] font-bold tracking-tight leading-none">{value}</div>
+        <div className="text-xl md:text-2xl lg:text-[26px] font-bold tracking-tight leading-none">{value}</div>
         <div
-          className="w-9 h-9 rounded-full flex items-center justify-center"
+          className="w-7 h-7 rounded-full flex items-center justify-center shrink-0"
           style={{ background: t.accent, opacity: tone === "dark" ? 1 : 0.95 }}
         >
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke={tone === "dark" ? "#0e2f4a" : "#fff"} strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke={tone === "dark" ? "#0e2f4a" : "#fff"} strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
             <path d="M7 17 L17 7" />
             <path d="M9 7 L17 7 L17 15" />
           </svg>
