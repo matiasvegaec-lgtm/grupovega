@@ -487,6 +487,70 @@ function KpiCard({ tone, label, value }: { tone: CardTone; label: string; value:
   );
 }
 
+function DeltaBadge({ value }: { value: number | null }) {
+  if (value === null || !isFinite(value)) {
+    return (
+      <span className="inline-flex items-center gap-1 text-[11px] font-semibold px-2 py-0.5 rounded-full bg-navy-deep/5 text-navy-deep/60">
+        <Minus className="w-3 h-3" /> sin datos
+      </span>
+    );
+  }
+  const up = value >= 0;
+  return (
+    <span
+      className={`inline-flex items-center gap-1 text-[11px] font-semibold px-2 py-0.5 rounded-full ${
+        up ? "bg-emerald-500/12 text-emerald-700" : "bg-rose-500/12 text-rose-700"
+      }`}
+    >
+      {up ? <TrendingUp className="w-3 h-3" /> : <TrendingDown className="w-3 h-3" />}
+      {up ? "+" : ""}
+      {value.toFixed(1)}%
+    </span>
+  );
+}
+
+type TooltipPayload = { payload: { label: string; sesiones: number; visitas: number; prevSesiones: number; prevVisitas: number } };
+function ChartTooltip({
+  active, payload, metric, compare,
+}: {
+  active?: boolean;
+  payload?: TooltipPayload[];
+  metric: "sesiones" | "visitas";
+  compare: boolean;
+}) {
+  if (!active || !payload || !payload.length) return null;
+  const p = payload[0].payload;
+  const cur = metric === "sesiones" ? p.sesiones : p.visitas;
+  const prev = metric === "sesiones" ? p.prevSesiones : p.prevVisitas;
+  const diff = prev > 0 ? ((cur - prev) / prev) * 100 : null;
+  return (
+    <div className="rounded-xl bg-white/95 backdrop-blur px-3 py-2 shadow-[0_10px_30px_-12px_rgba(15,23,42,0.25)] border border-navy-deep/10 text-[12px] min-w-[160px]">
+      <div className="font-semibold text-navy-deep mb-1">{p.label}</div>
+      <div className="flex items-center justify-between gap-3">
+        <span className="inline-flex items-center gap-1.5 text-navy-deep/70">
+          <span className="inline-block w-2 h-2 rounded-full" style={{ background: "#0ea5b7" }} />
+          {metric === "sesiones" ? "Visitantes" : "Vistas"}
+        </span>
+        <span className="font-semibold text-navy-deep tabular-nums">{cur.toLocaleString("es-EC")}</span>
+      </div>
+      {compare && (
+        <div className="flex items-center justify-between gap-3 mt-1">
+          <span className="inline-flex items-center gap-1.5 text-navy-deep/50">
+            <span className="inline-block w-2 h-2 rounded-full" style={{ background: "#94a3b8" }} />
+            Anterior
+          </span>
+          <span className="font-medium text-navy-deep/70 tabular-nums">{prev.toLocaleString("es-EC")}</span>
+        </div>
+      )}
+      {compare && diff !== null && (
+        <div className={`mt-1 text-[11px] font-semibold ${diff >= 0 ? "text-emerald-600" : "text-rose-600"}`}>
+          {diff >= 0 ? "▲" : "▼"} {Math.abs(diff).toFixed(1)}% vs anterior
+        </div>
+      )}
+    </div>
+  );
+}
+
 function ListCard({
   tone, title, keyLabel, items, mode,
 }: {
