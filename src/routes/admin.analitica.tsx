@@ -81,15 +81,6 @@ const TONES: Record<CardTone, { bg: string; accent: string; text: string; sub: s
 
 const isDarkTone = (tone: CardTone) => tone === "hero" || tone === "deep";
 
-function startOfDay(d: Date) {
-  const x = new Date(d);
-  x.setHours(0, 0, 0, 0);
-  return x;
-}
-
-function formatDayLabel(d: Date) {
-  return d.toLocaleDateString("es-EC", { day: "2-digit", month: "short" });
-}
 
 function formatDuration(seconds: number) {
   if (!seconds || !isFinite(seconds)) return "0s";
