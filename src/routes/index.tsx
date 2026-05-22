@@ -64,6 +64,9 @@ export const Route = createFileRoute("/")({
       { property: "og:title", content: "Grupo Vega — Industria Camaronera" },
       { property: "og:description", content: "Insumos y equipos para camaroneras del Ecuador." },
       { property: "og:url", content: "https://grupovega.lovable.app/" },
+      { property: "og:type", content: "website" },
+      { property: "og:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/5f5XTXezHfbqfnSknv41Q2zwlNT2/social-images/social-1777859714361-imagen_bodega_grupo_vega.webp" },
+      { name: "twitter:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/5f5XTXezHfbqfnSknv41Q2zwlNT2/social-images/social-1777859714361-imagen_bodega_grupo_vega.webp" },
     ],
     links: [
       { rel: "canonical", href: "https://grupovega.lovable.app/" },
