@@ -35,14 +35,15 @@ const RANGE_LABEL: Record<Range, string> = {
   "90d": "Últimos 90 días",
 };
 
-// Paleta sobria alineada con la marca (marina / navy / turquesa)
-type CardTone = "ocean" | "navy" | "turquoise" | "sky" | "slate";
-const TONES: Record<CardTone, { accent: string; soft: string }> = {
-  ocean:     { accent: "#1d6fa5", soft: "#eef4fa" },
-  navy:      { accent: "#1e3a5f", soft: "#eef1f6" },
-  turquoise: { accent: "#0ea5b7", soft: "#e8f5f6" },
-  sky:       { accent: "#3b82c4", soft: "#eef4fa" },
-  slate:     { accent: "#475569", soft: "#f1f3f6" },
+// Paleta estilo "Crextio" adaptada a marca (océano + cyan)
+// soft = fondo de tarjeta, accent = color de barra/acento
+type CardTone = "cream" | "ocean" | "cyan" | "foam" | "dark";
+const TONES: Record<CardTone, { bg: string; accent: string; text: string; sub: string; track: string }> = {
+  cream: { bg: "#f6efe4", accent: "#0ea5b7", text: "#0e2f4a", sub: "#0e2f4a99", track: "#0e2f4a14" },
+  ocean: { bg: "#dbe9f3", accent: "#1d6fa5", text: "#0e2f4a", sub: "#0e2f4a99", track: "#0e2f4a14" },
+  cyan:  { bg: "#d4ecef", accent: "#0a8b9c", text: "#0a3a4a", sub: "#0a3a4a99", track: "#0a3a4a14" },
+  foam:  { bg: "#eaf3f5", accent: "#0ea5b7", text: "#0e2f4a", sub: "#0e2f4a99", track: "#0e2f4a14" },
+  dark:  { bg: "#0e2f4a", accent: "#22d3ee", text: "#ffffff", sub: "#ffffffaa", track: "#ffffff1f" },
 };
 
 function startOfDay(d: Date) {
