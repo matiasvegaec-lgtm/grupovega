@@ -1,13 +1,12 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
-import { Loader2, TrendingUp, Eye, Users, Clock, Globe, Smartphone, Monitor, FileText } from "lucide-react";
+import { Loader2, ChevronDown } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import {
   AreaChart,
   Area,
   XAxis,
   YAxis,
-  CartesianGrid,
   Tooltip,
   ResponsiveContainer,
 } from "recharts";
@@ -36,6 +35,16 @@ const RANGE_LABEL: Record<Range, string> = {
   "90d": "Últimos 90 días",
 };
 
+// Paleta inspirada en el dashboard analítico de Lovable
+type CardTone = "teal" | "navy" | "cyan" | "orange" | "purple";
+const TONES: Record<CardTone, { bg: string; wave: string; accent: string }> = {
+  teal:   { bg: "linear-gradient(135deg,#0d4a5c 0%,#0a3a4a 100%)", wave: "#15b3c4", accent: "#5ee0e8" },
+  navy:   { bg: "linear-gradient(135deg,#0e2f4a 0%,#0a2438 100%)", wave: "#1d6fa5", accent: "#4ea3d8" },
+  cyan:   { bg: "linear-gradient(135deg,#0a6e7a 0%,#085560 100%)", wave: "#22c8cf", accent: "#6df0f0" },
+  orange: { bg: "linear-gradient(135deg,#c25a1a 0%,#a8430f 100%)", wave: "#ff8b3d", accent: "#ffc28a" },
+  purple: { bg: "linear-gradient(135deg,#3b3473 0%,#2a2657 100%)", wave: "#6a5fbf", accent: "#9d92e8" },
+};
+
 function startOfDay(d: Date) {
   const x = new Date(d);
   x.setHours(0, 0, 0, 0);
@@ -44,6 +53,29 @@ function startOfDay(d: Date) {
 
 function formatDayLabel(d: Date) {
   return d.toLocaleDateString("es-EC", { day: "2-digit", month: "short" });
+}
+
+function formatDuration(seconds: number) {
+  if (!seconds || !isFinite(seconds)) return "0s";
+  const m = Math.floor(seconds / 60);
+  const s = Math.round(seconds % 60);
+  if (m === 0) return `${s}s`;
+  return `${m}m ${s}s`;
+}
+
+const COUNTRY_NAMES: Record<string, string> = {
+  EC: "Ecuador", US: "EE. UU. Estados Unidos", CO: "Colombia", IT: "Italia",
+  MX: "México", ES: "España", AR: "Argentina", PE: "Perú", CL: "Chile",
+  VE: "Venezuela", BR: "Brasil", CA: "Canadá", FR: "Francia", DE: "Alemania",
+  GB: "Reino Unido",
+};
+function countryFlag(code: string) {
+  if (!code || code.length !== 2) return "🌐";
+  const A = 0x1f1e6;
+  return String.fromCodePoint(...[...code.toUpperCase()].map((c) => A + c.charCodeAt(0) - 65));
+}
+function countryName(code: string) {
+  return COUNTRY_NAMES[code?.toUpperCase()] ?? code ?? "Desconocido";
 }
 
 function AnaliticaPage() {
