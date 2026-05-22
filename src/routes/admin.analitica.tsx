@@ -259,9 +259,9 @@ function AnaliticaPage() {
         <div className="space-y-5">
           {/* Tarjetas KPI estilo Lovable */}
           <div className="grid grid-cols-2 md:grid-cols-5 gap-3 md:gap-4">
-            <KpiCard tone="foam" label="Visitantes"            value={stats.sessions.toLocaleString("es-EC")} />
+            <KpiCard tone="hero" label="Visitantes"            value={stats.sessions.toLocaleString("es-EC")} />
             <KpiCard tone="wave" label="Vistas de página"      value={stats.pageviews.toLocaleString("es-EC")} />
-            <KpiCard tone="hero" label="Vistas por visita"     value={stats.pvPerSession.toFixed(2)} />
+            <KpiCard tone="foam" label="Vistas por visita"     value={stats.pvPerSession.toFixed(2)} />
             <KpiCard tone="sky"  label="Duración de la visita" value={formatDuration(stats.avgSessionSec)} />
             <KpiCard tone="deep" label="Tasa de rebote"        value={`${stats.bounceRate.toFixed(0)}%`} />
           </div>
