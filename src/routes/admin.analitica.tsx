@@ -35,14 +35,14 @@ const RANGE_LABEL: Record<Range, string> = {
   "90d": "Últimos 90 días",
 };
 
-// Paleta inspirada en el dashboard analítico de Lovable
-type CardTone = "teal" | "navy" | "cyan" | "orange" | "purple";
-const TONES: Record<CardTone, { bg: string; wave: string; accent: string }> = {
-  teal:   { bg: "linear-gradient(135deg,#0d4a5c 0%,#0a3a4a 100%)", wave: "#15b3c4", accent: "#5ee0e8" },
-  navy:   { bg: "linear-gradient(135deg,#0e2f4a 0%,#0a2438 100%)", wave: "#1d6fa5", accent: "#4ea3d8" },
-  cyan:   { bg: "linear-gradient(135deg,#0a6e7a 0%,#085560 100%)", wave: "#22c8cf", accent: "#6df0f0" },
-  orange: { bg: "linear-gradient(135deg,#c25a1a 0%,#a8430f 100%)", wave: "#ff8b3d", accent: "#ffc28a" },
-  purple: { bg: "linear-gradient(135deg,#3b3473 0%,#2a2657 100%)", wave: "#6a5fbf", accent: "#9d92e8" },
+// Paleta sobria alineada con la marca (marina / navy / turquesa)
+type CardTone = "ocean" | "navy" | "turquoise" | "sky" | "slate";
+const TONES: Record<CardTone, { accent: string; soft: string }> = {
+  ocean:     { accent: "#1d6fa5", soft: "#eef4fa" },
+  navy:      { accent: "#1e3a5f", soft: "#eef1f6" },
+  turquoise: { accent: "#0ea5b7", soft: "#e8f5f6" },
+  sky:       { accent: "#3b82c4", soft: "#eef4fa" },
+  slate:     { accent: "#475569", soft: "#f1f3f6" },
 };
 
 function startOfDay(d: Date) {
