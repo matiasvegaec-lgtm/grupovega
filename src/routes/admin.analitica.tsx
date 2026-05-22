@@ -18,7 +18,7 @@ export const Route = createFileRoute("/admin/analitica")({
   component: AnaliticaPage,
 });
 
-type Range = "7d" | "30d" | "90d";
+type Range = "1h" | "24h" | "7d" | "30d" | "90d";
 
 type Row = {
   path: string;
@@ -30,11 +30,21 @@ type Row = {
   created_at: string;
 };
 
-const RANGE_DAYS: Record<Range, number> = { "7d": 7, "30d": 30, "90d": 90 };
 const RANGE_LABEL: Record<Range, string> = {
+  "1h": "Última hora",
+  "24h": "Últimas 24 horas",
   "7d": "Últimos 7 días",
   "30d": "Últimos 30 días",
   "90d": "Últimos 90 días",
+};
+
+// Cuántos ms abarca el rango y cómo se divide en buckets
+const RANGE_SPEC: Record<Range, { spanMs: number; bucketMs: number; buckets: number; fmt: (d: Date) => string }> = {
+  "1h":  { spanMs: 60 * 60 * 1000,            bucketMs: 5 * 60 * 1000,       buckets: 12, fmt: (d) => d.toLocaleTimeString("es-EC", { hour: "2-digit", minute: "2-digit" }) },
+  "24h": { spanMs: 24 * 60 * 60 * 1000,       bucketMs: 60 * 60 * 1000,      buckets: 24, fmt: (d) => d.toLocaleTimeString("es-EC", { hour: "2-digit" }) + "h" },
+  "7d":  { spanMs: 7 * 86400000,              bucketMs: 86400000,            buckets: 7,  fmt: (d) => d.toLocaleDateString("es-EC", { day: "2-digit", month: "short" }) },
+  "30d": { spanMs: 30 * 86400000,             bucketMs: 86400000,            buckets: 30, fmt: (d) => d.toLocaleDateString("es-EC", { day: "2-digit", month: "short" }) },
+  "90d": { spanMs: 90 * 86400000,             bucketMs: 86400000,            buckets: 90, fmt: (d) => d.toLocaleDateString("es-EC", { day: "2-digit", month: "short" }) },
 };
 
 // Paleta basada en los degradados de marca (navy → ocean → turquoise)
@@ -71,15 +81,6 @@ const TONES: Record<CardTone, { bg: string; accent: string; text: string; sub: s
 
 const isDarkTone = (tone: CardTone) => tone === "hero" || tone === "deep";
 
-function startOfDay(d: Date) {
-  const x = new Date(d);
-  x.setHours(0, 0, 0, 0);
-  return x;
-}
-
-function formatDayLabel(d: Date) {
-  return d.toLocaleDateString("es-EC", { day: "2-digit", month: "short" });
-}
 
 function formatDuration(seconds: number) {
   if (!seconds || !isFinite(seconds)) return "0s";
@@ -117,11 +118,9 @@ function AnaliticaPage() {
     let cancelled = false;
     setLoading(true);
     setError(null);
-    const days = RANGE_DAYS[range];
-    const since = new Date();
-    since.setDate(since.getDate() - days);
-    const prevSince = new Date(since);
-    prevSince.setDate(prevSince.getDate() - days);
+    const spec = RANGE_SPEC[range];
+    const since = new Date(Date.now() - spec.spanMs);
+    const prevSince = new Date(since.getTime() - spec.spanMs);
 
     Promise.all([
       supabase
@@ -150,7 +149,8 @@ function AnaliticaPage() {
 
   const stats = useMemo(() => {
     if (!rows) return null;
-    const days = RANGE_DAYS[range];
+    const spec = RANGE_SPEC[range];
+    const { bucketMs, buckets, fmt } = spec;
     const pageviews = rows.length;
     const sessions = new Set(rows.map((r) => r.session_id)).size;
     const uniquePaths = new Set(rows.map((r) => r.path)).size;
@@ -175,49 +175,39 @@ function AnaliticaPage() {
     sessionTimes.forEach((v) => { totalSec += (v.max - v.min) / 1000; counted++; });
     const avgSessionSec = counted > 0 ? totalSec / counted : 0;
 
-    // Serie temporal por día
-    const today = startOfDay(new Date());
-    const seriesMap = new Map<string, { date: Date; visitas: number; sesiones: Set<string> }>();
-    for (let i = days - 1; i >= 0; i--) {
-      const d = new Date(today);
-      d.setDate(d.getDate() - i);
-      seriesMap.set(d.toISOString().slice(0, 10), { date: d, visitas: 0, sesiones: new Set() });
-    }
-    rows.forEach((r) => {
-      const key = r.created_at.slice(0, 10);
-      const entry = seriesMap.get(key);
-      if (entry) {
-        entry.visitas++;
-        entry.sesiones.add(r.session_id);
-      }
-    });
-    const series = Array.from(seriesMap.values()).map((e) => ({
-      label: formatDayLabel(e.date),
-      visitas: e.visitas,
-      sesiones: e.sesiones.size,
-    }));
+    // Serie temporal según el tamaño del bucket (alineada al "ahora")
+    const now = Date.now();
+    // Alineamos el final del último bucket al ahora redondeado hacia abajo
+    const lastEdge = Math.floor(now / bucketMs) * bucketMs + bucketMs;
+    const startEdge = lastEdge - bucketMs * buckets;
+    const prevStartEdge = startEdge - bucketMs * buckets;
 
-    // Serie período anterior (alineada por índice de día)
-    const prevSeriesArr: { visitas: number; sesiones: number }[] = Array.from(
-      { length: days },
-      () => ({ visitas: 0, sesiones: 0 })
-    );
-    const prevSessionsByIdx: Set<string>[] = Array.from({ length: days }, () => new Set());
-    const prevStart = new Date(today);
-    prevStart.setDate(prevStart.getDate() - days * 2 + 1);
-    (prevRows ?? []).forEach((r) => {
-      const t = startOfDay(new Date(r.created_at)).getTime();
-      const idx = Math.floor((t - prevStart.getTime()) / 86400000);
-      if (idx >= 0 && idx < days) {
-        prevSeriesArr[idx].visitas++;
-        prevSessionsByIdx[idx].add(r.session_id);
+    const curVisitas = new Array<number>(buckets).fill(0);
+    const curSessionSets: Set<string>[] = Array.from({ length: buckets }, () => new Set());
+    rows.forEach((r) => {
+      const t = new Date(r.created_at).getTime();
+      const idx = Math.floor((t - startEdge) / bucketMs);
+      if (idx >= 0 && idx < buckets) {
+        curVisitas[idx]++;
+        curSessionSets[idx].add(r.session_id);
       }
     });
-    prevSeriesArr.forEach((e, i) => (e.sesiones = prevSessionsByIdx[i].size));
-    const seriesWithPrev = series.map((s, i) => ({
-      ...s,
-      prevVisitas: prevSeriesArr[i]?.visitas ?? 0,
-      prevSesiones: prevSeriesArr[i]?.sesiones ?? 0,
+    const prevVisitasArr = new Array<number>(buckets).fill(0);
+    const prevSessionSets: Set<string>[] = Array.from({ length: buckets }, () => new Set());
+    (prevRows ?? []).forEach((r) => {
+      const t = new Date(r.created_at).getTime();
+      const idx = Math.floor((t - prevStartEdge) / bucketMs);
+      if (idx >= 0 && idx < buckets) {
+        prevVisitasArr[idx]++;
+        prevSessionSets[idx].add(r.session_id);
+      }
+    });
+    const seriesWithPrev = Array.from({ length: buckets }, (_, i) => ({
+      label: fmt(new Date(startEdge + i * bucketMs)),
+      visitas: curVisitas[i],
+      sesiones: curSessionSets[i].size,
+      prevVisitas: prevVisitasArr[i],
+      prevSesiones: prevSessionSets[i].size,
     }));
 
     // Totales período anterior + deltas
