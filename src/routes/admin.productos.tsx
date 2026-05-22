@@ -5,6 +5,54 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { ImageAdjuster } from "@/components/ImageAdjuster";
 
+/**
+ * Convierte los píxeles de chroma-key verde (~#00FF00) de un PNG generado
+ * por la IA en píxeles totalmente transparentes. Devuelve un nuevo Blob PNG.
+ */
+async function chromaKeyToTransparent(blob: Blob): Promise<Blob> {
+  const url = URL.createObjectURL(blob);
+  try {
+    const img = await new Promise<HTMLImageElement>((resolve, reject) => {
+      const i = new Image();
+      i.onload = () => resolve(i);
+      i.onerror = reject;
+      i.src = url;
+    });
+    const canvas = document.createElement("canvas");
+    canvas.width = img.naturalWidth;
+    canvas.height = img.naturalHeight;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return blob;
+    ctx.drawImage(img, 0, 0);
+    const data = ctx.getImageData(0, 0, canvas.width, canvas.height);
+    const px = data.data;
+    for (let i = 0; i < px.length; i += 4) {
+      const r = px[i];
+      const g = px[i + 1];
+      const b = px[i + 2];
+      // "Verde dominante": componente verde alto, rojo y azul bajos respecto al verde
+      if (g > 120 && g > r + 40 && g > b + 40) {
+        // Fuerte verde -> totalmente transparente
+        px[i + 3] = 0;
+      } else if (g > 90 && g > r + 15 && g > b + 15) {
+        // Borde con derrame verde: reducir el verde y suavizar el alpha
+        const excess = Math.min(g - Math.max(r, b), 120);
+        px[i + 1] = Math.max(r, b);
+        px[i + 3] = Math.max(0, 255 - excess * 2);
+      }
+    }
+    ctx.putImageData(data, 0, 0);
+    return await new Promise<Blob>((resolve, reject) => {
+      canvas.toBlob(
+        (b) => (b ? resolve(b) : reject(new Error("toBlob falló"))),
+        "image/png",
+      );
+    });
+  } finally {
+    URL.revokeObjectURL(url);
+  }
+}
+
 type Product = {
   id: string;
   name: string;
