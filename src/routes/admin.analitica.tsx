@@ -292,14 +292,27 @@ function AnaliticaPage() {
         </div>
         <button
           type="button"
-          onClick={() => stats && exportAnalyticsPDF(stats, range, RANGE_LABEL[range])}
-          disabled={!stats || loading}
+          onClick={async () => {
+            if (!stats) return;
+            setExporting(true);
+            try {
+              const chartImg = await captureChartPNG(chartRef.current);
+              await exportAnalyticsPDF(stats, range, RANGE_LABEL[range], {
+                chartImg,
+                compare,
+                metric,
+              });
+            } finally {
+              setExporting(false);
+            }
+          }}
+          disabled={!stats || loading || exporting}
           className="inline-flex items-center gap-2 rounded-2xl px-3.5 py-2 text-sm font-semibold text-white shadow-[0_6px_18px_-8px_oklch(0.42_0.17_250/0.5)] hover:shadow-[0_10px_24px_-10px_oklch(0.42_0.17_250/0.6)] transition-all disabled:opacity-50 disabled:cursor-not-allowed"
           style={{ background: "linear-gradient(135deg, oklch(0.42 0.17 250) 0%, oklch(0.78 0.14 200) 100%)" }}
           title="Exportar a PDF"
         >
-          <Download className="w-4 h-4" />
-          <span className="hidden sm:inline">Exportar PDF</span>
+          {exporting ? <Loader2 className="w-4 h-4 animate-spin" /> : <Download className="w-4 h-4" />}
+          <span className="hidden sm:inline">{exporting ? "Generando…" : "Exportar PDF"}</span>
         </button>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
