@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
-import { Loader2, ChevronDown } from "lucide-react";
+import { Loader2, ChevronDown, TrendingUp, TrendingDown, Minus } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import {
   AreaChart,
@@ -9,6 +9,8 @@ import {
   YAxis,
   Tooltip,
   ResponsiveContainer,
+  CartesianGrid,
+  Line,
 } from "recharts";
 
 export const Route = createFileRoute("/admin/analitica")({
@@ -105,6 +107,9 @@ function countryName(code: string) {
 function AnaliticaPage() {
   const [range, setRange] = useState<Range>("7d");
   const [rows, setRows] = useState<Row[] | null>(null);
+  const [prevRows, setPrevRows] = useState<Row[] | null>(null);
+  const [metric, setMetric] = useState<"sesiones" | "visitas">("sesiones");
+  const [compare, setCompare] = useState(true);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -112,20 +117,32 @@ function AnaliticaPage() {
     let cancelled = false;
     setLoading(true);
     setError(null);
+    const days = RANGE_DAYS[range];
     const since = new Date();
-    since.setDate(since.getDate() - RANGE_DAYS[range]);
-    supabase
-      .from("page_views")
-      .select("path,session_id,device,browser,country,referrer,created_at")
-      .gte("created_at", since.toISOString())
-      .order("created_at", { ascending: false })
-      .limit(10000)
-      .then(({ data, error }) => {
-        if (cancelled) return;
-        if (error) setError(error.message);
-        setRows((data as Row[]) ?? []);
-        setLoading(false);
-      });
+    since.setDate(since.getDate() - days);
+    const prevSince = new Date(since);
+    prevSince.setDate(prevSince.getDate() - days);
+
+    Promise.all([
+      supabase
+        .from("page_views")
+        .select("path,session_id,device,browser,country,referrer,created_at")
+        .gte("created_at", since.toISOString())
+        .order("created_at", { ascending: false })
+        .limit(10000),
+      supabase
+        .from("page_views")
+        .select("session_id,created_at")
+        .gte("created_at", prevSince.toISOString())
+        .lt("created_at", since.toISOString())
+        .limit(10000),
+    ]).then(([curRes, prevRes]) => {
+      if (cancelled) return;
+      if (curRes.error) setError(curRes.error.message);
+      setRows((curRes.data as Row[]) ?? []);
+      setPrevRows((prevRes.data as Row[]) ?? []);
+      setLoading(false);
+    });
     return () => {
       cancelled = true;
     };
@@ -180,6 +197,47 @@ function AnaliticaPage() {
       sesiones: e.sesiones.size,
     }));
 
+    // Serie período anterior (alineada por índice de día)
+    const prevSeriesArr: { visitas: number; sesiones: number }[] = Array.from(
+      { length: days },
+      () => ({ visitas: 0, sesiones: 0 })
+    );
+    const prevSessionsByIdx: Set<string>[] = Array.from({ length: days }, () => new Set());
+    const prevStart = new Date(today);
+    prevStart.setDate(prevStart.getDate() - days * 2 + 1);
+    (prevRows ?? []).forEach((r) => {
+      const t = startOfDay(new Date(r.created_at)).getTime();
+      const idx = Math.floor((t - prevStart.getTime()) / 86400000);
+      if (idx >= 0 && idx < days) {
+        prevSeriesArr[idx].visitas++;
+        prevSessionsByIdx[idx].add(r.session_id);
+      }
+    });
+    prevSeriesArr.forEach((e, i) => (e.sesiones = prevSessionsByIdx[i].size));
+    const seriesWithPrev = series.map((s, i) => ({
+      ...s,
+      prevVisitas: prevSeriesArr[i]?.visitas ?? 0,
+      prevSesiones: prevSeriesArr[i]?.sesiones ?? 0,
+    }));
+
+    // Totales período anterior + deltas
+    const prevPageviews = (prevRows ?? []).length;
+    const prevSessions = new Set((prevRows ?? []).map((r) => r.session_id)).size;
+    const deltaPv = prevPageviews > 0 ? ((pageviews - prevPageviews) / prevPageviews) * 100 : null;
+    const deltaSe = prevSessions > 0 ? ((sessions - prevSessions) / prevSessions) * 100 : null;
+
+    // Pico
+    const peak = seriesWithPrev.reduce(
+      (m, s) => (s.sesiones > m.sesiones ? s : m),
+      seriesWithPrev[0] ?? { label: "—", sesiones: 0, visitas: 0, prevSesiones: 0, prevVisitas: 0 }
+    );
+
+    // Visitantes "ahora" (últimos 5 minutos)
+    const fiveMinAgo = Date.now() - 5 * 60 * 1000;
+    const liveNow = new Set(
+      rows.filter((r) => new Date(r.created_at).getTime() >= fiveMinAgo).map((r) => r.session_id)
+    ).size;
+
     // Helpers para top-N
     const topN = (key: keyof Row, n = 8, fallback = "Desconocido") => {
       const counts = new Map<string, number>();
@@ -215,9 +273,10 @@ function AnaliticaPage() {
 
     return {
       pageviews, sessions, uniquePaths, pvPerSession, bounceRate, avgSessionSec,
-      series, topPaths, topCountries, devices, browsers, referrers,
+      series: seriesWithPrev, topPaths, topCountries, devices, browsers, referrers,
+      prevPageviews, prevSessions, deltaPv, deltaSe, peak, liveNow,
     };
-  }, [rows, range]);
+  }, [rows, prevRows, range]);
 
   return (
     <div className="p-4 md:p-8 max-w-7xl mx-auto">
@@ -227,7 +286,7 @@ function AnaliticaPage() {
             <span className="absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-60 animate-ping" />
             <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500" />
           </span>
-          <span className="font-medium">0 visitantes actuales</span>
+          <span className="font-medium">{stats?.liveNow ?? 0} visitantes ahora</span>
         </div>
         <div className="relative">
           <select
@@ -271,25 +330,106 @@ function AnaliticaPage() {
             className="rounded-3xl p-4 md:p-6"
             style={{ background: "linear-gradient(135deg, oklch(0.98 0.015 220) 0%, oklch(0.93 0.05 210) 100%)" }}
           >
+            {/* Cabecera del gráfico */}
+            <div className="flex flex-wrap items-end justify-between gap-3 mb-4">
+              <div className="min-w-0">
+                <div className="text-[11px] uppercase tracking-wider font-semibold text-navy-deep/60">
+                  {metric === "sesiones" ? "Visitantes únicos" : "Vistas de página"}
+                </div>
+                <div className="flex items-baseline gap-3 mt-1">
+                  <div className="text-3xl md:text-4xl font-bold tracking-tight text-navy-deep tabular-nums">
+                    {(metric === "sesiones" ? stats.sessions : stats.pageviews).toLocaleString("es-EC")}
+                  </div>
+                  <DeltaBadge value={metric === "sesiones" ? stats.deltaSe : stats.deltaPv} />
+                </div>
+                <div className="text-xs text-navy-deep/60 mt-1">
+                  vs período anterior:{" "}
+                  <span className="font-semibold text-navy-deep/80 tabular-nums">
+                    {(metric === "sesiones" ? stats.prevSessions : stats.prevPageviews).toLocaleString("es-EC")}
+                  </span>
+                  {stats.peak && stats.peak.sesiones > 0 && (
+                    <>
+                      <span className="mx-2 text-navy-deep/30">·</span>
+                      Pico el <span className="font-semibold text-navy-deep/80">{stats.peak.label}</span>{" "}
+                      ({stats.peak[metric === "sesiones" ? "sesiones" : "visitas"]})
+                    </>
+                  )}
+                </div>
+              </div>
+              <div className="flex items-center gap-2">
+                <div className="inline-flex p-0.5 rounded-full bg-navy-deep/5 border border-navy-deep/10">
+                  {(["sesiones", "visitas"] as const).map((m) => (
+                    <button
+                      key={m}
+                      onClick={() => setMetric(m)}
+                      className={`px-3 py-1 text-xs font-semibold rounded-full transition ${
+                        metric === m
+                          ? "bg-white text-navy-deep shadow-sm"
+                          : "text-navy-deep/60 hover:text-navy-deep"
+                      }`}
+                    >
+                      {m === "sesiones" ? "Visitantes" : "Vistas"}
+                    </button>
+                  ))}
+                </div>
+                <button
+                  onClick={() => setCompare((c) => !c)}
+                  className={`px-3 py-1 text-xs font-semibold rounded-full border transition ${
+                    compare
+                      ? "bg-navy-deep text-white border-navy-deep"
+                      : "bg-transparent text-navy-deep/70 border-navy-deep/15 hover:bg-navy-deep/5"
+                  }`}
+                  title="Comparar con período anterior"
+                >
+                  Comparar
+                </button>
+              </div>
+            </div>
+
+            {/* Leyenda */}
+            <div className="flex items-center gap-4 mb-2 text-xs text-navy-deep/70">
+              <span className="inline-flex items-center gap-1.5">
+                <span className="inline-block w-3 h-[3px] rounded-full" style={{ background: "#0ea5b7" }} />
+                Actual
+              </span>
+              {compare && (
+                <span className="inline-flex items-center gap-1.5">
+                  <span className="inline-block w-3 h-[2px] rounded-full" style={{ background: "#94a3b8" }} />
+                  Período anterior
+                </span>
+              )}
+            </div>
+
             <div className="h-64 md:h-80">
               <ResponsiveContainer width="100%" height="100%">
-                <AreaChart data={stats.series} margin={{ top: 20, right: 30, left: 0, bottom: 0 }}>
+                <AreaChart data={stats.series} margin={{ top: 10, right: 20, left: 0, bottom: 0 }}>
                   <defs>
                     <linearGradient id="gradMain" x1="0" y1="0" x2="0" y2="1">
                       <stop offset="0%" stopColor="#22d3ee" stopOpacity={0.55} />
                       <stop offset="100%" stopColor="#22d3ee" stopOpacity={0} />
                     </linearGradient>
                   </defs>
+                  <CartesianGrid strokeDasharray="3 3" stroke="#0e2f4a14" vertical={false} />
                   <XAxis dataKey="label" tick={{ fontSize: 11, fill: "#475569" }} axisLine={false} tickLine={false} />
                   <YAxis tick={{ fontSize: 11, fill: "#475569" }} axisLine={false} tickLine={false} allowDecimals={false} width={30} />
                   <Tooltip
-                    contentStyle={{ borderRadius: 10, border: "none", fontSize: 12, boxShadow: "0 6px 24px rgba(0,0,0,.12)" }}
-                    labelStyle={{ fontWeight: 600, color: "#0f172a" }}
-                    formatter={(v: number) => [v, "Visitantes"]}
+                    cursor={{ stroke: "#0ea5b7", strokeWidth: 1, strokeDasharray: "4 4" }}
+                    content={<ChartTooltip metric={metric} compare={compare} />}
                   />
+                  {compare && (
+                    <Line
+                      type="monotone"
+                      dataKey={metric === "sesiones" ? "prevSesiones" : "prevVisitas"}
+                      stroke="#94a3b8"
+                      strokeWidth={1.5}
+                      strokeDasharray="5 4"
+                      dot={false}
+                      activeDot={{ r: 3, fill: "#94a3b8" }}
+                    />
+                  )}
                   <Area
                     type="monotone"
-                    dataKey="visitas"
+                    dataKey={metric === "sesiones" ? "sesiones" : "visitas"}
                     stroke="#0ea5b7"
                     strokeWidth={2.5}
                     fill="url(#gradMain)"
@@ -343,6 +483,70 @@ function KpiCard({ tone, label, value }: { tone: CardTone; label: string; value:
           </svg>
         </div>
       </div>
+    </div>
+  );
+}
+
+function DeltaBadge({ value }: { value: number | null }) {
+  if (value === null || !isFinite(value)) {
+    return (
+      <span className="inline-flex items-center gap-1 text-[11px] font-semibold px-2 py-0.5 rounded-full bg-navy-deep/5 text-navy-deep/60">
+        <Minus className="w-3 h-3" /> sin datos
+      </span>
+    );
+  }
+  const up = value >= 0;
+  return (
+    <span
+      className={`inline-flex items-center gap-1 text-[11px] font-semibold px-2 py-0.5 rounded-full ${
+        up ? "bg-emerald-500/12 text-emerald-700" : "bg-rose-500/12 text-rose-700"
+      }`}
+    >
+      {up ? <TrendingUp className="w-3 h-3" /> : <TrendingDown className="w-3 h-3" />}
+      {up ? "+" : ""}
+      {value.toFixed(1)}%
+    </span>
+  );
+}
+
+type TooltipPayload = { payload: { label: string; sesiones: number; visitas: number; prevSesiones: number; prevVisitas: number } };
+function ChartTooltip({
+  active, payload, metric, compare,
+}: {
+  active?: boolean;
+  payload?: TooltipPayload[];
+  metric: "sesiones" | "visitas";
+  compare: boolean;
+}) {
+  if (!active || !payload || !payload.length) return null;
+  const p = payload[0].payload;
+  const cur = metric === "sesiones" ? p.sesiones : p.visitas;
+  const prev = metric === "sesiones" ? p.prevSesiones : p.prevVisitas;
+  const diff = prev > 0 ? ((cur - prev) / prev) * 100 : null;
+  return (
+    <div className="rounded-xl bg-white/95 backdrop-blur px-3 py-2 shadow-[0_10px_30px_-12px_rgba(15,23,42,0.25)] border border-navy-deep/10 text-[12px] min-w-[160px]">
+      <div className="font-semibold text-navy-deep mb-1">{p.label}</div>
+      <div className="flex items-center justify-between gap-3">
+        <span className="inline-flex items-center gap-1.5 text-navy-deep/70">
+          <span className="inline-block w-2 h-2 rounded-full" style={{ background: "#0ea5b7" }} />
+          {metric === "sesiones" ? "Visitantes" : "Vistas"}
+        </span>
+        <span className="font-semibold text-navy-deep tabular-nums">{cur.toLocaleString("es-EC")}</span>
+      </div>
+      {compare && (
+        <div className="flex items-center justify-between gap-3 mt-1">
+          <span className="inline-flex items-center gap-1.5 text-navy-deep/50">
+            <span className="inline-block w-2 h-2 rounded-full" style={{ background: "#94a3b8" }} />
+            Anterior
+          </span>
+          <span className="font-medium text-navy-deep/70 tabular-nums">{prev.toLocaleString("es-EC")}</span>
+        </div>
+      )}
+      {compare && diff !== null && (
+        <div className={`mt-1 text-[11px] font-semibold ${diff >= 0 ? "text-emerald-600" : "text-rose-600"}`}>
+          {diff >= 0 ? "▲" : "▼"} {Math.abs(diff).toFixed(1)}% vs anterior
+        </div>
+      )}
     </div>
   );
 }
