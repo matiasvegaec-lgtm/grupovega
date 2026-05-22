@@ -244,7 +244,7 @@ function AnaliticaPage() {
           </div>
 
           {/* Gráfico principal */}
-          <div className="rounded-2xl p-4 md:p-6 bg-[#eef6fb] border border-[#dbe9f2]">
+          <div className="rounded-3xl p-4 md:p-6" style={{ background: "#f6efe4" }}>
             <div className="h-64 md:h-80">
               <ResponsiveContainer width="100%" height="100%">
                 <AreaChart data={stats.series} margin={{ top: 20, right: 30, left: 0, bottom: 0 }}>
