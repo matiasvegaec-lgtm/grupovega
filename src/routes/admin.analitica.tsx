@@ -815,30 +815,81 @@ async function exportAnalyticsPDF(
   ];
 
   const cardW = (pageWidth - margin * 2 - 8 * 4) / 5;
-  const cardH = 60;
+  const cardH = 66;
   kpis.forEach((k, i) => {
     const x = margin + i * (cardW + 8);
-    doc.setFillColor(245, 248, 252);
+    // Sombra suave
+    doc.setFillColor(230, 237, 244);
+    doc.roundedRect(x + 1, y + 2, cardW, cardH, 8, 8, "F");
+    // Cuerpo
+    doc.setFillColor(255, 255, 255);
     doc.setDrawColor(220, 230, 240);
-    doc.roundedRect(x, y, cardW, cardH, 6, 6, "FD");
+    doc.roundedRect(x, y, cardW, cardH, 8, 8, "FD");
+    // Acento izquierdo (degradado ocean → cyan en dos bandas)
     doc.setFillColor(...ocean);
-    doc.rect(x, y, 3, cardH, "F");
-    doc.setFont("helvetica", "normal");
-    doc.setFontSize(7);
-    doc.setTextColor(...muted);
-    doc.text(k.label.toUpperCase(), x + 8, y + 14);
+    doc.roundedRect(x, y, 5, cardH, 2, 2, "F");
+    doc.setFillColor(...cyan);
+    doc.rect(x + 3, y + cardH * 0.45, 2, cardH * 0.55, "F");
+    // Etiqueta
     doc.setFont("helvetica", "bold");
-    doc.setFontSize(14);
+    doc.setFontSize(7);
+    doc.setTextColor(...ocean);
+    doc.text(k.label.toUpperCase(), x + 12, y + 16);
+    // Valor principal
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(15);
     doc.setTextColor(...navy);
-    doc.text(k.value, x + 8, y + 34);
+    doc.text(k.value, x + 12, y + 38);
+    // Delta
     if (k.delta) {
-      doc.setFont("helvetica", "normal");
+      const positive = k.delta.startsWith("▲");
+      const negative = k.delta.startsWith("▼");
+      doc.setFont("helvetica", "bold");
       doc.setFontSize(8);
+      if (positive) doc.setTextColor(22, 163, 74);
+      else if (negative) doc.setTextColor(220, 38, 38);
+      else doc.setTextColor(...muted);
+      doc.text(k.delta, x + 12, y + 54);
+      doc.setFont("helvetica", "normal");
       doc.setTextColor(...muted);
-      doc.text(k.delta, x + 8, y + 48);
+      doc.text("vs. anterior", x + 12 + doc.getTextWidth(k.delta) + 4, y + 54);
     }
   });
-  y += cardH + 22;
+  y += cardH + 24;
+
+  // Gráfico de visitantes
+  if (opts.chartImg) {
+    const availW = pageWidth - margin * 2;
+    const ratio = opts.chartImg.height / opts.chartImg.width;
+    const imgW = availW;
+    const imgH = Math.min(220, availW * ratio);
+    const titleH = 22;
+    if (y + imgH + titleH > doc.internal.pageSize.getHeight() - 60) {
+      doc.addPage();
+      y = margin;
+    }
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(11);
+    doc.setTextColor(...navy);
+    doc.text(
+      `Gráfico de ${opts.metric === "sesiones" ? "visitantes" : "vistas"}${opts.compare ? " · comparado con período anterior" : ""}`,
+      margin,
+      y
+    );
+    y += 8;
+    // Marco contenedor
+    doc.setFillColor(255, 255, 255);
+    doc.setDrawColor(225, 232, 240);
+    doc.roundedRect(margin, y, imgW, imgH + 10, 6, 6, "FD");
+    doc.setFillColor(...cyan);
+    doc.rect(margin, y, 4, imgH + 10, "F");
+    try {
+      doc.addImage(opts.chartImg.dataUrl, "PNG", margin + 8, y + 5, imgW - 16, imgH);
+    } catch {
+      /* ignore */
+    }
+    y += imgH + 10 + 18;
+  }
 
   // Resumen
   doc.setFont("helvetica", "bold");
