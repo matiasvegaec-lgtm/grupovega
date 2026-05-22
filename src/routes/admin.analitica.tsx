@@ -453,7 +453,7 @@ function AnaliticaPage() {
               )}
             </div>
 
-            <div className="h-64 md:h-80">
+            <div ref={chartRef} className="h-64 md:h-80 bg-white">
               <ResponsiveContainer width="100%" height="100%">
                 <AreaChart data={stats.series} margin={{ top: 10, right: 20, left: 0, bottom: 0 }}>
                   <defs>
