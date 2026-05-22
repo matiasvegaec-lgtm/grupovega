@@ -56,8 +56,8 @@ const TONES: Record<CardTone, { bg: string; accent: string; text: string; sub: s
   },
   // Tarjetas oscuras con los degradados principales de la web
   hero: {
-    bg: "linear-gradient(135deg, oklch(0.18 0.1 258) 0%, oklch(0.32 0.16 250) 50%, oklch(0.55 0.16 215) 100%)",
-    accent: "linear-gradient(135deg, oklch(0.78 0.14 200), oklch(0.88 0.12 195))",
+    bg: "linear-gradient(135deg, oklch(0.42 0.17 250) 0%, oklch(0.55 0.16 220) 50%, oklch(0.78 0.14 200) 100%)",
+    accent: "linear-gradient(135deg, oklch(0.88 0.12 195), oklch(0.95 0.08 200))",
     text: "#ffffff", sub: "oklch(1 0 0 / 0.72)", track: "oklch(1 0 0 / 0.16)",
   },
   deep: {
@@ -259,9 +259,9 @@ function AnaliticaPage() {
         <div className="space-y-5">
           {/* Tarjetas KPI estilo Lovable */}
           <div className="grid grid-cols-2 md:grid-cols-5 gap-3 md:gap-4">
-            <KpiCard tone="foam" label="Visitantes"            value={stats.sessions.toLocaleString("es-EC")} />
+            <KpiCard tone="hero" label="Visitantes"            value={stats.sessions.toLocaleString("es-EC")} />
             <KpiCard tone="wave" label="Vistas de página"      value={stats.pageviews.toLocaleString("es-EC")} />
-            <KpiCard tone="hero" label="Vistas por visita"     value={stats.pvPerSession.toFixed(2)} />
+            <KpiCard tone="foam" label="Vistas por visita"     value={stats.pvPerSession.toFixed(2)} />
             <KpiCard tone="sky"  label="Duración de la visita" value={formatDuration(stats.avgSessionSec)} />
             <KpiCard tone="deep" label="Tasa de rebote"        value={`${stats.bounceRate.toFixed(0)}%`} />
           </div>
