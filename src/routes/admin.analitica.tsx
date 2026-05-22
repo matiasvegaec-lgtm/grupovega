@@ -35,14 +35,15 @@ const RANGE_LABEL: Record<Range, string> = {
   "90d": "Últimos 90 días",
 };
 
-// Paleta sobria alineada con la marca (marina / navy / turquesa)
-type CardTone = "ocean" | "navy" | "turquoise" | "sky" | "slate";
-const TONES: Record<CardTone, { accent: string; soft: string }> = {
-  ocean:     { accent: "#1d6fa5", soft: "#eef4fa" },
-  navy:      { accent: "#1e3a5f", soft: "#eef1f6" },
-  turquoise: { accent: "#0ea5b7", soft: "#e8f5f6" },
-  sky:       { accent: "#3b82c4", soft: "#eef4fa" },
-  slate:     { accent: "#475569", soft: "#f1f3f6" },
+// Paleta estilo "Crextio" adaptada a marca (océano + cyan)
+// soft = fondo de tarjeta, accent = color de barra/acento
+type CardTone = "cream" | "ocean" | "cyan" | "foam" | "dark";
+const TONES: Record<CardTone, { bg: string; accent: string; text: string; sub: string; track: string }> = {
+  cream: { bg: "#f6efe4", accent: "#0ea5b7", text: "#0e2f4a", sub: "#0e2f4a99", track: "#0e2f4a14" },
+  ocean: { bg: "#dbe9f3", accent: "#1d6fa5", text: "#0e2f4a", sub: "#0e2f4a99", track: "#0e2f4a14" },
+  cyan:  { bg: "#d4ecef", accent: "#0a8b9c", text: "#0a3a4a", sub: "#0a3a4a99", track: "#0a3a4a14" },
+  foam:  { bg: "#eaf3f5", accent: "#0ea5b7", text: "#0e2f4a", sub: "#0e2f4a99", track: "#0e2f4a14" },
+  dark:  { bg: "#0e2f4a", accent: "#22d3ee", text: "#ffffff", sub: "#ffffffaa", track: "#ffffff1f" },
 };
 
 function startOfDay(d: Date) {
@@ -235,15 +236,15 @@ function AnaliticaPage() {
         <div className="space-y-5">
           {/* Tarjetas KPI estilo Lovable */}
           <div className="grid grid-cols-2 md:grid-cols-5 gap-3 md:gap-4">
-            <KpiCard tone="ocean"     label="Visitantes"            value={stats.sessions.toLocaleString("es-EC")} />
-            <KpiCard tone="navy"      label="Vistas de página"      value={stats.pageviews.toLocaleString("es-EC")} />
-            <KpiCard tone="turquoise" label="Vistas por visita"     value={stats.pvPerSession.toFixed(2)} />
-            <KpiCard tone="sky"       label="Duración de la visita" value={formatDuration(stats.avgSessionSec)} />
-            <KpiCard tone="slate"     label="Tasa de rebote"        value={`${stats.bounceRate.toFixed(0)}%`} />
+            <KpiCard tone="cream" label="Visitantes"            value={stats.sessions.toLocaleString("es-EC")} />
+            <KpiCard tone="ocean" label="Vistas de página"      value={stats.pageviews.toLocaleString("es-EC")} />
+            <KpiCard tone="dark"  label="Vistas por visita"     value={stats.pvPerSession.toFixed(2)} />
+            <KpiCard tone="cyan"  label="Duración de la visita" value={formatDuration(stats.avgSessionSec)} />
+            <KpiCard tone="foam"  label="Tasa de rebote"        value={`${stats.bounceRate.toFixed(0)}%`} />
           </div>
 
           {/* Gráfico principal */}
-          <div className="rounded-2xl p-4 md:p-6 bg-[#eef6fb] border border-[#dbe9f2]">
+          <div className="rounded-3xl p-4 md:p-6" style={{ background: "#f6efe4" }}>
             <div className="h-64 md:h-80">
               <ResponsiveContainer width="100%" height="100%">
                 <AreaChart data={stats.series} margin={{ top: 20, right: 30, left: 0, bottom: 0 }}>
@@ -276,10 +277,10 @@ function AnaliticaPage() {
 
           {/* Listas estilo Lovable */}
           <div className="grid grid-cols-1 md:grid-cols-4 gap-3 md:gap-4">
-            <ListCard tone="ocean"     title="Fuente"      keyLabel="Fuente"      items={stats.referrers} />
-            <ListCard tone="navy"      title="Página"      keyLabel="Página"      items={stats.topPaths} />
-            <ListCard tone="turquoise" title="País"        keyLabel="País"        items={stats.topCountries} mode="country" />
-            <ListCard tone="sky"       title="Dispositivo" keyLabel="Dispositivo" items={stats.devices} mode="percent" />
+            <ListCard tone="cream" title="Fuente"      keyLabel="Fuente"      items={stats.referrers} />
+            <ListCard tone="ocean" title="Página"      keyLabel="Página"      items={stats.topPaths} />
+            <ListCard tone="cyan"  title="País"        keyLabel="País"        items={stats.topCountries} mode="country" />
+            <ListCard tone="dark"  title="Dispositivo" keyLabel="Dispositivo" items={stats.devices} mode="percent" />
           </div>
 
           {stats.pageviews === 0 && (
@@ -296,10 +297,25 @@ function AnaliticaPage() {
 function KpiCard({ tone, label, value }: { tone: CardTone; label: string; value: string }) {
   const t = TONES[tone];
   return (
-    <div className="relative overflow-hidden rounded-xl bg-card border border-border/70 p-4 shadow-sm hover:shadow-md transition-shadow">
-      <div className="absolute left-0 top-0 bottom-0 w-1" style={{ background: t.accent }} />
-      <div className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">{label}</div>
-      <div className="mt-2 text-2xl md:text-[26px] font-bold tracking-tight text-navy-deep leading-tight">{value}</div>
+    <div
+      className="relative overflow-hidden rounded-3xl p-5 flex flex-col justify-between aspect-square min-h-[150px]"
+      style={{ background: t.bg, color: t.text }}
+    >
+      <div className="text-[12px] font-medium leading-snug" style={{ color: t.sub }}>
+        {label}
+      </div>
+      <div className="flex items-end justify-between">
+        <div className="text-[34px] md:text-[38px] font-bold tracking-tight leading-none">{value}</div>
+        <div
+          className="w-9 h-9 rounded-full flex items-center justify-center"
+          style={{ background: t.accent, opacity: tone === "dark" ? 1 : 0.95 }}
+        >
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke={tone === "dark" ? "#0e2f4a" : "#fff"} strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M7 17 L17 7" />
+            <path d="M9 7 L17 7 L17 15" />
+          </svg>
+        </div>
+      </div>
     </div>
   );
 }
@@ -317,16 +333,26 @@ function ListCard({
   const total = items.reduce((s, i) => s + i.value, 0) || 1;
   const max = items.reduce((m, i) => Math.max(m, i.value), 0) || 1;
   return (
-    <div className="relative overflow-hidden rounded-xl bg-card border border-border/70 p-4 md:p-5 shadow-sm min-h-[260px]">
-      <div className="text-base font-semibold text-navy-deep mb-3">{title}</div>
-      <div className="flex items-center justify-between text-[10px] uppercase tracking-wider text-muted-foreground mb-2 pb-2 border-b border-border">
+    <div
+      className="relative overflow-hidden rounded-3xl p-5 md:p-6 min-h-[280px]"
+      style={{ background: t.bg, color: t.text }}
+    >
+      <div className="flex items-center justify-between mb-4">
+        <div className="text-base font-semibold">{title}</div>
+        <div className="w-7 h-7 rounded-full flex items-center justify-center" style={{ background: t.accent }}>
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke={tone === "dark" ? "#0e2f4a" : "#fff"} strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M7 17 L17 7" /><path d="M9 7 L17 7 L17 15" />
+          </svg>
+        </div>
+      </div>
+      <div className="flex items-center justify-between text-[10px] uppercase tracking-wider mb-3 pb-2 border-b" style={{ color: t.sub, borderColor: t.track }}>
         <span>{keyLabel}</span>
         <span>Visitantes</span>
       </div>
       {items.length === 0 ? (
-        <p className="text-sm text-muted-foreground">Sin datos.</p>
+        <p className="text-sm" style={{ color: t.sub }}>Sin datos.</p>
       ) : (
-        <ul className="space-y-2.5">
+        <ul className="space-y-3">
             {items.slice(0, 5).map((it) => {
               const display =
                 mode === "country"
@@ -341,15 +367,15 @@ function ListCard({
               const pct = (it.value / max) * 100;
               return (
                 <li key={it.label}>
-                  <div className="flex items-center justify-between text-sm text-navy-deep">
+                  <div className="flex items-center justify-between text-sm">
                     <span className="truncate font-medium">
                       {mode === "percent"
                         ? (it.label === "desktop" ? "Escritorio" : it.label === "mobile" ? "Móvil" : it.label === "tablet" ? "Tablet" : display)
                         : display}
                     </span>
-                    <span className="tabular-nums font-semibold text-muted-foreground">{right}</span>
+                    <span className="tabular-nums font-semibold" style={{ color: t.sub }}>{right}</span>
                   </div>
-                  <div className="mt-1 h-1.5 rounded-full bg-muted overflow-hidden">
+                  <div className="mt-1.5 h-1.5 rounded-full overflow-hidden" style={{ background: t.track }}>
                     <div className="h-full rounded-full" style={{ width: `${pct}%`, background: t.accent }} />
                   </div>
                 </li>
