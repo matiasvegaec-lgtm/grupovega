@@ -29,6 +29,7 @@ import { Route as AdminPedidosRouteImport } from './routes/admin.pedidos'
 import { Route as AdminGaleriaRouteImport } from './routes/admin.galeria'
 import { Route as AdminClientesRouteImport } from './routes/admin.clientes'
 import { Route as AdminCategoriasRouteImport } from './routes/admin.categorias'
+import { Route as AdminAnaliticaRouteImport } from './routes/admin.analitica'
 import { Route as ApiPublicImageProxyRouteImport } from './routes/api/public/image-proxy'
 
 const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
@@ -131,6 +132,11 @@ const AdminCategoriasRoute = AdminCategoriasRouteImport.update({
   path: '/categorias',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminAnaliticaRoute = AdminAnaliticaRouteImport.update({
+  id: '/analitica',
+  path: '/analitica',
+  getParentRoute: () => AdminRoute,
+} as any)
 const ApiPublicImageProxyRoute = ApiPublicImageProxyRouteImport.update({
   id: '/api/public/image-proxy',
   path: '/api/public/image-proxy',
@@ -150,6 +156,7 @@ export interface FileRoutesByFullPath {
   '/productos': typeof ProductosRouteWithChildren
   '/quienes-somos': typeof QuienesSomosRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/admin/analitica': typeof AdminAnaliticaRoute
   '/admin/categorias': typeof AdminCategoriasRoute
   '/admin/clientes': typeof AdminClientesRoute
   '/admin/galeria': typeof AdminGaleriaRoute
@@ -173,6 +180,7 @@ export interface FileRoutesByTo {
   '/productos': typeof ProductosRouteWithChildren
   '/quienes-somos': typeof QuienesSomosRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/admin/analitica': typeof AdminAnaliticaRoute
   '/admin/categorias': typeof AdminCategoriasRoute
   '/admin/clientes': typeof AdminClientesRoute
   '/admin/galeria': typeof AdminGaleriaRoute
@@ -197,6 +205,7 @@ export interface FileRoutesById {
   '/productos': typeof ProductosRouteWithChildren
   '/quienes-somos': typeof QuienesSomosRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/admin/analitica': typeof AdminAnaliticaRoute
   '/admin/categorias': typeof AdminCategoriasRoute
   '/admin/clientes': typeof AdminClientesRoute
   '/admin/galeria': typeof AdminGaleriaRoute
@@ -222,6 +231,7 @@ export interface FileRouteTypes {
     | '/productos'
     | '/quienes-somos'
     | '/sitemap.xml'
+    | '/admin/analitica'
     | '/admin/categorias'
     | '/admin/clientes'
     | '/admin/galeria'
@@ -245,6 +255,7 @@ export interface FileRouteTypes {
     | '/productos'
     | '/quienes-somos'
     | '/sitemap.xml'
+    | '/admin/analitica'
     | '/admin/categorias'
     | '/admin/clientes'
     | '/admin/galeria'
@@ -268,6 +279,7 @@ export interface FileRouteTypes {
     | '/productos'
     | '/quienes-somos'
     | '/sitemap.xml'
+    | '/admin/analitica'
     | '/admin/categorias'
     | '/admin/clientes'
     | '/admin/galeria'
@@ -438,6 +450,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminCategoriasRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/admin/analitica': {
+      id: '/admin/analitica'
+      path: '/analitica'
+      fullPath: '/admin/analitica'
+      preLoaderRoute: typeof AdminAnaliticaRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/api/public/image-proxy': {
       id: '/api/public/image-proxy'
       path: '/api/public/image-proxy'
@@ -449,6 +468,7 @@ declare module '@tanstack/react-router' {
 }
 
 interface AdminRouteChildren {
+  AdminAnaliticaRoute: typeof AdminAnaliticaRoute
   AdminCategoriasRoute: typeof AdminCategoriasRoute
   AdminClientesRoute: typeof AdminClientesRoute
   AdminGaleriaRoute: typeof AdminGaleriaRoute
@@ -458,6 +478,7 @@ interface AdminRouteChildren {
 }
 
 const AdminRouteChildren: AdminRouteChildren = {
+  AdminAnaliticaRoute: AdminAnaliticaRoute,
   AdminCategoriasRoute: AdminCategoriasRoute,
   AdminClientesRoute: AdminClientesRoute,
   AdminGaleriaRoute: AdminGaleriaRoute,
@@ -499,3 +520,12 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { createStart } from '@tanstack/react-start'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+  }
+}
