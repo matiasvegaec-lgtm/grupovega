@@ -189,7 +189,18 @@ function AdminProductos() {
       if (!aiData?.imageDataUrl) throw new Error("Sin respuesta de IA");
 
       const outRes = await fetch(aiData.imageDataUrl);
-      const outBlob = await outRes.blob();
+      let outBlob = await outRes.blob();
+
+      // Si el modo es transparente, la IA devuelve la imagen sobre un chroma-key
+      // verde #00FF00. Aquí lo convertimos a alpha real para que NO se vea ni la
+      // cuadrícula ni un fondo blanco fuera del producto.
+      if (mode === "transparent") {
+        try {
+          outBlob = await chromaKeyToTransparent(outBlob);
+        } catch (err) {
+          console.error("Chroma key falló, se sube imagen original:", err);
+        }
+      }
 
       // 4. Subir y actualizar
       const url = await uploadBlob(outBlob, "png");
