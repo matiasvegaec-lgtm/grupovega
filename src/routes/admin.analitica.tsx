@@ -1,7 +1,9 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
-import { Loader2, ChevronDown, TrendingUp, TrendingDown, Minus, Check, Clock, CalendarRange } from "lucide-react";
+import { Loader2, ChevronDown, TrendingUp, TrendingDown, Minus, Check, Clock, CalendarRange, Download } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import jsPDF from "jspdf";
+import autoTable from "jspdf-autotable";
 import {
   DropdownMenu,
   DropdownMenuTrigger,
@@ -286,6 +288,17 @@ function AnaliticaPage() {
           </span>
           <span className="font-medium">{stats?.liveNow ?? 0} visitantes ahora</span>
         </div>
+        <button
+          type="button"
+          onClick={() => stats && exportAnalyticsPDF(stats, range, RANGE_LABEL[range])}
+          disabled={!stats || loading}
+          className="inline-flex items-center gap-2 rounded-2xl px-3.5 py-2 text-sm font-semibold text-white shadow-[0_6px_18px_-8px_oklch(0.42_0.17_250/0.5)] hover:shadow-[0_10px_24px_-10px_oklch(0.42_0.17_250/0.6)] transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+          style={{ background: "linear-gradient(135deg, oklch(0.42 0.17 250) 0%, oklch(0.78 0.14 200) 100%)" }}
+          title="Exportar a PDF"
+        >
+          <Download className="w-4 h-4" />
+          <span className="hidden sm:inline">Exportar PDF</span>
+        </button>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <button
@@ -655,4 +668,181 @@ function ListCard({
       )}
     </div>
   );
+}
+
+// ============================================================
+// Exportación a PDF
+// ============================================================
+type AnalyticsStats = {
+  pageviews: number; sessions: number; pvPerSession: number;
+  bounceRate: number; avgSessionSec: number;
+  series: { label: string; visitas: number; sesiones: number; prevVisitas: number; prevSesiones: number }[];
+  topPaths: { label: string; value: number }[];
+  topCountries: { label: string; value: number }[];
+  devices: { label: string; value: number }[];
+  browsers: { label: string; value: number }[];
+  referrers: { label: string; value: number }[];
+  prevPageviews: number; prevSessions: number;
+  deltaPv: number | null; deltaSe: number | null;
+  peak: { label: string; sesiones: number; visitas: number };
+  liveNow: number;
+};
+
+function exportAnalyticsPDF(stats: AnalyticsStats, rangeKey: string, rangeLabel: string) {
+  const doc = new jsPDF({ unit: "pt", format: "a4" });
+  const pageWidth = doc.internal.pageSize.getWidth();
+  const margin = 40;
+  const navy: [number, number, number] = [14, 47, 74];
+  const ocean: [number, number, number] = [29, 111, 165];
+  const cyan: [number, number, number] = [14, 165, 183];
+  const muted: [number, number, number] = [100, 116, 139];
+
+  // Encabezado: banda de marca
+  doc.setFillColor(...navy);
+  doc.rect(0, 0, pageWidth, 70, "F");
+  doc.setFillColor(...cyan);
+  doc.rect(0, 70, pageWidth, 3, "F");
+
+  doc.setTextColor(255, 255, 255);
+  doc.setFont("helvetica", "bold");
+  doc.setFontSize(18);
+  doc.text("Panel Analítico — Grupo Vega", margin, 38);
+  doc.setFont("helvetica", "normal");
+  doc.setFontSize(10);
+  doc.setTextColor(220, 230, 240);
+  doc.text(`Período: ${rangeLabel}`, margin, 56);
+  const now = new Date().toLocaleString("es-EC", { dateStyle: "medium", timeStyle: "short" });
+  doc.text(`Generado: ${now}`, pageWidth - margin, 56, { align: "right" });
+
+  let y = 100;
+
+  // KPIs
+  doc.setTextColor(...navy);
+  doc.setFont("helvetica", "bold");
+  doc.setFontSize(12);
+  doc.text("Indicadores principales", margin, y);
+  y += 14;
+
+  const fmtPct = (n: number) => `${n.toFixed(1)}%`;
+  const fmtDur = (s: number) => {
+    const m = Math.floor(s / 60); const r = Math.round(s % 60);
+    return m === 0 ? `${r}s` : `${m}m ${r}s`;
+  };
+  const deltaText = (d: number | null) =>
+    d === null ? "—" : `${d >= 0 ? "▲" : "▼"} ${Math.abs(d).toFixed(1)}%`;
+
+  const kpis = [
+    { label: "Visitantes",            value: stats.sessions.toLocaleString("es-EC"),     delta: deltaText(stats.deltaSe) },
+    { label: "Vistas de página",      value: stats.pageviews.toLocaleString("es-EC"),    delta: deltaText(stats.deltaPv) },
+    { label: "Vistas por visita",     value: stats.pvPerSession.toFixed(2),              delta: "" },
+    { label: "Duración de la visita", value: fmtDur(stats.avgSessionSec),                delta: "" },
+    { label: "Tasa de rebote",        value: fmtPct(stats.bounceRate),                   delta: "" },
+  ];
+
+  const cardW = (pageWidth - margin * 2 - 8 * 4) / 5;
+  const cardH = 60;
+  kpis.forEach((k, i) => {
+    const x = margin + i * (cardW + 8);
+    doc.setFillColor(245, 248, 252);
+    doc.setDrawColor(220, 230, 240);
+    doc.roundedRect(x, y, cardW, cardH, 6, 6, "FD");
+    doc.setFillColor(...ocean);
+    doc.rect(x, y, 3, cardH, "F");
+    doc.setFont("helvetica", "normal");
+    doc.setFontSize(7);
+    doc.setTextColor(...muted);
+    doc.text(k.label.toUpperCase(), x + 8, y + 14);
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(14);
+    doc.setTextColor(...navy);
+    doc.text(k.value, x + 8, y + 34);
+    if (k.delta) {
+      doc.setFont("helvetica", "normal");
+      doc.setFontSize(8);
+      doc.setTextColor(...muted);
+      doc.text(k.delta, x + 8, y + 48);
+    }
+  });
+  y += cardH + 22;
+
+  // Resumen
+  doc.setFont("helvetica", "bold");
+  doc.setFontSize(11);
+  doc.setTextColor(...navy);
+  doc.text("Resumen del período", margin, y);
+  y += 4;
+  autoTable(doc, {
+    startY: y + 6,
+    margin: { left: margin, right: margin },
+    theme: "grid",
+    styles: { fontSize: 9, cellPadding: 6, textColor: navy, lineColor: [225, 232, 240] },
+    headStyles: { fillColor: ocean, textColor: 255, fontStyle: "bold", fontSize: 9 },
+    head: [["Métrica", "Actual", "Período anterior", "Variación"]],
+    body: [
+      ["Visitantes únicos", stats.sessions.toLocaleString("es-EC"), stats.prevSessions.toLocaleString("es-EC"), deltaText(stats.deltaSe)],
+      ["Vistas de página", stats.pageviews.toLocaleString("es-EC"), stats.prevPageviews.toLocaleString("es-EC"), deltaText(stats.deltaPv)],
+      ["Pico de actividad", `${stats.peak.label} (${stats.peak.sesiones} visitantes)`, "—", "—"],
+      ["Visitantes ahora (5 min)", stats.liveNow.toLocaleString("es-EC"), "—", "—"],
+    ],
+  });
+  // @ts-ignore — lastAutoTable es agregado por jspdf-autotable
+  y = (doc as any).lastAutoTable.finalY + 18;
+
+  // Listas top
+  const sections: { title: string; rows: { label: string; value: number }[] }[] = [
+    { title: "Páginas más visitadas", rows: stats.topPaths },
+    { title: "Fuentes de tráfico",    rows: stats.referrers },
+    { title: "Países",                rows: stats.topCountries },
+    { title: "Dispositivos",          rows: stats.devices },
+    { title: "Navegadores",           rows: stats.browsers },
+  ];
+
+  sections.forEach((s) => {
+    if (y > doc.internal.pageSize.getHeight() - 120) {
+      doc.addPage();
+      y = margin;
+    }
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(11);
+    doc.setTextColor(...navy);
+    doc.text(s.title, margin, y);
+    const total = s.rows.reduce((acc, r) => acc + r.value, 0) || 1;
+    autoTable(doc, {
+      startY: y + 6,
+      margin: { left: margin, right: margin },
+      theme: "striped",
+      styles: { fontSize: 9, cellPadding: 5, textColor: navy, lineColor: [225, 232, 240] },
+      headStyles: { fillColor: [240, 246, 250], textColor: navy, fontStyle: "bold", fontSize: 9 },
+      alternateRowStyles: { fillColor: [250, 252, 254] },
+      columnStyles: {
+        0: { cellWidth: "auto" },
+        1: { cellWidth: 70, halign: "right" },
+        2: { cellWidth: 60, halign: "right" },
+      },
+      head: [[s.title, "Visitas", "%"]],
+      body: s.rows.length
+        ? s.rows.slice(0, 10).map((r) => [
+            r.label,
+            r.value.toLocaleString("es-EC"),
+            `${((r.value / total) * 100).toFixed(1)}%`,
+          ])
+        : [["Sin datos", "—", "—"]],
+    });
+    y = (doc as any).lastAutoTable.finalY + 16;
+  });
+
+  // Footer en todas las páginas
+  const pageCount = doc.getNumberOfPages();
+  for (let i = 1; i <= pageCount; i++) {
+    doc.setPage(i);
+    const h = doc.internal.pageSize.getHeight();
+    doc.setFont("helvetica", "normal");
+    doc.setFontSize(8);
+    doc.setTextColor(...muted);
+    doc.text("Grupo Vega — Reporte interno · No distribuir", margin, h - 18);
+    doc.text(`Página ${i} de ${pageCount}`, pageWidth - margin, h - 18, { align: "right" });
+  }
+
+  const stamp = new Date().toISOString().slice(0, 10);
+  doc.save(`analitica-grupovega-${rangeKey}-${stamp}.pdf`);
 }
