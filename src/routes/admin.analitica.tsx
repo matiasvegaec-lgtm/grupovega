@@ -703,7 +703,67 @@ type AnalyticsStats = {
   liveNow: number;
 };
 
-function exportAnalyticsPDF(stats: AnalyticsStats, rangeKey: string, rangeLabel: string) {
+async function captureChartPNG(
+  node: HTMLElement | null
+): Promise<{ dataUrl: string; width: number; height: number } | null> {
+  if (!node) return null;
+  const svg = node.querySelector("svg");
+  if (!svg) return null;
+
+  // Clonar y asegurar fondo blanco + namespace
+  const clone = svg.cloneNode(true) as SVGSVGElement;
+  const rect = svg.getBoundingClientRect();
+  const w = Math.max(1, Math.round(rect.width));
+  const h = Math.max(1, Math.round(rect.height));
+  clone.setAttribute("xmlns", "http://www.w3.org/2000/svg");
+  clone.setAttribute("width", String(w));
+  clone.setAttribute("height", String(h));
+
+  const bg = document.createElementNS("http://www.w3.org/2000/svg", "rect");
+  bg.setAttribute("width", "100%");
+  bg.setAttribute("height", "100%");
+  bg.setAttribute("fill", "#ffffff");
+  clone.insertBefore(bg, clone.firstChild);
+
+  const xml = new XMLSerializer().serializeToString(clone);
+  const svg64 = typeof window !== "undefined"
+    ? window.btoa(unescape(encodeURIComponent(xml)))
+    : "";
+  const src = `data:image/svg+xml;base64,${svg64}`;
+
+  return await new Promise((resolve) => {
+    const img = new Image();
+    img.onload = () => {
+      const scale = 2; // mejor nitidez en el PDF
+      const canvas = document.createElement("canvas");
+      canvas.width = w * scale;
+      canvas.height = h * scale;
+      const ctx = canvas.getContext("2d");
+      if (!ctx) return resolve(null);
+      ctx.fillStyle = "#ffffff";
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+      try {
+        resolve({ dataUrl: canvas.toDataURL("image/png"), width: w, height: h });
+      } catch {
+        resolve(null);
+      }
+    };
+    img.onerror = () => resolve(null);
+    img.src = src;
+  });
+}
+
+async function exportAnalyticsPDF(
+  stats: AnalyticsStats,
+  rangeKey: string,
+  rangeLabel: string,
+  opts: {
+    chartImg: { dataUrl: string; width: number; height: number } | null;
+    compare: boolean;
+    metric: "sesiones" | "visitas";
+  }
+) {
   const doc = new jsPDF({ unit: "pt", format: "a4" });
   const pageWidth = doc.internal.pageSize.getWidth();
   const margin = 40;
